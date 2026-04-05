@@ -1,0 +1,25 @@
+{
+  "name": "carbon-campus",
+  "version": "1.0.0",
+  "description": "绿动校园 - 碳积分小程序",
+  "main": "main.js",
+  "scripts": {
+    "dev:mp-weixin": "uni -p mp-weixin",
+    "build:mp-weixin": "uni build -p mp-weixin",
+    "dev:h5": "uni -p h5",
+    "build:h5": "uni build -p h5",
+    "dev:app": "uni -p app",
+    "build:app": "uni build -p app"
+  },
+  "keywords": [
+    "uniapp",
+    "carbon",
+    "campus",
+    "ecology"
+  ],
+  "author": "",
+  "license": "MIT",
+  "uni-app": {
+    "scripts": {}
+  }
+}

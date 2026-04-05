@@ -1,0 +1,123 @@
+/* Icon Font - 绿动校园碳积分小程序图标库 */
+@import url('https://at.alicdn.com/t/font_1234567_iconfont.css');
+
+/* 如果使用阿里巴巴图标库，请替换下面的图标定义 */
+/* 本地图标字体 - 使用 Unicode 私有区域 */
+@font-face {
+  font-family: 'iconfont';
+  src: url('data:font/truetype;charset=utf-8;base64,') format('truetype');
+}
+
+.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 32rpx;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* 以下是图标占位符样式，实际使用时替换为真实图标 */
+/* 信号图标 */
+.icon-signal:before { content: "📶"; }
+/* WiFi图标 */
+.icon-wifi:before { content: "📡"; }
+/* 电池图标 */
+.icon-battery:before { content: "🔋"; }
+/* 叶子图标 */
+.icon-leaf:before { content: "🌿"; }
+/* 铃铛图标 */
+.icon-bell:before { content: "🔔"; }
+/* 跑步图标 */
+.icon-run:before { content: "🏃"; }
+/* 家图标 */
+.icon-home:before { content: "🏠"; }
+/* 奖杯图标 */
+.icon-trophy:before { content: "🏆"; }
+/* 日历图标 */
+.icon-calendar-check:before { content: "📅"; }
+/* 闪电图标 */
+.icon-flash:before { content: "⚡"; }
+/* 自行车图标 */
+.icon-bike:before { content: "🚲"; }
+/* 组织图标 */
+.icon-org:before { content: "🏛️"; }
+/* 包裹图标 */
+.icon-package:before { content: "📦"; }
+/* 自拍图标 */
+.icon-selfie:before { content: "🤳"; }
+/* 步行图标 */
+.icon-walk:before { content: "🚶"; }
+/* 树图标 */
+.icon-tree:before { content: "🌲"; }
+/* 火图标 */
+.icon-fire:before { content: "🔥"; }
+/* 勾选图标 */
+.icon-check-circle:before { content: "✅"; }
+/* 灯泡图标 */
+.icon-lightbulb:before { content: "💡"; }
+/* 天气图标 */
+.icon-weather:before { content: "⛅"; }
+/* 播放图标 */
+.icon-play:before { content: "▶️"; }
+/* 暂停图标 */
+.icon-pause:before { content: "⏸️"; }
+/* 停止图标 */
+.icon-stop:before { content: "⏹️"; }
+/* 音乐图标 */
+.icon-music:before { content: "🎵"; }
+/* 相机图标 */
+.icon-camera:before { content: "📷"; }
+/* 相机增强图标 */
+.icon-camera-plus:before { content: "📸"; }
+/* 购物车图标 */
+.icon-shopping:before { content: "🛒"; }
+/* 杯子图标 */
+.icon-cup:before { content: "🥤"; }
+/* 插头图标 */
+.icon-plug:before { content: "🔌"; }
+/* 便当图标 */
+.icon-bento:before { content: "🍱"; }
+/* 加号图标 */
+.icon-plus:before { content: "➕"; }
+/* 时钟图标 */
+.icon-clock:before { content: "⏰"; }
+/* 证书图标 */
+.icon-certificate:before { content: "🎖️"; }
+/* 收据图标 */
+.icon-receipt:before { content: "🧾"; }
+/* 帮助图标 */
+.icon-help:before { content: "❓"; }
+/* 二维码图标 */
+.icon-qrcode:before { content: "📱"; }
+/* 设置图标 */
+.icon-settings:before { content: "⚙️"; }
+/* 星星图标 */
+.icon-star:before { content: "⭐"; }
+/* 星星发光图标 */
+.icon-star-glow:before { content: "🌟"; }
+/* 奖牌图标 */
+.icon-medal:before { content: "🏅"; }
+/* 皇冠图标 */
+.icon-crown:before { content: "👑"; }
+/* 图表图标 */
+.icon-chart:before { content: "📊"; }
+/* 仪表盘图标 */
+.icon-dashboard:before { content: "📈"; }
+/* 墙壁图标 */
+.icon-wall:before { content: "🧱"; }
+/* 文档图标 */
+.icon-document:before { content: "📄"; }
+/* 历史图标 */
+.icon-history:before { content: "📜"; }
+/* 团队图标 */
+.icon-team:before { content: "👥"; }
+/* 剑图标 */
+.icon-sword:before { content: "⚔️"; }
+/* 消息图标 */
+.icon-message:before { content: "💬"; }
+/* 地球图标 */
+.icon-earth:before { content: "🌍"; }
+/* 奔跑者图标 */
+.icon-runner:before { content: "🏃"; }
+/* 右箭头图标 */
+.icon-chevron-right:before { content: "›"; }
