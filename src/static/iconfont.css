@@ -121,3 +121,9 @@
 .icon-runner:before { content: "🏃"; }
 /* 右箭头图标 */
 .icon-chevron-right:before { content: "›"; }
+/* 编辑图标 */
+.icon-edit:before { content: "✏️"; }
+/* 帮助圆形图标 */
+.icon-help-circle:before { content: "❔"; }
+/* 账户图标 */
+.icon-account:before { content: "👤"; }

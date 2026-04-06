@@ -15,10 +15,10 @@
     <!-- Categories -->
     <view class="category-bar">
       <view class="category-item cat-active">全部</view>
-      <view class="category-item">限时抢</view>
+      <view class="category-item">限时抢购</view>
+      <view class="category-item">虚拟权益</view>
       <view class="category-item">校园服务</view>
-      <view class="category-item">实物商品</view>
-      <view class="category-item">现金兑换</view>
+      <view class="category-item">环保好物</view>
     </view>
 
     <!-- Content -->

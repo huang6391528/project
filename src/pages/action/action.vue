@@ -15,7 +15,7 @@
     <!-- Categories -->
     <scroll-view class="category-scroll" scroll-x="true">
       <view class="category-tags">
-        <view class="category-tag tag-active">推荐</view>
+        <view class="category-tag tag-active">全部</view>
         <view class="category-tag">运动</view>
         <view class="category-tag">饮食</view>
         <view class="category-tag">出行</view>

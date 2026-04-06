@@ -12,10 +12,6 @@
 
     <!-- Header Stats -->
     <view class="header-stats">
-      <view class="points-badge">
-        <text class="iconfont icon-leaf"></text>
-        <text class="points-text">2,480 积分</text>
-      </view>
       <view class="bell-icon">
         <text class="iconfont icon-bell"></text>
         <view class="bell-dot"></view>
@@ -29,11 +25,18 @@
         <view class="user-detail">
           <text class="user-name">陈同学</text>
           <text class="user-school">复旦大学 · 经济学院</text>
+          <view class="user-points">
+            <text class="user-points-num">2,480</text>
+            <text class="user-points-unit">碳积分</text>
+          </view>
         </view>
       </view>
       <view class="tree-progress">
         <view class="progress-header">
-          <text class="progress-title">树木守护进度</text>
+          <view class="progress-title-area">
+            <text class="progress-points-big">2,480</text>
+            <text class="progress-title">树木守护进度</text>
+          </view>
           <text class="progress-sub">已抵消 45.2kg CO₂</text>
         </view>
         <view class="progress-bar">
@@ -78,7 +81,7 @@
     <!-- Check-in Grid -->
     <view class="section-title">
       <text class="iconfont icon-calendar-check"></text>
-      <text>每日减碳行动</text>
+      <text>快捷打卡入口</text>
     </view>
     <view class="action-grid">
       <view class="action-item">
@@ -178,25 +181,9 @@ export default {
 /* Header Stats */
 .header-stats {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
   margin-top: 16rpx;
-}
-
-.points-badge {
-  display: flex;
-  align-items: center;
-  background-color: #ecfdf5;
-  border: 2rpx solid #d1fae5;
-  border-radius: 50rpx;
-  padding: 12rpx 28rpx;
-}
-
-.points-text {
-  font-weight: bold;
-  color: #059669;
-  font-size: 28rpx;
-  margin-left: 8rpx;
 }
 
 .bell-icon {
@@ -255,6 +242,24 @@ export default {
   margin-top: 4rpx;
 }
 
+.user-points {
+  display: flex;
+  align-items: baseline;
+  margin-top: 8rpx;
+}
+
+.user-points-num {
+  font-size: 36rpx;
+  font-weight: 800;
+  color: #fbbf24;
+}
+
+.user-points-unit {
+  font-size: 22rpx;
+  color: rgba(255,255,255,0.85);
+  margin-left: 6rpx;
+}
+
 /* Tree Progress */
 .tree-progress {
   margin-top: 48rpx;
@@ -269,6 +274,18 @@ export default {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 16rpx;
+}
+
+.progress-title-area {
+  display: flex;
+  align-items: baseline;
+  gap: 12rpx;
+}
+
+.progress-points-big {
+  font-size: 40rpx;
+  font-weight: 800;
+  color: #fbbf24;
 }
 
 .progress-title {

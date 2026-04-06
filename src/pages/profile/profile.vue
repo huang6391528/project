@@ -3,8 +3,12 @@
     <!-- Top Profile -->
     <view class="profile-header">
       <view class="header-icons">
-        <text class="iconfont icon-qrcode"></text>
-        <text class="iconfont icon-settings"></text>
+        <view class="header-icon-btn" @tap="onEditProfile">
+          <text class="iconfont icon-edit"></text>
+        </view>
+        <view class="header-icon-btn" @tap="onSettings">
+          <text class="iconfont icon-settings"></text>
+        </view>
       </view>
       <view class="profile-info">
         <view class="avatar-wrapper">
@@ -15,6 +19,7 @@
         </view>
         <view class="profile-detail">
           <text class="profile-name">陈同学</text>
+          <text class="profile-school">复旦大学 · 经济学院</text>
           <view class="profile-badge">
             <text class="badge-text">环保大使</text>
           </view>
@@ -27,8 +32,12 @@
       </view>
     </view>
 
-    <!-- Stats Cards -->
+    <!-- Carbon Account Card -->
     <view class="stats-card">
+      <view class="stats-card-title">
+        <text class="iconfont icon-chart"></text>
+        <text>碳账户总览</text>
+      </view>
       <view class="stats-grid">
         <view class="stat-cell">
           <text class="stat-label">累计减排</text>
@@ -73,56 +82,26 @@
       </view>
     </view>
 
-    <!-- Data Center Grid -->
-    <view class="data-center">
-      <text class="section-title">数据中心</text>
-      <view class="data-grid">
-        <view class="data-item">
-          <text class="iconfont icon-chart"></text>
-          <text class="data-label">减排趋势</text>
-        </view>
-        <view class="data-item">
-          <text class="iconfont icon-dashboard"></text>
-          <text class="data-label">行为分布</text>
-        </view>
-        <view class="data-item">
-          <text class="iconfont icon-wall"></text>
-          <text class="data-label">成就墙</text>
-        </view>
-        <view class="data-item">
-          <text class="iconfont icon-document"></text>
-          <text class="data-label">年度报告</text>
-        </view>
-      </view>
-    </view>
-
     <!-- Menu Sections -->
     <view class="menu-section">
       <view class="menu-item">
         <view class="menu-left">
-          <text class="iconfont icon-history"></text>
-          <text class="menu-text">行为记录</text>
-        </view>
-        <text class="iconfont icon-chevron-right"></text>
-      </view>
-      <view class="menu-item">
-        <view class="menu-left">
-          <text class="iconfont icon-team"></text>
-          <text class="menu-text">我的团队</text>
-        </view>
-        <view class="new-badge">New</view>
-      </view>
-      <view class="menu-item">
-        <view class="menu-left">
-          <text class="iconfont icon-sword"></text>
-          <text class="menu-text">挑战赛</text>
+          <text class="iconfont icon-account"></text>
+          <text class="menu-text">账号设置</text>
         </view>
         <text class="iconfont icon-chevron-right"></text>
       </view>
       <view class="menu-item">
         <view class="menu-left">
           <text class="iconfont icon-message"></text>
-          <text class="menu-text">我的消息</text>
+          <text class="menu-text">消息通知</text>
+        </view>
+        <text class="iconfont icon-chevron-right"></text>
+      </view>
+      <view class="menu-item">
+        <view class="menu-left">
+          <text class="iconfont icon-help-circle"></text>
+          <text class="menu-text">帮助与反馈</text>
         </view>
         <text class="iconfont icon-chevron-right"></text>
       </view>
@@ -163,7 +142,14 @@ export default {
   data() {
     return {}
   },
-  methods: {}
+  methods: {
+    onEditProfile() {
+      uni.showToast({ title: '编辑资料开发中', icon: 'none' })
+    },
+    onSettings() {
+      uni.showToast({ title: '账号设置开发中', icon: 'none' })
+    }
+  }
 }
 </script>
 
@@ -190,8 +176,18 @@ export default {
   gap: 24rpx;
 }
 
-.header-icons text {
-  font-size: 40rpx;
+.header-icon-btn {
+  width: 72rpx;
+  height: 72rpx;
+  background-color: rgba(255,255,255,0.8);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.header-icon-btn text {
+  font-size: 36rpx;
   color: #065f46;
 }
 
@@ -242,6 +238,13 @@ export default {
   color: #065f46;
 }
 
+.profile-school {
+  display: block;
+  font-size: 24rpx;
+  color: rgba(6, 95, 70, 0.7);
+  margin-top: 6rpx;
+}
+
 .profile-badge {
   display: inline-block;
   margin-top: 8rpx;
@@ -270,9 +273,24 @@ export default {
 .stats-card {
   background-color: #fff;
   border-radius: 48rpx;
-  padding: 48rpx 32rpx;
+  padding: 32rpx;
   margin: -48rpx 30rpx 0;
   box-shadow: 0 16rpx 48rpx rgba(0,0,0,0.08);
+}
+
+.stats-card-title {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  margin-bottom: 24rpx;
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #374151;
+}
+
+.stats-card-title text:first-child {
+  font-size: 36rpx;
+  color: #10b981;
 }
 
 .stats-grid {
@@ -391,44 +409,6 @@ export default {
   color: #6b7280;
 }
 
-/* Data Center */
-.data-center {
-  padding: 48rpx 30rpx 0;
-}
-
-.section-title {
-  display: block;
-  font-size: 32rpx;
-  font-weight: bold;
-  color: #374151;
-  margin-bottom: 24rpx;
-}
-
-.data-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 16rpx;
-}
-
-.data-item {
-  background-color: #f9fafb;
-  padding: 24rpx 12rpx;
-  border-radius: 24rpx;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.data-item text:first-child {
-  font-size: 48rpx;
-  margin-bottom: 8rpx;
-}
-
-.data-label {
-  font-size: 18rpx;
-  color: #6b7280;
-}
-
 /* Menu Section */
 .menu-section {
   padding: 48rpx 30rpx 0;
@@ -473,6 +453,7 @@ export default {
   font-weight: bold;
   padding: 4rpx 12rpx;
   border-radius: 8rpx;
+  visibility: hidden;
 }
 
 /* Achievement Section */
