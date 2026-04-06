@@ -21,5 +21,17 @@
   "license": "MIT",
   "uni-app": {
     "scripts": {}
+  },
+  "devDependencies": {
+    "@dcloudio/vue-cli-plugin-uni": "^2.0.2-5000620260331001"
+  },
+  "dependencies": {
+    "@dcloudio/uni-app": "^2.0.2-5000620260331001",
+    "@dcloudio/uni-cli-i18n": "^2.0.2-5000620260331001",
+    "@dcloudio/uni-cli-shared": "^2.0.2-5000620260331001",
+    "@dcloudio/uni-mp-vite": "^3.0.0-alpha-3021020211012002",
+    "@dcloudio/webpack-uni-pages-loader": "^2.0.2-5000620260331001",
+    "@vue/cli-service": "^5.0.9",
+    "yargs-parser": "^22.0.0"
   }
 }

@@ -1,7 +1,14 @@
 <script>
+const STORAGE_LOGGED_IN = 'CARBON_CAMPUS_LOGGED_IN'
+
 export default {
   onLaunch: function() {
     console.log('App Launch')
+    if (uni.getStorageSync(STORAGE_LOGGED_IN)) {
+      uni.reLaunch({ url: '/pages/index/index' })
+    } else {
+      uni.reLaunch({ url: '/pages/login/login' })
+    }
   },
   onShow: function() {
     console.log('App Show')

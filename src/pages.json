@@ -8,6 +8,14 @@
       }
     },
     {
+      "path": "pages/login/login",
+      "style": {
+        "navigationBarTitleText": "登录",
+        "navigationBarBackgroundColor": "#f8fafc",
+        "navigationBarTextStyle": "black"
+      }
+    },
+    {
       "path": "pages/run/run",
       "style": {
         "navigationBarTitleText": "校园跑",
