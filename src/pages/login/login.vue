@@ -72,74 +72,73 @@
   </view>
 </template>
 
-<script>
+<script setup>
 /** 登录态存储键：存在则跳过登录页 */
 const STORAGE_LOGGED_IN = 'CARBON_CAMPUS_LOGGED_IN'
 
-export default {
-  data() {
-    return {
-      phone: '12345600000',
-      code: '123456',
-      countdown: 0,
-      timer: null,
-      agreed: false
-    }
-  },
-  onLoad() {
-    if (uni.getStorageSync(STORAGE_LOGGED_IN)) {
-      uni.switchTab({ url: '/pages/index/index' })
-    }
-  },
-  onUnload() {
-    this.clearTimer()
-  },
-  methods: {
-    clearTimer() {
-      if (this.timer) {
-        clearInterval(this.timer)
-        this.timer = null
-      }
-    },
-    onSendCode() {
-      if (this.countdown > 0) return
-      this.countdown = 60
-      this.clearTimer()
-      this.timer = setInterval(() => {
-        this.countdown -= 1
-        if (this.countdown <= 0) {
-          this.clearTimer()
-        }
-      }, 1000)
-    },
-    toggleAgree() {
-      this.agreed = !this.agreed
-    },
-    onLogin() {
-      if (!this.agreed) {
-        uni.showToast({ title: '请先勾选用户协议', icon: 'none' })
-        return
-      }
-      const p = String(this.phone || '').trim()
-      const c = String(this.code || '').trim()
-      if (p !== '12345600000') {
-        uni.showToast({ title: '手机号不正确', icon: 'none' })
-        return
-      }
-      if (c !== '123456') {
-        uni.showToast({ title: '验证码不正确', icon: 'none' })
-        return
-      }
-      uni.setStorageSync(STORAGE_LOGGED_IN, true)
-      uni.showToast({ title: '登录成功', icon: 'success' })
-      setTimeout(() => {
-        uni.switchTab({ url: '/pages/index/index' })
-      }, 400)
-    },
-    onCampusAuth() {
-      uni.showToast({ title: '校园认证即将开放', icon: 'none' })
-    }
+let phone = ref('12345600000')
+let code = ref('123456')
+let countdown = ref(0)
+let timer = null
+let agreed = ref(false)
+
+onLoad(() => {
+  if (uni.getStorageSync(STORAGE_LOGGED_IN)) {
+    uni.switchTab({ url: '/pages/index/index' })
   }
+})
+
+onUnload(() => {
+  clearTimer()
+})
+
+function clearTimer() {
+  if (timer) {
+    clearInterval(timer)
+    timer = null
+  }
+}
+
+function onSendCode() {
+  if (countdown.value > 0) return
+  countdown.value = 60
+  clearTimer()
+  timer = setInterval(() => {
+    countdown.value -= 1
+    if (countdown.value <= 0) {
+      clearTimer()
+    }
+  }, 1000)
+}
+
+function toggleAgree() {
+  agreed.value = !agreed.value
+}
+
+function onLogin() {
+  if (!agreed.value) {
+    uni.showToast({ title: '请先勾选用户协议', icon: 'none' })
+    return
+  }
+  const p = String(phone.value || '').trim()
+  const c = String(code.value || '').trim()
+  if (p !== '12345600000') {
+    uni.showToast({ title: '手机号不正确', icon: 'none' })
+    return
+  }
+  if (c !== '123456') {
+    uni.showToast({ title: '验证码不正确', icon: 'none' })
+    return
+  }
+  uni.setStorageSync(STORAGE_LOGGED_IN, true)
+  uni.showToast({ title: '登录成功', icon: 'success' })
+  setTimeout(() => {
+    uni.switchTab({ url: '/pages/index/index' })
+  }, 400)
+}
+
+function onCampusAuth() {
+  uni.showToast({ title: '校园认证即将开放', icon: 'none' })
 }
 </script>
 

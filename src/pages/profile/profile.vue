@@ -137,19 +137,13 @@
   </view>
 </template>
 
-<script>
-export default {
-  data() {
-    return {}
-  },
-  methods: {
-    onEditProfile() {
-      uni.showToast({ title: '编辑资料开发中', icon: 'none' })
-    },
-    onSettings() {
-      uni.showToast({ title: '账号设置开发中', icon: 'none' })
-    }
-  }
+<script setup>
+function onEditProfile() {
+  uni.showToast({ title: '编辑资料开发中', icon: 'none' })
+}
+
+function onSettings() {
+  uni.showToast({ title: '账号设置开发中', icon: 'none' })
 }
 </script>
 

@@ -147,25 +147,20 @@
   </view>
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      isRunning: false,
-      isCardExpanded: false
-    }
-  },
-  methods: {
-    toggleRun() {
-      this.isRunning = !this.isRunning
-    },
-    toggleCard() {
-      this.isCardExpanded = !this.isCardExpanded
-    },
-    goToTotalRun() {
-      uni.showToast({ title: '总运动详情页开发中', icon: 'none' })
-    }
-  }
+<script setup>
+let isRunning = ref(false)
+let isCardExpanded = ref(false)
+
+function toggleRun() {
+  isRunning.value = !isRunning.value
+}
+
+function toggleCard() {
+  isCardExpanded.value = !isCardExpanded.value
+}
+
+function goToTotalRun() {
+  uni.showToast({ title: '总运动详情页开发中', icon: 'none' })
 }
 </script>
 

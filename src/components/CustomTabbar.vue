@@ -13,39 +13,32 @@
   </view>
 </template>
 
-<script>
-export default {
-  props: {
-    currentIndex: {
-      type: Number,
-      default: 0
-    }
-  },
-  data() {
-    return {
-      tabList: [
-        { text: '首页', icon: 'icon-home', activeIcon: 'icon-home' },
-        { text: '校园跑', icon: 'icon-run', activeIcon: 'icon-run' },
-        { text: '低碳', icon: 'icon-leaf', activeIcon: 'icon-leaf' },
-        { text: '商城', icon: 'icon-shopping', activeIcon: 'icon-shopping' },
-        { text: '我的', icon: 'icon-account', activeIcon: 'icon-account' }
-      ]
-    }
-  },
-  methods: {
-    switchTab(index) {
-      const routes = [
-        '/pages/index/index',
-        '/pages/run/run',
-        '/pages/action/action',
-        '/pages/store/store',
-        '/pages/profile/profile'
-      ]
-      uni.switchTab({
-        url: routes[index]
-      })
-    }
+<script setup>
+defineProps({
+  currentIndex: {
+    type: Number,
+    default: 0
   }
+})
+
+const tabList = [
+  { text: '首页', icon: 'icon-home', activeIcon: 'icon-home' },
+  { text: '校园跑', icon: 'icon-run', activeIcon: 'icon-run' },
+  { text: '低碳', icon: 'icon-leaf', activeIcon: 'icon-leaf' },
+  { text: '商城', icon: 'icon-shopping', activeIcon: 'icon-shopping' },
+  { text: '我的', icon: 'icon-account', activeIcon: 'icon-account' }
+]
+
+const routes = [
+  '/pages/index/index',
+  '/pages/run/run',
+  '/pages/action/action',
+  '/pages/store/store',
+  '/pages/profile/profile'
+]
+
+function switchTab(index) {
+  uni.switchTab({ url: routes[index] })
 }
 </script>
 
