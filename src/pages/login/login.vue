@@ -36,13 +36,13 @@
             class="send-btn"
             :disabled="countdown > 0"
             hover-class="send-btn-hover"
-            @tap="onSendCode"
+            @click="onSendCode"
           >
             {{ countdown > 0 ? countdown + 's' : '发送验证码' }}
           </button>
         </view>
 
-        <button class="login-btn" hover-class="login-btn-hover" @tap="onLogin">
+        <button class="login-btn" hover-class="login-btn-hover" @click="onLogin">
           立即登录
         </button>
       </view>
@@ -56,7 +56,7 @@
         <text class="campus-desc">
           认证学生身份，解锁专属碳积分加成、校园竞赛及奖学金兑换资格。
         </text>
-        <view class="agree-row" @tap="toggleAgree">
+        <view class="agree-row" @click="toggleAgree">
           <view class="checkbox" :class="{ checked: agreed }">
             <text v-if="agreed" class="check-mark">✓</text>
           </view>
@@ -64,7 +64,7 @@
             我已阅读并同意《用户服务协议》与《隐私保护政策》
           </text>
         </view>
-        <button class="auth-btn" hover-class="auth-btn-hover" @tap="onCampusAuth">
+        <button class="auth-btn" hover-class="auth-btn-hover" @click="onCampusAuth">
           立即认证
         </button>
       </view>
@@ -73,8 +73,9 @@
 </template>
 
 <script setup>
-/** 登录态存储键：存在则跳过登录页 */
-const STORAGE_LOGGED_IN = 'CARBON_CAMPUS_LOGGED_IN'
+import { ref } from 'vue'
+import { onLoad, onUnload } from '@dcloudio/uni-app'
+import { STORAGE_LOGGED_IN } from '@/constants.js'
 
 let phone = ref('12345600000')
 let code = ref('123456')
@@ -84,7 +85,7 @@ let agreed = ref(false)
 
 onLoad(() => {
   if (uni.getStorageSync(STORAGE_LOGGED_IN)) {
-    uni.switchTab({ url: '/pages/index/index' })
+    uni.reLaunch({ url: '/pages/index/index' })
   }
 })
 
@@ -101,6 +102,12 @@ function clearTimer() {
 
 function onSendCode() {
   if (countdown.value > 0) return
+  const p = String(phone.value || '').trim()
+  if (!/^1\d{10}$/.test(p)) {
+    uni.showToast({ title: '请输入正确的手机号', icon: 'none' })
+    return
+  }
+  uni.showToast({ title: '验证码已发送', icon: 'success', duration: 1200 })
   countdown.value = 60
   clearTimer()
   timer = setInterval(() => {
@@ -133,7 +140,7 @@ function onLogin() {
   uni.setStorageSync(STORAGE_LOGGED_IN, true)
   uni.showToast({ title: '登录成功', icon: 'success' })
   setTimeout(() => {
-    uni.switchTab({ url: '/pages/index/index' })
+    uni.reLaunch({ url: '/pages/index/index' })
   }, 400)
 }
 

@@ -1,5 +1,6 @@
 <script setup>
-const STORAGE_LOGGED_IN = 'CARBON_CAMPUS_LOGGED_IN'
+import { onLaunch, onShow, onHide } from '@dcloudio/uni-app'
+import { STORAGE_LOGGED_IN } from './constants.js'
 
 onLaunch(() => {
   console.log('App Launch')

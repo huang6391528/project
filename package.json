@@ -3,12 +3,10 @@
   "version": "1.0.0",
   "description": "绿动校园 - 碳积分小程序",
   "scripts": {
-    "dev:h5": "node build-h5.js",
-    "build:h5": "node build-h5.js",
-    "dev:app": "node build-app.js",
-    "build:app": "node build-app.js",
-    "dev:mp-weixin": "node build-mp.js",
-    "build:mp-weixin": "node build-mp.js"
+    "dev:h5": "uni",
+    "build:h5": "uni build",
+    "dev:mp-weixin": "uni -p mp-weixin",
+    "build:mp-weixin": "uni build -p mp-weixin"
   },
   "devDependencies": {
     "@dcloudio/vite-plugin-uni": "3.0.0-alpha-5000120260211001",
@@ -16,7 +14,8 @@
   },
   "dependencies": {
     "@dcloudio/uni-app": "3.0.0-alpha-5000120260211001",
-    "@dcloudio/uni-mp-weixin": "3.0.0-alpha-5000120260211001",
+    "@dcloudio/uni-h5": "^3.0.0-alpha-5000120260211001",
+    "@dcloudio/uni-mp-weixin": "^3.0.0-alpha-5000120260211001",
     "vue": "^3.4.21"
   }
 }

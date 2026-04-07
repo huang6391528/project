@@ -148,6 +148,8 @@
 </template>
 
 <script setup>
+import { ref } from 'vue'
+
 let isRunning = ref(false)
 let isCardExpanded = ref(false)
 

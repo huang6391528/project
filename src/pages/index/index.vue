@@ -25,16 +25,16 @@
         <view class="user-detail">
           <text class="user-name">陈同学</text>
           <text class="user-school">复旦大学 · 经济学院</text>
-          <view class="user-points">
-            <text class="user-points-num">2,480</text>
-            <text class="user-points-unit">碳积分</text>
+          <view class="carbon-points">
+            <text class="carbon-points-num">2,480</text>
+            <text class="carbon-points-unit">碳积分</text>
           </view>
         </view>
       </view>
       <view class="tree-progress">
         <view class="progress-header">
           <view class="progress-title-area">
-            <text class="progress-points-big">2,480</text>
+            <text class="progress-points-big"></text>
             <text class="progress-title">树木守护进度</text>
           </view>
           <text class="progress-sub">已抵消 45.2kg CO₂</text>
@@ -236,22 +236,25 @@
   margin-top: 4rpx;
 }
 
-.user-points {
+.carbon-points {
   display: flex;
   align-items: baseline;
-  margin-top: 8rpx;
+  margin-top: 12rpx;
 }
 
-.user-points-num {
-  font-size: 36rpx;
-  font-weight: 800;
+.carbon-points-num {
+  font-size: 56rpx;
+  font-weight: 900;
   color: #fbbf24;
+  line-height: 1;
+  text-shadow: 0 4rpx 12rpx rgba(0,0,0,0.15);
 }
 
-.user-points-unit {
-  font-size: 22rpx;
-  color: rgba(255,255,255,0.85);
-  margin-left: 6rpx;
+.carbon-points-unit {
+  font-size: 28rpx;
+  color: rgba(255,255,255,0.9);
+  margin-left: 10rpx;
+  font-weight: 600;
 }
 
 /* Tree Progress */
