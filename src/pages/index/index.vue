@@ -21,7 +21,7 @@
     <!-- Personal Card -->
     <view class="personal-card">
       <view class="user-info">
-        <image class="avatar" src="https://modao.cc/agent-py/media/generated_images/2026-04-05/d2b36a7ca8fc42c5a981628080a05ba2.jpg" mode="aspectFill"></image>
+        <image class="avatar" src="/static/tabbar/profile.jpg" mode="aspectFill"></image>
         <view class="user-detail">
           <text class="user-name">陈同学</text>
           <text class="user-school">复旦大学 · 经济学院</text>

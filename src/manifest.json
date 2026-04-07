@@ -45,5 +45,21 @@
   "uniStatistics": {
     "enable": false
   },
+  "h5": {
+    "devServer": {
+      "port": 5173,
+      "disableHostCheck": true
+    },
+    "permissions": {
+      "geolocation": true
+    },
+    "sdkConfigs": {
+      "maps": {
+        "qqmap": {
+          "key": "34FBZ-YD7K7-RVNXR-PZA3I-4TN7O-ATBSQ"
+        }
+      }
+    }
+  },
   "vueVersion": "3"
 }

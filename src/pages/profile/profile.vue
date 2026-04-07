@@ -4,7 +4,7 @@
     <view class="profile-header">
       <view class="profile-info">
         <view class="avatar-wrapper">
-          <image class="avatar" src="/static/avatar.png" mode="aspectFill"></image>
+          <image class="avatar" src="/static/tabbar/profile.jpg" mode="aspectFill"></image>
           <view class="avatar-badge">
             <text class="iconfont icon-star"></text>
           </view>
