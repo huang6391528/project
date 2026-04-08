@@ -2,8 +2,8 @@
   <view class="page-run">
     <!-- Top Tabs -->
     <view class="tab-bar">
-      <view class="tab-item tab-active">自由跑</view>
-      <view class="tab-item">晨跑计划</view>
+      <view class="tab-item tab-active">晨跑计划</view>
+      <view class="tab-item">自由跑</view>
       <view class="tab-item">马拉松训练</view>
     </view>
 
@@ -181,10 +181,16 @@
             v-for="day in daysInMonth"
             :key="'cur-' + day"
             class="day-cell"
-            :class="getDayClass(day)"
+            :class="getDayState(day).cls"
+            :style="getDayCellStyle(day)"
             @tap="onDayTap(day)"
           >
             <text class="day-num">{{ day }}</text>
+            <view
+              v-for="(badge, idx) in getDayBadges(day)"
+              :key="idx"
+              :class="badge === 'marathon' ? 'day-dot marathon-badge' : ''"
+            ></view>
           </view>
         </view>
 
@@ -192,11 +198,15 @@
         <view class="calendar-legend">
           <view class="legend-item">
             <view class="legend-dot green"></view>
-            <text class="legend-text">晨跑</text>
+            <text class="legend-text">自由跑</text>
           </view>
           <view class="legend-item">
             <view class="legend-dot dark-green"></view>
-            <text class="legend-text">自由跑/马拉松</text>
+            <text class="legend-text">晨跑</text>
+          </view>
+          <view class="legend-item">
+            <view class="legend-dot orange"></view>
+            <text class="legend-text">马拉松训练</text>
           </view>
           <view class="legend-item">
             <view class="legend-dot future"></view>
@@ -227,28 +237,44 @@ import { ref, computed, onMounted, onUnmounted } from 'vue'
 // ==========================================
 // 模块零：地图配置（学校主定位 + 体育场标记）
 // ==========================================
-const schoolLat = 26.4459
-const schoolLng = 106.6592
-const stadiumLat = 26.4486
-const stadiumLng = 106.6558
+const schoolLat = 26.4451
+const schoolLng = 106.6589
 
 const markers = [
   {
     id: 1,
-    latitude: stadiumLat,
-    longitude: stadiumLng,
-    title: '体育场',
+    latitude: 26.4398,
+    longitude: 106.6632,
+    title: '体育馆A',
     iconPath: '/static/marker.png',
     width: 30,
     height: 30,
-    callout: { content: '体育场', color: '#ffffff', fontSize: 12, borderRadius: 4, padding: 6, display: 'ALWAYS', bgColor: '#10b981' }
+    callout: { content: '体育馆A', color: '#ffffff', fontSize: 12, borderRadius: 4, padding: 6, display: 'ALWAYS', bgColor: '#10b981' }
+  },
+  {
+    id: 2,
+    latitude: 26.4518,
+    longitude: 106.6594,
+    title: '体育馆B',
+    iconPath: '/static/marker.png',
+    width: 30,
+    height: 30,
+    callout: { content: '体育馆B', color: '#ffffff', fontSize: 12, borderRadius: 4, padding: 6, display: 'ALWAYS', bgColor: '#10b981' }
   }
 ]
 
+// 轨迹线颜色映射（按运动类型）
+const routeColorMap = {
+  morning: '#10b981', // 晨跑-绿色
+  free: '#047857',    // 自由跑-深绿
+  marathon: '#f97316' // 马拉松-橙色
+}
+// 当前选中的运动类型（默认晨跑）
+const currentRunType = ref('morning')
 const routePolyline = ref([
   {
     points: [],
-    color: '#10b981',
+    color: routeColorMap[currentRunType.value],
     width: 6,
     dottedLine: false,
     arrowLine: false
@@ -317,7 +343,7 @@ function endRun() {
 
 const TODAY_YEAR = 2026
 const TODAY_MONTH = 4
-const TODAY_DAY = 7
+const TODAY_DAY = 8
 
 const calYear = ref(TODAY_YEAR)
 const calMonth = ref(TODAY_MONTH)
@@ -328,19 +354,39 @@ const pickerStart = '2026-01'
 const pickerEnd = '2026-04'
 const pickerDate = computed(() => `${calYear.value}-${String(calMonth.value).padStart(2, '0')}`)
 
-// 打卡记录数据
+// 打卡记录数据 - 扩展类型：morning(晨跑)/free(自由跑)/marathon(马拉松)
 const runRecords = ref({
-  '2026-4': { 1: 'completed', 2: 'completed', 3: 'active', 8: 'active', 10: 'completed', 15: 'active' },
-  '2026-3': { 2: 'completed', 5: 'completed', 12: 'active', 18: 'completed', 25: 'active', 28: 'completed' },
-  '2026-2': { 3: 'completed', 7: 'active', 14: 'completed', 20: 'active', 27: 'completed' },
-  '2026-1': { 5: 'completed', 10: 'active', 15: 'completed', 22: 'active', 29: 'completed' },
-  '2026-5': { 3: 'active', 10: 'completed' },
-  '2026-6': { 1: 'active', 5: 'completed', 15: 'active' },
+  '2026-4': {
+    1: ['free', 'morning'],
+    2: 'morning',
+    3: ['free', 'morning', 'marathon'],
+    7: 'marathon',
+    8: ['free', 'marathon']
+  },
+  '2026-3': { 
+    2: 'morning', 5: 'free', 12: 'free', 18: 'marathon', 25: 'marathon', 28: 'morning' 
+  },
+  '2026-2': { 
+    3: 'morning', 7: 'free', 14: 'marathon', 20: 'free', 27: 'morning' 
+  },
+  '2026-1': { 
+    5: 'morning', 10: 'free', 15: 'marathon', 22: 'free', 29: 'morning' 
+  },
+  '2026-5': { 3: 'free', 10: 'marathon' },
+  '2026-6': { 1: 'free', 5: 'marathon', 15: 'free' },
 })
 
+// 当月「有任意跑步打卡」的天数：一天无论几种类型都只算 1 天（与日历格子一致）
 const completedDays = computed(() => {
-  const key = `${calYear.value}-${calMonth.value}`
-  return Object.keys(runRecords.value[key] || {}).length
+  const dim = new Date(calYear.value, calMonth.value, 0).getDate()
+  let n = 0
+  for (let d = 1; d <= dim; d++) {
+    const s = getDayStatus(d)
+    if (s == null || s === '') continue
+    if (Array.isArray(s) && s.length === 0) continue
+    n++
+  }
+  return n
 })
 
 const displayMonthText = computed(() => {
@@ -359,6 +405,56 @@ const firstDayWeekday = computed(() => {
 
 const prevMonthPadding = computed(() => firstDayWeekday.value - 1)
 
+// ==========================================
+// 状态设计（统一、清晰、可扩展）
+// ==========================================
+const DAY_STYLES = {
+  empty:   { cls: 'empty',   bg: '',                        badge: false },
+  future:  { cls: 'future',  bg: '',                        badge: false },
+  today:   { cls: 'today',   bg: '',                        badge: false },
+  morning: { cls: 'morning', bg: 'background-color:#d1fae5;', badge: false }, // 纯浅绿矩形
+  free:    { cls: 'free',    bg: 'background-color:#d1fae5;', badge: false }, // 浅绿+深绿框
+  marathon:{ cls: 'marathon',bg: '',                        badge: true  }, // 无背景+橙点
+}
+
+// 多打卡优先级：自由跑 > 晨跑 > 马拉松
+const TYPE_PRIORITY = ['free', 'morning', 'marathon']
+
+// 单一状态入口：给定一个或多个打卡类型，返回最优最终状态
+function getDayState(day) {
+  const status = getDayStatus(day)
+  const future = isFutureDay(day)
+  const today  = isToday(day)
+
+  if (future) return DAY_STYLES.future
+  if (today)  return DAY_STYLES.today
+  if (!status) return DAY_STYLES.empty
+  // 有打卡时，背景/边框样式取优先级最高的那个
+  const types = Array.isArray(status) ? status : [status]
+  const top = TYPE_PRIORITY.find(t => types.includes(t)) || 'morning'
+  return DAY_STYLES[top]
+}
+
+// 单元格背景/边框样式（只取最高优先级的背景）
+function getDayCellStyle(day) {
+  const state = getDayState(day)
+  if (state.cls === 'empty') return ''
+  if (state.cls === 'future') return ''
+  if (state.cls === 'today')  return 'border: 4rpx solid #065f46;'
+  return state.bg
+}
+
+// 返回当天打卡类型数组（用于渲染多个徽章）
+function getDayBadges(day) {
+  const status = getDayStatus(day)
+  if (!status) return []
+  return Array.isArray(status) ? status : [status]
+}
+
+// ==========================================
+// 日计算辅助
+// ==========================================
+
 function getPrevMonthDay(n) {
   const prevM = calMonth.value === 1 ? 12 : calMonth.value - 1
   const prevY = calMonth.value === 1 ? calYear.value - 1 : calYear.value
@@ -368,7 +464,11 @@ function getPrevMonthDay(n) {
 
 function getDayStatus(day) {
   const key = `${calYear.value}-${calMonth.value}`
-  return runRecords.value[key]?.[day] || null
+  const val = runRecords.value[key]?.[day]
+  if (!val) return null
+  // 如果是数组说明当天有多条打卡，取第一个作为主样式（可按优先级调整顺序）
+  if (Array.isArray(val)) return val
+  return val
 }
 
 function isFutureDay(day) {
@@ -382,29 +482,32 @@ function isToday(day) {
   return calYear.value === TODAY_YEAR && calMonth.value === TODAY_MONTH && day === TODAY_DAY
 }
 
-function getDayClass(day) {
-  const status = getDayStatus(day)
-  const future = isFutureDay(day)
-  const today = isToday(day)
-  if (future) return 'future'
-  if (today) return 'today'
-  return 'empty'
-}
-
 function onDayTap(day) {
   if (isFutureDay(day)) {
     uni.showToast({ title: '还未到这一天哦', icon: 'none' })
     return
   }
-  const status = getDayStatus(day)
-  if (status) {
-    uni.showToast({ title: `已完成${status === 'active' ? '晨跑' : '打卡'}`, icon: 'none' })
-  } else {
-    const key = `${calYear.value}-${calMonth.value}`
-    if (!runRecords.value[key]) runRecords.value[key] = {}
-    runRecords.value[key][day] = 'completed'
-    uni.showToast({ title: '打卡成功', icon: 'success' })
+  const state = getDayState(day)
+  // 有打卡记录 → 只提示，不修改
+  if (state !== DAY_STYLES.empty && state !== DAY_STYLES.future && state !== DAY_STYLES.today) {
+    const typeText = { morning: '晨跑', free: '自由跑', marathon: '马拉松训练' }
+    const types    = Array.isArray(getDayStatus(day)) ? getDayStatus(day) : [getDayStatus(day)]
+    const label    = types.map(t => typeText[t]).join('、') || '打卡'
+    uni.showToast({ title: `已完成${label}`, icon: 'none' })
+    return
   }
+  // 无打卡 → 存入（已有则合并，保持数组）
+  const key = `${calYear.value}-${calMonth.value}`
+  if (!runRecords.value[key]) runRecords.value[key] = {}
+  const existing = runRecords.value[key][day]
+  if (existing) {
+    const arr = Array.isArray(existing) ? existing : [existing]
+    if (!arr.includes('morning')) arr.push('morning')
+    runRecords.value[key][day] = arr
+  } else {
+    runRecords.value[key][day] = 'morning'
+  }
+  uni.showToast({ title: '晨跑打卡成功', icon: 'success' })
 }
 
 // 月份切换
@@ -1050,28 +1153,36 @@ onUnmounted(() => {
   color: #e5e7eb;
 }
 
-.day-cell.active {
+/* 自由跑 - 深绿色矩形边框 + 荧光光晕 */
+.day-cell.free {
+  background-color: transparent;
+  color: #065f46;
+  border: 4rpx solid #065f46;
+  box-shadow: 0 0 16rpx rgba(5, 150, 105, 0.7), 0 0 32rpx rgba(5, 150, 105, 0.4);
+}
+
+/* 晨跑 - 浅绿色全矩形 */
+.day-cell.morning {
   background-color: #d1fae5;
   color: #059669;
   box-shadow: 0 4rpx 12rpx rgba(16, 185, 129, 0.15);
 }
 
-.day-cell.completed {
-  background-color: #10b981;
-  color: #fff;
-  box-shadow: 0 8rpx 16rpx rgba(16, 185, 129, 0.30);
+/* 马拉松 - 右上角橙色点，无背景 */
+.day-cell.marathon {
+  box-shadow: none;
 }
 
 .day-cell.today {
-  background-color: #10b981;
-  color: #fff;
-  box-shadow: 0 0 0 4rpx #a7f3d0, 0 8rpx 16rpx rgba(16, 185, 129, 0.30);
+  background-color: transparent;
+  color: #065f46;
+  border: 4rpx solid #065f46;
+  box-shadow: 0 0 16rpx rgba(5, 150, 105, 0.7), 0 0 32rpx rgba(5, 150, 105, 0.4);
 }
 
 .day-dot {
   position: absolute;
   top: 4rpx;
-  right: 4rpx;
   width: 14rpx;
   height: 14rpx;
   background-color: #f97316;
@@ -1079,11 +1190,30 @@ onUnmounted(() => {
   border: 2rpx solid #fff;
 }
 
+/* 多个徽章横向错开排列 */
+.day-cell > .day-dot:nth-child(2) { right: 4rpx; }
+.day-cell > .day-dot:nth-child(3) { right: 22rpx; }
+.day-cell > .day-dot:nth-child(4) { right: 40rpx; }
+.day-cell > .day-dot:nth-child(5) { right: 58rpx; }
+
 .day-dot.orange {
   background-color: #f97316;
 }
 
-/* 图例 */
+/* 马拉松角标：橙色小圆，位于格子右上角，与晨跑/自由跑背景不冲突 */
+.day-dot.marathon-badge {
+  position: absolute;
+  top: 4rpx;
+  width: 16rpx;
+  height: 16rpx;
+  background-color: #f97316;
+  border-radius: 50%;
+  border: 2rpx solid #fff;
+  box-shadow: 0 2rpx 6rpx rgba(249, 115, 22, 0.40);
+  z-index: 2;
+}
+
+/* 图例 - 新增橙色（马拉松） */
 .calendar-legend {
   display: flex;
   gap: 24rpx;
@@ -1106,13 +1236,22 @@ onUnmounted(() => {
   flex-shrink: 0;
 }
 
+/* 自由跑 - 深绿边框 + 荧光光晕 */
 .legend-dot.green {
-  background-color: #d1fae5;
-  border: 2rpx solid #10b981;
+  background-color: transparent;
+  border: 3rpx solid #065f46;
+  box-shadow: 0 0 16rpx rgba(5, 150, 105, 0.7), 0 0 32rpx rgba(5, 150, 105, 0.4);
 }
 
+/* 晨跑 - 浅绿全矩形 */
 .legend-dot.dark-green {
-  background-color: #10b981;
+  background-color: #d1fae5;
+  border: none;
+}
+
+/* 马拉松-橙色 */
+.legend-dot.orange {
+  background-color: #f97316;
 }
 
 .legend-dot.future {

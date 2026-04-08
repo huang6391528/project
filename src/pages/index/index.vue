@@ -1,24 +1,34 @@
 <template>
   <view class="page-home">
-    <!-- Status Bar -->
-    <view class="status-bar">
-      <text class="status-time">2026-04-05 09:42</text>
-      <view class="status-icons">
-        <text class="iconfont icon-signal"></text>
-        <text class="iconfont icon-wifi"></text>
-        <text class="iconfont icon-battery"></text>
+    <!-- 侧边栏遮罩层 -->
+    <view v-if="sidebarShow" class="sidebar-mask" @click="toggleSidebar"></view>
+    
+    <!-- 侧边栏容器 - 宽度已调整为1/3屏宽 -->
+    <view class="sidebar" :class="{ 'sidebar-show': sidebarShow }">
+      <view class="sidebar-content">
+        <text class="sidebar-text">侧边栏待补充</text>
       </view>
     </view>
 
-    <!-- Header Stats -->
+    <!-- Header Stats - 左侧三条杠，右侧扫码+铃铛 -->
     <view class="header-stats">
-      <view class="bell-icon">
-        <text class="iconfont icon-bell"></text>
-        <view class="bell-dot"></view>
+      <view class="header-left">
+        <view class="sidebar-trigger-btn" @click="toggleSidebar">
+          <text class="icon-btn">☰</text>
+        </view>
+      </view>
+      <view class="header-right">
+        <view class="scan-btn" @click="handleScan">
+          <text class="icon-btn">🔍</text>
+        </view>
+        <view class="bell-icon">
+          <text class="icon-btn">🔔</text>
+          <view class="bell-dot"></view>
+        </view>
       </view>
     </view>
 
-    <!-- Personal Card -->
+    <!-- 个人卡片 -->
     <view class="personal-card">
       <view class="user-info">
         <image class="avatar" src="/static/tabbar/profile.jpg" mode="aspectFill"></image>
@@ -45,13 +55,13 @@
         <view class="progress-footer">
           <view class="tree-count">
             <view class="tree-anim">
-              <text class="iconfont icon-tree"></text>
+              <text>🌳</text>
             </view>
             <text class="count-num">3.2 <text class="count-unit">棵</text></text>
           </view>
           <view class="fire-streak">
             <view class="fire-anim">
-              <text class="iconfont icon-fire"></text>
+              <text>🔥</text>
             </view>
             <text class="streak-text">连续打卡 <text class="streak-num">12</text> 天</text>
           </view>
@@ -59,62 +69,62 @@
       </view>
     </view>
 
-    <!-- Three Columns Stats -->
+    <!-- 统计卡片 -->
     <view class="stats-grid">
       <view class="stat-item stat-blue">
-        <text class="iconfont icon-run"></text>
+        <text class="icon-emoji">🏃</text>
         <text class="stat-label">运动减碳</text>
         <text class="stat-value stat-blue-text">+1.2kg</text>
       </view>
       <view class="stat-item stat-orange">
-        <text class="iconfont icon-home"></text>
+        <text class="icon-emoji">🏠</text>
         <text class="stat-label">生活减碳</text>
         <text class="stat-value stat-orange-text">+0.8kg</text>
       </view>
       <view class="stat-item stat-purple">
-        <text class="iconfont icon-trophy"></text>
+        <text class="icon-emoji">🏆</text>
         <text class="stat-label">全校排名</text>
         <text class="stat-value stat-purple-text">第28名</text>
       </view>
     </view>
 
-    <!-- Check-in Grid -->
+    <!-- 快捷打卡入口 -->
     <view class="section-title">
-      <text class="iconfont icon-calendar-check"></text>
+      <text class="icon-emoji">📅</text>
       <text>快捷打卡入口</text>
     </view>
     <view class="action-grid">
       <view class="action-item">
-        <text class="iconfont icon-flash"></text>
+        <text class="icon-emoji">⚡</text>
         <text class="action-text">校园跑</text>
       </view>
       <view class="action-item opacity-60">
-        <text class="iconfont icon-bike"></text>
+        <text class="icon-emoji">🚲</text>
         <text class="action-text">绿色出行</text>
       </view>
       <view class="action-item">
-        <text class="iconfont icon-org"></text>
+        <text class="icon-emoji">🥗</text>
         <text class="action-text">低碳饮食</text>
       </view>
       <view class="action-item">
-        <text class="iconfont icon-package"></text>
+        <text class="icon-emoji">📦</text>
         <text class="action-text">减外卖</text>
       </view>
       <view class="action-item action-highlight">
-        <text class="iconfont icon-selfie"></text>
+        <text class="icon-emoji">📸</text>
         <text class="action-text action-text-highlight">旧物利用</text>
       </view>
       <view class="action-item">
-        <text class="iconfont icon-walk"></text>
+        <text class="icon-emoji">🚶</text>
         <text class="action-text">步行计步</text>
       </view>
     </view>
 
-    <!-- Daily Task -->
+    <!-- 今日任务 -->
     <view class="daily-task">
       <view class="task-left">
         <view class="task-icon">
-          <text class="iconfont icon-check-circle"></text>
+          <text class="icon-emoji task-check">✅</text>
         </view>
         <view class="task-info">
           <text class="task-title">今日任务进度</text>
@@ -124,7 +134,11 @@
       <button class="task-btn">去完成</button>
     </view>
 
-    <!-- Banner -->
+    <!-- 活动 Banner -->
+    <view class="section-title">
+      <text class="icon-emoji">📅</text>
+      <text>活动</text>
+    </view>
     <view class="banner">
       <image class="banner-img" src="https://modao.cc/agent-py/media/generated_images/2026-04-05/b9c8194c51e2407997135fdc0513e984.jpg" mode="aspectFill"></image>
       <view class="banner-overlay">
@@ -133,18 +147,52 @@
       </view>
     </view>
 
-    <!-- Knowledge Section -->
+    <!-- 环保小贴士 -->
     <view class="knowledge-section">
       <view class="knowledge-title">
-        <text class="iconfont icon-lightbulb"></text>
+        <text class="icon-emoji">💡</text>
         <text>环保小贴士</text>
       </view>
       <text class="knowledge-text">"回收一吨废纸，可造好纸850公斤，节省木材3立方米，同时减少污染排放。"</text>
+    </view>
+
+    <!-- 二维码弹窗 -->
+    <view v-if="showQrModal" class="qr-modal-mask" @click="closeQrModal">
+      <view class="qr-modal-container" @click.stop>
+        <view class="qr-modal-header">
+          <text class="qr-modal-title">扫描二维码</text>
+          <view class="qr-close-btn" @click="closeQrModal">✕</view>
+        </view>
+        <view class="qr-code-wrapper">
+          <image class="qr-code-image" mode="widthFix" :src="qrCodeUrl"></image>
+          <text class="qr-tip">请使用微信/支付宝扫一扫</text>
+        </view>
+      </view>
     </view>
   </view>
 </template>
 
 <script setup>
+import { ref } from 'vue'
+
+const sidebarShow = ref(false)
+const showQrModal = ref(false)
+
+const qrCodeUrl = ref('https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://example.com/carbon-campus')
+
+const toggleSidebar = () => {
+  sidebarShow.value = !sidebarShow.value
+  console.log('侧边栏状态:', sidebarShow.value)
+}
+
+const handleScan = () => {
+  console.log('点击了扫码按钮，显示二维码')
+  showQrModal.value = true
+}
+
+const closeQrModal = () => {
+  showQrModal.value = false
+}
 </script>
 
 <style scoped>
@@ -153,43 +201,103 @@
   padding-bottom: 120rpx;
   background-color: #ffffff;
   min-height: 100vh;
+  position: relative;
+  z-index: 1;
 }
 
-/* Status Bar */
-.status-bar {
-  height: 80rpx;
+/* 侧边栏遮罩层 */
+.sidebar-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 99;
+  transition: opacity 0.3s ease;
+}
+
+/* 侧边栏 - 宽度已调整为不超过页面1/3 */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 33.33vw;        /* 修改为1/3屏宽 */
+  max-width: 300rpx;     /* 可选，限制最大宽度 */
+  height: 100vh;
+  background-color: #fff;
+  z-index: 100;
+  transform: translateX(-100%);
+  transition: transform 0.3s ease;
+  padding: 40rpx 20rpx;  /* 减小左右内边距 */
+  box-sizing: border-box;
+}
+
+.sidebar-show {
+  transform: translateX(0);
+}
+
+.sidebar-content {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 0 12rpx;
-  font-size: 24rpx;
+  justify-content: center;
+  height: 100%;
+  word-break: break-word;
+  text-align: center;
+}
+
+.sidebar-text {
+  font-size: 28rpx;     /* 稍微缩小字体 */
   color: #666;
 }
 
-.status-icons {
-  display: flex;
-  align-items: center;
-  gap: 8rpx;
+/* 通用 Emoji 图标样式 */
+.icon-emoji {
+  font-size: 48rpx;
+  display: inline-block;
+  line-height: 1;
 }
 
-/* Header Stats */
+/* Header 按钮样式 */
 .header-stats {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   align-items: center;
   margin-top: 16rpx;
+  position: relative;
+  z-index: 10;
 }
 
+.header-left,
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+}
+
+.sidebar-trigger-btn,
+.scan-btn,
 .bell-icon {
+  width: 80rpx;
+  height: 80rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background-color: #f5f5f5;
+  cursor: pointer;
   position: relative;
+}
+
+.icon-btn {
   font-size: 48rpx;
   color: #666;
 }
 
 .bell-dot {
   position: absolute;
-  top: 0;
-  right: 0;
+  top: 10rpx;
+  right: 10rpx;
   width: 16rpx;
   height: 16rpx;
   background-color: #ef4444;
@@ -197,7 +305,7 @@
   border: 2rpx solid #fff;
 }
 
-/* Personal Card */
+/* 个人卡片 */
 .personal-card {
   margin-top: 48rpx;
   background: linear-gradient(135deg, #10b981, #059669);
@@ -257,7 +365,7 @@
   font-weight: 600;
 }
 
-/* Tree Progress */
+/* 树木进度 */
 .tree-progress {
   margin-top: 48rpx;
   background-color: rgba(255,255,255,0.2);
@@ -323,6 +431,7 @@
 
 .tree-anim {
   animation: tree-sway 3s ease-in-out infinite;
+  font-size: 40rpx;
 }
 
 .count-num {
@@ -344,6 +453,7 @@
 
 .fire-anim {
   animation: fire-flicker 1s ease-in-out infinite;
+  font-size: 40rpx;
 }
 
 .streak-text {
@@ -356,7 +466,7 @@
   font-weight: bold;
 }
 
-/* Stats Grid */
+/* 统计卡片 */
 .stats-grid {
   display: flex;
   justify-content: space-between;
@@ -404,7 +514,11 @@
 .stat-orange-text { color: #c2410c; }
 .stat-purple-text { color: #7c3aed; }
 
-/* Section Title */
+.stat-item .icon-emoji {
+  font-size: 40rpx;
+}
+
+/* 分区标题 */
 .section-title {
   margin-top: 48rpx;
   margin-bottom: 24rpx;
@@ -413,22 +527,26 @@
   color: #374151;
   display: flex;
   align-items: center;
+  gap: 12rpx;
 }
 
-/* Action Grid */
+/* 快捷打卡网格 */
 .action-grid {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   gap: 24rpx;
 }
 
 .action-item {
-  width: calc(33.333% - 16rpx);
   text-align: center;
   padding: 24rpx 12rpx;
   background-color: #f9fafb;
   border: 2rpx solid #f3f4f6;
   border-radius: 24rpx;
+}
+
+.action-item .icon-emoji {
+  font-size: 48rpx;
 }
 
 .action-text {
@@ -452,7 +570,7 @@
   opacity: 0.6;
 }
 
-/* Daily Task */
+/* 今日任务 */
 .daily-task {
   margin-top: 48rpx;
   display: flex;
@@ -478,6 +596,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.task-icon .icon-emoji {
+  font-size: 56rpx;
 }
 
 .task-info {
@@ -548,7 +670,7 @@
   margin-top: 8rpx;
 }
 
-/* Knowledge Section */
+/* 环保小贴士 */
 .knowledge-section {
   background-color: #f9fafb;
   border-radius: 32rpx;
@@ -562,6 +684,7 @@
   color: #374151;
   display: flex;
   align-items: center;
+  gap: 12rpx;
   margin-bottom: 16rpx;
 }
 
@@ -570,5 +693,92 @@
   color: #6b7280;
   line-height: 1.6;
   font-style: italic;
+}
+
+/* 二维码弹窗 */
+.qr-modal-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 101;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.qr-modal-container {
+  width: 500rpx;
+  background-color: #fff;
+  border-radius: 32rpx;
+  overflow: hidden;
+  animation: fadeInUp 0.2s ease;
+}
+
+.qr-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 30rpx 30rpx 0 30rpx;
+}
+
+.qr-modal-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.qr-close-btn {
+  width: 48rpx;
+  height: 48rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40rpx;
+  color: #999;
+  cursor: pointer;
+}
+
+.qr-code-wrapper {
+  padding: 40rpx 30rpx 50rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.qr-code-image {
+  width: 280rpx;
+  height: 280rpx;
+  border-radius: 16rpx;
+}
+
+.qr-tip {
+  margin-top: 24rpx;
+  font-size: 24rpx;
+  color: #666;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 动画 */
+@keyframes tree-sway {
+  0%, 100% { transform: rotate(-5deg); }
+  50% { transform: rotate(5deg); }
+}
+
+@keyframes fire-flicker {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.1); }
 }
 </style>

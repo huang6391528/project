@@ -121,6 +121,14 @@
 .icon-runner:before { content: "🏃"; }
 /* 右箭头图标 */
 .icon-chevron-right:before { content: "›"; }
+/* 左箭头图标 */
+.icon-chevron-left:before { content: "‹"; }
+/* 下箭头图标 */
+.icon-chevron-down:before { content: "⌄"; }
+/* 菜单图标 */
+.icon-menu:before { content: "☰"; }
+/* 扫码图标 */
+.icon-scan:before { content: "📷"; }
 /* 编辑图标 */
 .icon-edit:before { content: "✏️"; }
 /* 帮助圆形图标 */
