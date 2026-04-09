@@ -5,9 +5,87 @@
     
     <!-- 侧边栏容器 - 宽度已调整为1/3屏宽 -->
     <view class="sidebar" :class="{ 'sidebar-show': sidebarShow }">
-      <view class="sidebar-content">
-        <text class="sidebar-text">侧边栏待补充</text>
+      <!-- 用户资料区 -->
+      <view class="sidebar-profile">
+        <view class="sidebar-profile-main">
+          <image class="sidebar-avatar" src="/static/tabbar/profile.jpg" mode="aspectFill"></image>
+          <view class="sidebar-profile-info">
+            <text class="sidebar-name">陈同学</text>
+            <text class="sidebar-meta">经济学院</text>
+            <text class="sidebar-class">2023级经济一班</text>
+          </view>
+        </view>
+        <view class="sidebar-follow-row">
+          <view class="follow-item">
+            <text class="follow-num">12</text>
+            <text class="follow-label">关注</text>
+          </view>
+          <view class="follow-divider"></view>
+          <view class="follow-item">
+            <text class="follow-num">38</text>
+            <text class="follow-label">粉丝</text>
+          </view>
+        </view>
       </view>
+
+      <!-- 菜单列表（可滚动） -->
+      <scroll-view class="sidebar-menu" scroll-y>
+        <!-- 可折叠：已加入班级 -->
+        <view class="menu-group">
+          <view class="menu-item parent-item" @click="toggleJoinedClass">
+            <text class="menu-icon">🏫</text>
+            <text class="menu-label">已加入班级</text>
+            <text class="menu-arrow">{{ joinedClassExpanded ? '▼' : '▶' }}</text>
+          </view>
+          <view v-if="joinedClassExpanded" class="sub-menu">
+            <view class="menu-item sub-item" @click.stop="navigateTo('/pages/class-list/class-list?type=major')">
+              <text class="menu-icon">📘</text>
+              <text class="menu-label">专业班级</text>
+            </view>
+            <view class="menu-item sub-item" @click.stop="navigateTo('/pages/class-list/class-list?type=course')">
+              <text class="menu-icon">📗</text>
+              <text class="menu-label">课程班级</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 可折叠：我的打卡团 -->
+        <view class="menu-group">
+          <view class="menu-item parent-item" @click="toggleCheckinGroup">
+            <text class="menu-icon">🤝</text>
+            <text class="menu-label">我的打卡团</text>
+            <text class="menu-arrow">{{ checkinGroupExpanded ? '▼' : '▶' }}</text>
+          </view>
+          <view v-if="checkinGroupExpanded" class="sub-menu">
+            <view class="menu-item sub-item" @click.stop="navigateTo('/pages/checkin-group/checkin-group?status=joined')">
+              <text class="menu-icon">✅</text>
+              <text class="menu-label">已加入</text>
+            </view>
+            <view class="menu-item sub-item" @click.stop="navigateTo('/pages/checkin-group/checkin-group?status=pending')">
+              <text class="menu-icon">❌</text>
+              <text class="menu-label">未通过</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 直接入口 -->
+        <view class="menu-item direct-item" @click="navigateTo('/pages/message/message')">
+          <text class="menu-icon">💬</text>
+          <text class="menu-label">消息</text>
+        </view>
+        <view class="menu-item direct-item" @click="navigateTo('/pages/friends/friends')">
+          <text class="menu-icon">❤️</text>
+          <text class="menu-label">关注好友</text>
+        </view>
+        <view class="menu-item direct-item" @click="navigateTo('/pages/moments/moments')">
+          <text class="menu-icon">📝</text>
+          <text class="menu-label">我的动态</text>
+        </view>
+        <view class="menu-item direct-item" @click="navigateTo('/pages/low-carbon-circle/low-carbon-circle')">
+          <text class="menu-icon">🌿</text>
+          <text class="menu-label">低碳圈</text>
+        </view>
+      </scroll-view>
     </view>
 
     <!-- Header Stats - 左侧三条杠，右侧扫码+铃铛 -->
@@ -176,6 +254,8 @@
 import { ref } from 'vue'
 
 const sidebarShow = ref(false)
+const joinedClassExpanded = ref(false)
+const checkinGroupExpanded = ref(false)
 const showQrModal = ref(false)
 
 const qrCodeUrl = ref('https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://example.com/carbon-campus')
@@ -183,6 +263,19 @@ const qrCodeUrl = ref('https://api.qrserver.com/v1/create-qr-code/?size=200x200&
 const toggleSidebar = () => {
   sidebarShow.value = !sidebarShow.value
   console.log('侧边栏状态:', sidebarShow.value)
+}
+
+const toggleJoinedClass = () => {
+  joinedClassExpanded.value = !joinedClassExpanded.value
+}
+
+const toggleCheckinGroup = () => {
+  checkinGroupExpanded.value = !checkinGroupExpanded.value
+}
+
+const navigateTo = (url) => {
+  sidebarShow.value = false
+  uni.navigateTo({ url })
 }
 
 const handleScan = () => {
@@ -217,38 +310,146 @@ const closeQrModal = () => {
   transition: opacity 0.3s ease;
 }
 
-/* 侧边栏 - 宽度已调整为不超过页面1/3 */
+/* 侧边栏容器 */
 .sidebar {
   position: fixed;
   top: 0;
   left: 0;
-  width: 33.33vw;        /* 修改为1/3屏宽 */
-  max-width: 300rpx;     /* 可选，限制最大宽度 */
+  width: 33.33vw;
+  max-width: 320rpx;
   height: 100vh;
   background-color: #fff;
   z-index: 100;
   transform: translateX(-100%);
   transition: transform 0.3s ease;
-  padding: 40rpx 20rpx;  /* 减小左右内边距 */
+  padding: 40rpx 20rpx;
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
 }
 
 .sidebar-show {
   transform: translateX(0);
 }
 
-.sidebar-content {
+/* 侧边栏资料区 */
+.sidebar-profile {
+  padding-bottom: 24rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+  margin-bottom: 16rpx;
+  flex-shrink: 0;
+}
+.sidebar-profile-main {
   display: flex;
   align-items: center;
-  justify-content: center;
-  height: 100%;
-  word-break: break-word;
-  text-align: center;
+  gap: 16rpx;
+  margin-bottom: 16rpx;
+}
+.sidebar-avatar {
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.sidebar-profile-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.sidebar-name {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333;
+  line-height: 1.4;
+}
+.sidebar-meta {
+  font-size: 22rpx;
+  color: #666;
+  line-height: 1.4;
+}
+.sidebar-class {
+  font-size: 20rpx;
+  color: #999;
+  line-height: 1.4;
+}
+.sidebar-follow-row {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+.follow-item {
+  display: flex;
+  align-items: center;
+  gap: 6rpx;
+}
+.follow-num {
+  font-size: 24rpx;
+  font-weight: 600;
+  color: #10b981;
+}
+.follow-label {
+  font-size: 22rpx;
+  color: #666;
+}
+.follow-divider {
+  width: 1rpx;
+  height: 24rpx;
+  background-color: #e0e0e0;
+  margin: 0 20rpx;
 }
 
-.sidebar-text {
-  font-size: 28rpx;     /* 稍微缩小字体 */
-  color: #666;
+/* 侧边栏菜单 */
+.sidebar-menu {
+  flex: 1;
+  width: 100%;
+  height: calc(100vh - 200rpx);
+}
+.menu-group {
+  margin-bottom: 8rpx;
+}
+.menu-item {
+  display: flex;
+  align-items: center;
+  padding: 16rpx 8rpx;
+  border-radius: 12rpx;
+  gap: 12rpx;
+  transition: background-color 0.15s;
+}
+.menu-item:active {
+  background-color: #f0f0f0;
+}
+.parent-item {
+  cursor: pointer;
+}
+.menu-icon {
+  font-size: 28rpx;
+  flex-shrink: 0;
+}
+.menu-label {
+  font-size: 26rpx;
+  color: #333;
+  flex: 1;
+}
+.menu-arrow {
+  font-size: 20rpx;
+  color: #999;
+  flex-shrink: 0;
+}
+.sub-menu {
+  padding-left: 16rpx;
+}
+.sub-item {
+  padding: 12rpx 8rpx;
+}
+.sub-item .menu-icon {
+  font-size: 24rpx;
+}
+.sub-item .menu-label {
+  font-size: 24rpx;
+  color: #555;
+}
+.direct-item {
+  cursor: pointer;
 }
 
 /* 通用 Emoji 图标样式 */

@@ -1190,12 +1190,6 @@ onUnmounted(() => {
   border: 2rpx solid #fff;
 }
 
-/* 多个徽章横向错开排列 */
-.day-cell > .day-dot:nth-child(2) { right: 4rpx; }
-.day-cell > .day-dot:nth-child(3) { right: 22rpx; }
-.day-cell > .day-dot:nth-child(4) { right: 40rpx; }
-.day-cell > .day-dot:nth-child(5) { right: 58rpx; }
-
 .day-dot.orange {
   background-color: #f97316;
 }
@@ -1204,6 +1198,7 @@ onUnmounted(() => {
 .day-dot.marathon-badge {
   position: absolute;
   top: 4rpx;
+  right: 4rpx;
   width: 16rpx;
   height: 16rpx;
   background-color: #f97316;
@@ -1249,9 +1244,12 @@ onUnmounted(() => {
   border: none;
 }
 
-/* 马拉松-橙色 */
+/* 马拉松-橙色圆点，与日历格子上的徽章样式一致 */
 .legend-dot.orange {
   background-color: #f97316;
+  border-radius: 50%;
+  border: 2rpx solid rgba(255,255,255,0.6);
+  box-shadow: 0 2rpx 6rpx rgba(249, 115, 22, 0.40);
 }
 
 .legend-dot.future {
