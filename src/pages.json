@@ -84,6 +84,48 @@
         "navigationBarTitleText": "我的",
         "navigationStyle": "custom"
       }
+    },
+    {
+      "path": "pages/low-carbon/sport",
+      "style": {
+        "navigationBarTitleText": "运动碳汇打卡",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/low-carbon/diet",
+      "style": {
+        "navigationBarTitleText": "低碳健康饮食",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/low-carbon/travel",
+      "style": {
+        "navigationBarTitleText": "绿色低碳出行",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/low-carbon/life",
+      "style": {
+        "navigationBarTitleText": "生活学习打卡",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/low-carbon/dorm-energy",
+      "style": {
+        "navigationBarTitleText": "宿舍节能助手",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/low-carbon/low-carbon-study",
+      "style": {
+        "navigationBarTitleText": "低碳学习办公",
+        "navigationStyle": "custom"
+      }
     }
   ],
   "globalStyle": {

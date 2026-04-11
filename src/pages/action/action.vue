@@ -15,11 +15,26 @@
     <!-- Categories -->
     <scroll-view class="category-scroll" scroll-x="true">
       <view class="category-tags">
-        <view class="category-tag tag-active">推荐</view>
-        <view class="category-tag">运动</view>
-        <view class="category-tag">饮食</view>
-        <view class="category-tag">出行</view>
-        <view class="category-tag">生活</view>
+        <view
+          class="category-tag tag-active"
+          @tap="switchTab('sport')"
+        >推荐</view>
+        <view
+          class="category-tag"
+          @tap="switchTab('sport')"
+        >运动</view>
+        <view
+          class="category-tag"
+          @tap="switchTab('diet')"
+        >饮食</view>
+        <view
+          class="category-tag"
+          @tap="switchTab('travel')"
+        >出行</view>
+        <view
+          class="category-tag"
+          @tap="switchTab('life')"
+        >生活</view>
       </view>
     </scroll-view>
 
@@ -105,6 +120,15 @@
 </template>
 
 <script setup>
+const switchTab = (tab) => {
+  const urls = {
+    sport:  '/pages/low-carbon/sport',
+    diet:   '/pages/low-carbon/diet',
+    travel: '/pages/low-carbon/travel',
+    life:   '/pages/low-carbon/life',
+  }
+  uni.navigateTo({ url: urls[tab] })
+}
 </script>
 
 <style scoped>

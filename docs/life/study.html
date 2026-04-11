@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>绿动校园 - 低碳学习</title>
+<script src="https://modao.cc/agent-py/static/source/js/tailwindcss.3.4.3.js"></script>
+<script src="https://modao.cc/agent-py/static/source/js/iconify-icon.min.1.0.7.js"></script>
+<style>
+        .iphone-container {
+            width: 375px;
+            height: 812px;
+            margin: 20px auto;
+            background: #ffffff;
+            border: 12px solid #1e293b;
+            border-radius: 40px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+        .scroll-container {
+            height: calc(100% - 64px);
+            overflow-y: auto;
+            scrollbar-width: none;
+        }
+        .scroll-container::-webkit-scrollbar { display: none; }
+        .tag-active { background-color: #22c55e; color: white; }
+    </style>
+</head>
+<body>
+<div class="iphone-container">
+<!-- 头部导航 -->
+<div class="h-16 flex items-center px-4 bg-white border-b border-gray-50">
+<a class="p-2" href="index.html">
+<iconify-icon class="text-2xl text-gray-800" icon="mdi:chevron-left"></iconify-icon>
+</a>
+<h1 class="flex-1 text-center font-bold text-lg mr-8">低碳学习办公</h1>
+</div>
+<div class="scroll-container pb-24">
+<!-- 1. 无纸化成就看板 -->
+<div class="px-6 py-6">
+<div class="bg-gradient-to-r from-orange-400 to-orange-500 rounded-3xl p-6 text-white shadow-lg shadow-orange-100">
+<div class="flex items-center gap-3 mb-4">
+<iconify-icon class="text-2xl" icon="mdi:file-document-outline"></iconify-icon>
+<span class="text-sm font-medium">无纸化学习本学期省下</span>
+</div>
+<div class="flex items-baseline gap-2">
+<h2 class="text-4xl font-black">425</h2>
+<span class="text-sm">张 A4 纸</span>
+</div>
+<p class="text-xs text-orange-100 mt-4">相当于保护了 0.05 棵成年树木 🌳</p>
+</div>
+</div>
+<!-- 2. 分类打卡入口 (磁贴) -->
+<div class="px-6 grid grid-cols-2 gap-4">
+<div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm flex flex-col items-center">
+<div class="w-12 h-12 bg-green-50 text-green-600 rounded-full flex items-center justify-center mb-2">
+<iconify-icon class="text-2xl" icon="mdi:tablet-ipad"></iconify-icon>
+</div>
+<span class="text-xs font-bold text-gray-700">无纸化笔记</span>
+<p class="text-[9px] text-gray-400 mt-1">使用平板/电脑记录</p>
+</div>
+<div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm flex flex-col items-center">
+<div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mb-2">
+<iconify-icon class="text-2xl" icon="mdi:recycle-variant"></iconify-icon>
+</div>
+<span class="text-xs font-bold text-gray-700">草稿纸回收</span>
+<p class="text-[9px] text-gray-400 mt-1">废旧纸张定点回收</p>
+</div>
+<div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm flex flex-col items-center">
+<div class="w-12 h-12 bg-purple-50 text-purple-600 rounded-full flex items-center justify-center mb-2">
+<iconify-icon class="text-2xl" icon="mdi:share-variant"></iconify-icon>
+</div>
+<span class="text-xs font-bold text-gray-700">电子共享</span>
+<p class="text-[9px] text-gray-400 mt-1">云端传资料免打印</p>
+</div>
+<div class="bg-white p-4 rounded-2xl border border-gray-100 shadow-sm flex flex-col items-center">
+<div class="w-12 h-12 bg-amber-50 text-amber-600 rounded-full flex items-center justify-center mb-2">
+<iconify-icon class="text-2xl" icon="mdi:book-refresh"></iconify-icon>
+</div>
+<span class="text-xs font-bold text-gray-700">二手教材</span>
+<p class="text-[9px] text-gray-400 mt-1">学长学姐课本转借</p>
+</div>
+</div>
+<!-- 3. 二手教材循环市场 (Feed流) -->
+<div class="mt-8">
+<div class="px-6 flex justify-between items-center mb-4">
+<h3 class="font-bold text-gray-800">二手教材市场</h3>
+<div class="flex gap-2">
+<span class="text-[10px] bg-green-500 text-white px-2 py-1 rounded-full">求购</span>
+<span class="text-[10px] bg-gray-100 text-gray-400 px-2 py-1 rounded-full">转让</span>
+</div>
+</div>
+<div class="space-y-4 px-6">
+<!-- Item 1 -->
+<div class="flex gap-4 p-3 bg-gray-50 rounded-2xl">
+<img alt="Book cover" class="w-20 h-24 object-cover rounded-lg shadow-sm" src="https://modao.cc/agent-py/media/generated_images/2026-04-11/ef7a9241798742cabf574a106d337d07.jpg"/>
+<div class="flex-1 flex flex-col justify-between py-1">
+<div>
+<h4 class="text-sm font-bold text-gray-800">《高等数学（下）》</h4>
+<p class="text-[10px] text-gray-400 mt-1">发布者：23级张同学 · 9成新</p>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-green-600 font-bold text-sm">免费转借</span>
+<button class="bg-gray-800 text-white text-[10px] px-3 py-1.5 rounded-full">联系他</button>
+</div>
+</div>
+</div>
+<!-- Item 2 -->
+<div class="flex gap-4 p-3 bg-gray-50 rounded-2xl">
+<img alt="Book cover" class="w-20 h-24 object-cover rounded-lg shadow-sm" src="https://modao.cc/agent-py/media/generated_images/2026-04-11/ef7a9241798742cabf574a106d337d07.jpg"/>
+<div class="flex-1 flex flex-col justify-between py-1">
+<div>
+<h4 class="text-sm font-bold text-gray-800">《计算机组成原理》</h4>
+<p class="text-[10px] text-gray-400 mt-1">发布者：王学姐 · 含有精美笔记</p>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-orange-500 font-bold text-sm">50 碳汇分</span>
+<button class="bg-gray-800 text-white text-[10px] px-3 py-1.5 rounded-full">立即兑换</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- 4. 电子资料共享广场 -->
+<div class="mt-8 px-6">
+<h3 class="font-bold text-gray-800 mb-4">本周热门共享资料</h3>
+<div class="space-y-3">
+<div class="flex items-center justify-between p-3 border border-gray-100 rounded-xl">
+<div class="flex items-center gap-3">
+<iconify-icon class="text-2xl text-red-500" icon="mdi:file-pdf-box"></iconify-icon>
+<div class="text-[11px]">
+<p class="font-bold text-gray-700">大学物理复习大纲.pdf</p>
+<p class="text-gray-400">已省下 24 张纸 · 120人下载</p>
+</div>
+</div>
+<iconify-icon class="text-2xl text-gray-300" icon="mdi:download-circle-outline"></iconify-icon>
+</div>
+<div class="flex items-center justify-between p-3 border border-gray-100 rounded-xl">
+<div class="flex items-center gap-3">
+<iconify-icon class="text-2xl text-blue-500" icon="mdi:file-word-box"></iconify-icon>
+<div class="text-[11px]">
+<p class="font-bold text-gray-700">思修期末复习题库.docx</p>
+<p class="text-gray-400">已省下 15 张纸 · 88人下载</p>
+</div>
+</div>
+<iconify-icon class="text-2xl text-gray-300" icon="mdi:download-circle-outline"></iconify-icon>
+</div>
+</div>
+</div>
+</div>
+<!-- 底部简单导航复用 -->
+<div class="absolute bottom-0 left-0 right-0 h-20 bg-white border-t border-gray-100 flex items-center justify-around px-2">
+<a class="flex flex-col items-center gap-1 text-gray-400" href="index.html">
+<iconify-icon class="text-2xl" icon="mdi:home-outline"></iconify-icon>
+<span class="text-[10px]">首页</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-gray-400" href="life.html">
+<iconify-icon class="text-2xl" icon="mdi:leaf-outline"></iconify-icon>
+<span class="text-[10px]">打卡</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-gray-400" href="community.html">
+<iconify-icon class="text-2xl" icon="mdi:trophy-outline"></iconify-icon>
+<span class="text-[10px]">排行</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-gray-400" href="profile.html">
+<iconify-icon class="text-2xl" icon="mdi:account-outline"></iconify-icon>
+<span class="text-[10px]">我的</span>
+</a>
+</div>
+</div>
+</body>
+</html>

@@ -34,6 +34,8 @@
 /* 奖杯图标 */
 .icon-trophy:before { content: "🏆"; }
 /* 日历图标 */
+.icon-calendar:before { content: "🗓️"; }
+/* 日历勾选图标 */
 .icon-calendar-check:before { content: "📅"; }
 /* 闪电图标 */
 .icon-flash:before { content: "⚡"; }
@@ -135,3 +137,95 @@
 .icon-help-circle:before { content: "❔"; }
 /* 账户图标 */
 .icon-account:before { content: "👤"; }
+/* 手表图标 */
+.icon-watch:before { content: "⌚"; }
+/* 铅笔图标 */
+.icon-pencil:before { content: "✏️"; }
+/* 毕业帽图标 */
+.icon-graduation:before { content: "🎓"; }
+/* 列表图标 */
+.icon-list:before { content: "📋"; }
+/* 用户图标 */
+.icon-user:before { content: "👤"; }
+/* 太阳图标 */
+.icon-sun:before { content: "☀️"; }
+/* 地图图钉图标 */
+.icon-map-pin:before { content: "📍"; }
+/* 风图标 */
+.icon-wind:before { content: "🌬️"; }
+/* 闪电图标 */
+.icon-lightning:before { content: "⚡"; }
+/* 目标图标 */
+.icon-target:before { content: "🎯"; }
+/* 沙漏图标 */
+.icon-hourglass:before { content: "⏳"; }
+/* 仪表图标 */
+.icon-gauge:before { content: "⚙️"; }
+/* 加号圆形图标 */
+.icon-plus-circle:before { content: "⭕"; }
+/* 公交图标 */
+.icon-bus:before { content: "🚌"; }
+/* 餐叉图标 */
+.icon-meal:before { content: "🍴"; }
+/* 学校图标 */
+.icon-school:before { content: "🏫"; }
+/* 哑铃图标 */
+.icon-dumbbell:before { content: "🏋️"; }
+/* 篮球图标 */
+.icon-basketball:before { content: "🏀"; }
+/* 游泳图标 */
+.icon-swim:before { content: "🏊"; }
+/* 定位图标 */
+.icon-location:before { content: "📍"; }
+/* 信息图标 */
+.icon-info:before { content: "ℹ️"; }
+/* 水滴图标 */
+.icon-water:before { content: "💧"; }
+/* 分类相机图标 */
+.icon-camera-goggles:before { content: "📸"; }
+/* 减塑图标 */
+.icon-no-plastic:before { content: "🚫"; }
+/* 购物袋图标 */
+.icon-shopping-bag:before { content: "🛍️"; }
+/* 花朵图标 */
+.icon-flower:before { content: "🌸"; }
+/* 温度图标 */
+.icon-temp:before { content: "🌡️"; }
+/* 夜晚图标 */
+.icon-night:before { content: "🌙"; }
+/* 礼物图标 */
+.icon-gift:before { content: "🎁"; }
+/* 滑板车图标 */
+.icon-scooter:before { content: "🛴"; }
+/* 校车图标 */
+.icon-school-bus:before { content: "🚑"; }
+/* 足迹图标 */
+.icon-footprint:before { content: "👣"; }
+/* 小组图标 */
+.icon-group:before { content: "👥"; }
+/* 火车图标 */
+.icon-train:before { content: "🚂"; }
+/* 书本图标 */
+.icon-book:before { content: "📚"; }
+/* 空调图标 */
+.icon-ac:before { content: "❄️"; }
+/* 床铺图标 */
+.icon-bed:before { content: "🛏️"; }
+/* 断电图标 */
+.icon-power-off:before { content: "🔌"; }
+/* 文档图标 */
+.icon-file-text:before { content: "📄"; }
+/* 平板图标 */
+.icon-tablet:before { content: "📱"; }
+/* 回收图标 */
+.icon-recycle:before { content: "♻️"; }
+/* 分享图标 */
+.icon-share:before { content: "🔗"; }
+/* 教材刷新图标 */
+.icon-book-refresh:before { content: "🔄"; }
+/* PDF文件图标 */
+.icon-file-pdf:before { content: "📕"; }
+/* Word文件图标 */
+.icon-file-word:before { content: "📘"; }
+/* 下载图标 */
+.icon-download:before { content: "⬇️"; }

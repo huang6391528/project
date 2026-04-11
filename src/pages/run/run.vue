@@ -2,221 +2,623 @@
   <view class="page-run">
     <!-- Top Tabs -->
     <view class="tab-bar">
-      <view class="tab-item tab-active">晨跑计划</view>
-      <view class="tab-item">自由跑</view>
-      <view class="tab-item">马拉松训练</view>
-    </view>
-
-    <!-- Map Area -->
-    <view class="map-container">
-      <map
-        id="runMap"
-        class="map-bg"
-        :latitude="schoolLat"
-        :longitude="schoolLng"
-        :scale="16"
-        :markers="markers"
-        :polyline="routePolyline"
-        :show-location="true"
-        :enable-satellite="false"
-      ></map>
-      <view class="weather-widget">
-        <text class="iconfont icon-weather"></text>
-        <text class="weather-text">22°C · 空气优</text>
-      </view>
+      <view
+        class="tab-item"
+        :class="{ 'tab-active': currentTab === 'free' }"
+        @tap="switchTab('free')"
+      >校园跑</view>
+      <view
+        class="tab-item"
+        :class="{ 'tab-active': currentTab === 'morning' }"
+        @tap="switchTab('morning')"
+      >晨跑计划</view>
+      <view
+        class="tab-item"
+        :class="{ 'tab-active': currentTab === 'marathon' }"
+        @tap="switchTab('marathon')"
+      >马拉松训练</view>
     </view>
 
     <!-- ============================================= -->
-    <!-- 模块一：悬浮运动卡片（渐变绿背景 + 全白文字） -->
+    <!-- 校园跑 Tab                                          -->
     <!-- ============================================= -->
-    <view
-      class="floating-card"
-      :class="{ 'is-expanded': isCardExpanded, 'is-running': isRunning }"
-    >
-      <!-- 顶部收起区域（仅展开时可见，可点击折叠） -->
-      <view v-if="isCardExpanded" class="card-top-bar" @tap="collapseCard">
-        <view class="top-bar-line"></view>
-        <text class="top-bar-hint">点击收起</text>
-        <text class="top-bar-icon iconfont icon-chevron-up"></text>
-      </view>
-
-      <!-- ===== 折叠状态：渐绿背景 + 全白文字 ===== -->
-      <view v-if="!isCardExpanded" class="card-collapsed" @tap="toggleCard">
-        <view class="collapsed-inner">
-          <view class="collapsed-block">
-            <text class="collapsed-label">本次距离</text>
-            <text class="collapsed-value">
-              {{ currentDistance || '--' }}
-              <text class="collapsed-unit">KM</text>
-            </text>
-          </view>
-          <view class="collapsed-divider"></view>
-          <view class="collapsed-block">
-            <text class="collapsed-label">配速</text>
-            <text class="collapsed-value">
-              {{ currentPace || "--'--" }}
-              <text class="collapsed-unit">"</text>
-            </text>
-          </view>
-        </view>
-        <!-- 向下呼吸箭头 -->
-        <view class="collapsed-hint">
-          <text class="hint-icon iconfont icon-chevron-down"></text>
+    <view v-if="currentTab === 'free'">
+      <!-- Map Area -->
+      <view class="map-container">
+        <map
+          id="runMap"
+          class="map-bg"
+          :latitude="schoolLat"
+          :longitude="schoolLng"
+          :scale="16"
+          :markers="markers"
+          :polyline="routePolyline"
+          :show-location="true"
+          :enable-satellite="false"
+        ></map>
+        <view class="weather-widget">
+          <text class="iconfont icon-weather"></text>
+          <text class="weather-text">2026.04.10 · 晴 22°C</text>
         </view>
       </view>
 
-      <!-- ===== 展开状态：全白文字 + 白色大按钮 ===== -->
-      <view v-else class="card-expanded" @tap.stop>
-        <!-- 关闭按钮 -->
-        <view class="card-close" @tap="collapseCard">
-          <text class="close-icon iconfont icon-chevron-up"></text>
+      <!-- 悬浮运动卡片 -->
+      <view
+        class="floating-card"
+        :class="{ 'is-expanded': isCardExpanded, 'is-running': isRunning }"
+      >
+        <view v-if="isCardExpanded" class="card-top-bar" @tap="collapseCard">
+          <view class="top-bar-line"></view>
+          <text class="top-bar-hint">点击收起</text>
+          <text class="top-bar-icon iconfont icon-chevron-up"></text>
         </view>
-
-        <!-- 四格数据 -->
-        <view class="expanded-grid">
-          <view class="exp-stat">
-            <text class="exp-label">时长</text>
-            <text class="exp-value exp-large">{{ displayDuration || '00:00:00' }}</text>
-          </view>
-          <view class="exp-stat">
-            <text class="exp-label">本次距离 (KM)</text>
-            <text class="exp-value exp-large">{{ currentDistance || '0.00' }}</text>
-          </view>
-          <view class="exp-stat">
-            <text class="exp-label">配速</text>
-            <text class="exp-value"> {{ currentPace || "--'--\"" }}</text>
-          </view>
-          <view class="exp-stat">
-            <text class="exp-label">累计减排 (g)</text>
-            <text class="exp-value exp-emission">{{ displayEmission || '0' }}</text>
-          </view>
-        </view>
-
-        <!-- 操作按钮区 -->
-        <view class="action-area">
-          <!-- 左侧：结束按钮 -->
-          <view class="action-btn side-btn" v-if="isRunning" @tap="endRun">
-            <text class="iconfont icon-stop"></text>
-          </view>
-          <!-- 中央：开始/暂停大按钮（白色背景 + 绿色图标） -->
-          <view
-            class="action-btn main-btn"
-            :class="{ running: isRunning }"
-            @tap="toggleRun"
-          >
-            <text class="iconfont" :class="isRunning ? 'icon-pause' : 'icon-play'"></text>
-          </view>
-          <!-- 右侧：暂停按钮 -->
-          <view class="action-btn side-btn" v-if="isRunning" @tap="toggleRun">
-            <text class="iconfont icon-pause"></text>
-          </view>
-        </view>
-      </view>
-    </view>
-
-    <!-- Total Run Bar -->
-    <view class="total-run-bar" @tap="goToTotalRun">
-      <view class="total-run-left">
-        <text class="iconfont icon-run"></text>
-        <text class="total-run-text">总运动</text>
-      </view>
-      <view class="total-run-right">
-        <text class="total-run-km">152.4 KM</text>
-        <text class="iconfont icon-chevron-right"></text>
-      </view>
-    </view>
-
-    <!-- ============================================= -->
-    <!-- 模块二：原生 picker 月份选择器（动态标题）    -->
-    <!-- ============================================= -->
-    <view class="calendar-section">
-      <view class="calendar-card">
-        <!-- 头部 -->
-        <view class="calendar-header">
-          <!-- 左：动态绑定标题，点击触发 picker -->
-          <view class="title-area" @tap="openMonthPicker">
-            <text class="calendar-title">{{ displayMonthText }} 运动轨迹</text>
-            <view class="picker-trigger">
-              <text class="iconfont icon-chevron-down picker-icon"></text>
+        <view v-if="!isCardExpanded" class="card-collapsed" @tap="toggleCard">
+          <view class="collapsed-inner">
+            <view class="collapsed-block">
+              <text class="collapsed-label">本次距离</text>
+              <text class="collapsed-value">{{ currentDistance || '--' }}<text class="collapsed-unit">KM</text></text>
+            </view>
+            <view class="collapsed-divider"></view>
+            <view class="collapsed-block">
+              <text class="collapsed-label">配速</text>
+              <text class="collapsed-value">{{ currentPace || "--'--" }}<text class="collapsed-unit">"</text></text>
             </view>
           </view>
-          <!-- 右：统计 + 左右翻页 -->
-          <view class="header-right">
-            <text class="calendar-sub">已跑 {{ completedDays }} 天</text>
-            <view class="month-switcher">
-              <view class="switch-btn" @tap="prevMonth">
-                <text class="iconfont icon-chevron-left"></text>
+          <view class="collapsed-hint">
+            <text class="hint-icon iconfont icon-chevron-down"></text>
+          </view>
+        </view>
+        <view v-else class="card-expanded" @tap.stop>
+          <view class="card-close" @tap="collapseCard">
+            <text class="close-icon iconfont icon-chevron-up"></text>
+          </view>
+          <view class="expanded-grid">
+            <view class="exp-stat"><text class="exp-label">时长</text><text class="exp-value exp-large">{{ displayDuration || '00:00:00' }}</text></view>
+            <view class="exp-stat"><text class="exp-label">本次距离 (KM)</text><text class="exp-value exp-large">{{ currentDistance || '0.00' }}</text></view>
+            <view class="exp-stat"><text class="exp-label">配速</text><text class="exp-value">{{ currentPace || "--'--\"" }}</text></view>
+            <view class="exp-stat"><text class="exp-label">累计减排 (g)</text><text class="exp-value exp-emission">{{ displayEmission || '0' }}</text></view>
+          </view>
+          <view class="action-area">
+            <view class="action-btn side-btn" v-if="isRunning" @tap="endRun"><text class="iconfont icon-stop"></text></view>
+            <view class="action-btn main-btn" :class="{ running: isRunning }" @tap="toggleRun">
+              <text class="iconfont" :class="isRunning ? 'icon-pause' : 'icon-play'"></text>
+            </view>
+            <view class="action-btn side-btn" v-if="isRunning" @tap="toggleRun"><text class="iconfont icon-pause"></text></view>
+          </view>
+        </view>
+      </view>
+
+      <!-- Quick Actions -->
+      <view class="quick-actions">
+        <view class="quick-action-item" @tap="onBindDevice">
+          <view class="qa-icon blue">
+            <text class="iconfont icon-watch"></text>
+          </view>
+          <view class="qa-text">
+            <text class="qa-title">绑定设备</text>
+            <text class="qa-sub">同步Apple Watch</text>
+          </view>
+        </view>
+        <view class="quick-action-item" @tap="onManualRecord">
+          <view class="qa-icon orange">
+            <text class="iconfont icon-pencil"></text>
+          </view>
+          <view class="qa-text">
+            <text class="qa-title">手动记录</text>
+            <text class="qa-sub">上传跑步数据</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 体育课校园跑任务卡片 -->
+      <view class="campus-task-section">
+        <view class="campus-task-card">
+          <view class="campus-task-header">
+            <text class="campus-task-title">体育课校园跑任务</text>
+            <view class="campus-task-badge">
+              <text class="campus-task-badge-text">进行中</text>
+            </view>
+          </view>
+          <!-- KM Progress -->
+          <view class="campus-progress-item">
+            <view class="campus-progress-label-row">
+              <text class="campus-progress-label">总计跑量目标</text>
+              <text class="campus-progress-count">84.5 / 130 KM</text>
+            </view>
+            <view class="campus-progress-bar">
+              <view class="campus-progress-fill green" style="width: 65%"></view>
+            </view>
+          </view>
+          <!-- Morning Run Progress -->
+          <view class="campus-progress-item">
+            <view class="campus-progress-label-row">
+              <text class="campus-progress-label">晨跑次数要求</text>
+              <text class="campus-progress-count">18 / 26 次</text>
+            </view>
+            <view class="campus-progress-bar">
+              <view class="campus-progress-fill orange" style="width: 69%"></view>
+            </view>
+          </view>
+          <view class="campus-carbon-tip">
+            <text class="iconfont icon-leaf campus-tip-icon"></text>
+            <text class="campus-tip-text">已累计减排 15.2kg 碳，相当于种植了 0.8 棵树</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 我的计划 -->
+      <view class="campus-plan-section">
+        <view class="campus-plan-card">
+          <view class="campus-plan-header">
+            <view class="campus-plan-tabs">
+              <view class="campus-plan-tab active">待完成</view>
+              <view class="campus-plan-tab">已完成</view>
+            </view>
+            <view class="campus-plan-add">
+              <text class="iconfont icon-plus campus-add-icon"></text>
+              <text class="campus-add-text">制定新计划</text>
+            </view>
+          </view>
+          <view class="campus-plan-list">
+            <view class="campus-plan-item">
+              <view class="campus-plan-icon fire">
+                <text class="iconfont icon-fire"></text>
               </view>
-              <text class="switch-year">{{ calYear }}</text>
-              <view class="switch-btn" @tap="nextMonth">
-                <text class="iconfont icon-chevron-right"></text>
+              <view class="campus-plan-info">
+                <text class="campus-plan-name">燃脂 5KM 慢跑</text>
+                <text class="campus-plan-desc">建议配速: 06'00'' - 07'00''</text>
               </view>
+              <text class="iconfont icon-chevron-right campus-plan-arrow"></text>
             </view>
           </view>
         </view>
+      </view>
 
-        <!-- 星期标题行 -->
-        <view class="calendar-weekdays">
-          <text class="weekday">一</text>
-          <text class="weekday">二</text>
-          <text class="weekday">三</text>
-          <text class="weekday">四</text>
-          <text class="weekday">五</text>
-          <text class="weekday">六</text>
-          <text class="weekday">日</text>
-        </view>
-
-        <!-- 日历网格（动态渲染） -->
-        <view class="calendar-grid">
-          <!-- 上月占位格 -->
-          <view
-            v-for="n in prevMonthPadding"
-            :key="'prev-' + n"
-            class="day-cell empty"
-          >
-            <text class="day-num">{{ getPrevMonthDay(n) }}</text>
+      <!-- 跑步数据明细 -->
+      <view class="campus-data-section">
+        <view class="campus-data-card">
+          <view class="campus-data-header">
+            <text class="campus-data-title">跑步数据明细</text>
+            <text class="campus-data-sub">本周跑量趋势</text>
           </view>
-          <!-- 当月日期 -->
-          <view
-            v-for="day in daysInMonth"
-            :key="'cur-' + day"
-            class="day-cell"
-            :class="getDayState(day).cls"
-            :style="getDayCellStyle(day)"
-            @tap="onDayTap(day)"
-          >
-            <text class="day-num">{{ day }}</text>
+          <view class="campus-chart-area">
+            <canvas canvas-id="runChart" id="runChart" class="chart-canvas"></canvas>
+          </view>
+        </view>
+      </view>
+
+      <!-- 运动轨迹日历 -->
+      <view class="calendar-section">
+        <view class="calendar-card">
+          <view class="calendar-header">
+            <view class="title-area" @tap="openMonthPicker">
+              <text class="calendar-title">{{ displayMonthText }} 运动轨迹日历</text>
+              <view class="picker-trigger">
+                <text class="iconfont icon-chevron-down picker-icon"></text>
+              </view>
+            </view>
+            <view class="header-right">
+              <text class="calendar-sub">已跑 {{ completedDays }} 天</text>
+            </view>
+          </view>
+          <view class="calendar-weekdays">
+            <text class="weekday">一</text><text class="weekday">二</text><text class="weekday">三</text>
+            <text class="weekday">四</text><text class="weekday">五</text><text class="weekday">六</text><text class="weekday">日</text>
+          </view>
+          <view class="calendar-grid">
             <view
-              v-for="(badge, idx) in getDayBadges(day)"
-              :key="idx"
-              :class="badge === 'marathon' ? 'day-dot marathon-badge' : ''"
-            ></view>
+              v-for="n in prevMonthPadding"
+              :key="'prev-' + n"
+              class="day-cell empty"
+            >
+              <text class="day-num">{{ getPrevMonthDay(n) }}</text>
+            </view>
+            <view
+              v-for="day in daysInMonth"
+              :key="'cur-' + day"
+              class="day-cell"
+              :class="getDayState(day).cls"
+              :style="getDayCellStyle(day)"
+              @tap="onDayTap(day)"
+            >
+              <text class="day-num">{{ day }}</text>
+              <view
+                v-for="(badge, idx) in getDayBadges(day)"
+                :key="idx"
+                :class="badge === 'marathon' ? 'day-dot marathon-badge' : ''"
+              ></view>
+            </view>
+          </view>
+          <view class="calendar-legend">
+            <view class="legend-item">
+              <view class="legend-dot green"></view>
+              <text class="legend-text">自由跑</text>
+            </view>
+            <view class="legend-item">
+              <view class="legend-dot dark-green"></view>
+              <text class="legend-text">晨跑</text>
+            </view>
+            <view class="legend-item">
+              <view class="legend-dot orange"></view>
+              <text class="legend-text">马拉松训练</text>
+            </view>
           </view>
         </view>
+      </view>
 
-        <!-- 图例 -->
-        <view class="calendar-legend">
-          <view class="legend-item">
-            <view class="legend-dot green"></view>
-            <text class="legend-text">自由跑</text>
+      <!-- 我的成就 -->
+      <view class="campus-achievement-section">
+        <view class="campus-achievement-card">
+          <view class="campus-achievement-header">
+            <text class="campus-achievement-title">我的成就</text>
+            <text class="campus-achievement-more">查看全部</text>
           </view>
-          <view class="legend-item">
-            <view class="legend-dot dark-green"></view>
-            <text class="legend-text">晨跑</text>
-          </view>
-          <view class="legend-item">
-            <view class="legend-dot orange"></view>
-            <text class="legend-text">马拉松训练</text>
-          </view>
-          <view class="legend-item">
-            <view class="legend-dot future"></view>
-            <text class="legend-text">未到/未打卡</text>
+          <view class="campus-achievement-list">
+            <view class="achievement-item" v-for="a in achievements" :key="a.name" :class="{ 'achievement-locked': a.locked }">
+              <view class="achievement-icon" :class="a.iconClass">
+                <text class="iconfont" :class="a.icon"></text>
+              </view>
+              <text class="achievement-name">{{ a.name }}</text>
+            </view>
           </view>
         </view>
       </view>
     </view>
 
-    <!-- 原生月份选择 picker（隐藏，用 JS 触发） -->
+    <!-- ============================================= -->
+    <!-- 晨跑计划 Tab                                       -->
+    <!-- ============================================= -->
+    <view v-if="currentTab === 'morning'">
+      <!-- Map Area -->
+      <view class="map-container map-morning">
+        <map
+          id="runMap"
+          class="map-bg"
+          :latitude="schoolLat"
+          :longitude="schoolLng"
+          :scale="16"
+          :markers="markers"
+          :polyline="routePolyline"
+          :show-location="true"
+          :enable-satellite="false"
+        ></map>
+        <!-- 今日晨跑环境卡片 -->
+        <view class="morning-weather-card">
+          <view class="morning-weather-left">
+            <text class="iconfont icon-sun morning-weather-icon"></text>
+          </view>
+          <view class="morning-weather-info">
+            <text class="morning-weather-label">今日晨跑环境</text>
+            <text class="morning-weather-value">晴 18°C · 优 AQI 32</text>
+          </view>
+        </view>
+        <!-- 跑步控制面板 -->
+        <view class="morning-control-card">
+          <view class="morning-stats-row">
+            <view class="morning-stat">
+              <text class="morning-stat-label">本次距离</text>
+              <text class="morning-stat-value">{{ currentDistance || '0.00' }} <text class="morning-stat-unit">km</text></text>
+            </view>
+            <view class="morning-stat-divider"></view>
+            <view class="morning-stat">
+              <text class="morning-stat-label">实时配速</text>
+              <text class="morning-stat-value">{{ currentPace || "05'00\"" }}</text>
+            </view>
+            <view class="morning-stat-divider"></view>
+            <view class="morning-stat">
+              <text class="morning-stat-label">累计用时</text>
+              <text class="morning-stat-value">{{ displayDuration || '00:00' }}</text>
+            </view>
+          </view>
+          <view class="morning-btn-area">
+            <view class="morning-btn" @tap="toggleRun">
+              <text class="iconfont icon-map-pin morning-btn-icon"></text>
+              <text class="morning-btn-text">{{ isRunning ? '晨跑进行中' : '确认晨跑打卡' }}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 本阶段晨跑目标 -->
+      <view class="morning-goal-section">
+        <view class="morning-goal-card">
+          <view class="morning-goal-header">
+            <text class="morning-goal-title">本阶段晨跑目标</text>
+            <text class="morning-goal-count">18/26 次</text>
+          </view>
+          <view class="morning-goal-bar-bg">
+            <view class="morning-segments">
+              <view class="segment active" style="width: 3.85%"></view>
+              <view class="segment active" style="width: 3.85%"></view>
+              <view class="segment active" style="width: 3.85%"></view>
+              <view class="segment active" style="width: 3.85%"></view>
+              <view class="segment active" style="width: 3.85%"></view>
+              <view class="segment active" style="width: 3.85%"></view>
+              <view class="segment active" style="width: 3.85%"></view>
+              <view class="segment active" style="width: 3.85%"></view>
+              <view class="segment active" style="width: 3.85%"></view>
+              <view class="segment active" style="width: 3.85%"></view>
+              <view class="segment active" style="width: 3.85%"></view>
+              <view class="segment active" style="width: 3.85%"></view>
+              <view class="segment active" style="width: 3.85%"></view>
+              <view class="segment active" style="width: 3.85%"></view>
+              <view class="segment active" style="width: 3.85%"></view>
+              <view class="segment active" style="width: 3.85%"></view>
+              <view class="segment active" style="width: 3.85%"></view>
+              <view class="segment active" style="width: 3.85%"></view>
+              <view class="segment" style="width: 3.85%"></view>
+              <view class="segment" style="width: 3.85%"></view>
+              <view class="segment" style="width: 3.85%"></view>
+              <view class="segment" style="width: 3.85%"></view>
+              <view class="segment" style="width: 3.85%"></view>
+              <view class="segment" style="width: 3.85%"></view>
+              <view class="segment" style="width: 3.85%"></view>
+              <view class="segment inactive" style="width: 3.85%"></view>
+            </view>
+          </view>
+          <view class="morning-goal-stats">
+            <view class="morning-goal-stat">
+              <text class="morning-goal-stat-label">累计晨跑里程</text>
+              <text class="morning-goal-stat-value">39.41 KM</text>
+            </view>
+            <view class="morning-goal-stat">
+              <text class="morning-goal-stat-label">晨跑低碳积分</text>
+              <text class="morning-goal-stat-value green">+ 450 pts</text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 晨跑打卡日历 -->
+      <view class="calendar-section">
+        <view class="calendar-card">
+          <view class="calendar-header">
+            <view class="title-area" @tap="openMonthPicker">
+              <text class="calendar-title">{{ displayMonthText }} 晨跑打卡</text>
+              <view class="picker-trigger">
+                <text class="iconfont icon-chevron-down picker-icon"></text>
+              </view>
+            </view>
+            <view class="header-right">
+              <text class="calendar-sub">已打卡 {{ morningCompletedDays }} 天</text>
+            </view>
+          </view>
+          <view class="calendar-weekdays">
+            <text class="weekday">一</text><text class="weekday">二</text><text class="weekday">三</text>
+            <text class="weekday">四</text><text class="weekday">五</text><text class="weekday">六</text><text class="weekday">日</text>
+          </view>
+          <view class="calendar-grid">
+            <view
+              v-for="n in prevMonthPadding"
+              :key="'prev-' + n"
+              class="day-cell empty"
+            >
+              <text class="day-num">{{ getPrevMonthDay(n) }}</text>
+            </view>
+            <view
+              v-for="day in daysInMonth"
+              :key="'cur-' + day"
+              class="day-cell"
+              :style="getDayCellStyleMorning(day)"
+              @tap="onDayTapMorning(day)"
+            >
+              <text class="day-num">{{ day }}</text>
+            </view>
+          </view>
+          <view class="calendar-legend">
+            <view class="legend-item">
+              <view class="legend-dot dark-green"></view>
+              <text class="legend-text">晨跑已打卡</text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 晨跑历史 -->
+      <view class="morning-history-section">
+        <view class="morning-history-card">
+          <text class="morning-history-title">晨跑历史</text>
+          <view class="morning-history-list">
+            <view
+              class="history-item"
+              v-for="item in morningHistory"
+              :key="item.date"
+              :class="{ 'history-item-faded': item.faded }"
+            >
+              <view class="history-map-img">
+                <image
+                  class="history-map-real-img"
+                  :src="item.img"
+                  mode="aspectFill"
+                ></image>
+              </view>
+              <view class="history-info">
+                <text class="history-date">{{ item.date }}</text>
+                <text class="history-detail">{{ item.km }}KM · {{ item.time }} · {{ item.pace }}</text>
+              </view>
+              <view class="history-status">
+                <text class="history-status-text green">打卡成功</text>
+                <text class="iconfont icon-leaf history-leaf"></text>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- ============================================= -->
+    <!-- 马拉松训练 Tab                                     -->
+    <!-- ============================================= -->
+    <view v-if="currentTab === 'marathon'">
+      <!-- Map Area -->
+      <view class="map-container map-marathon">
+        <map
+          id="runMap"
+          class="map-bg"
+          :latitude="schoolLat"
+          :longitude="schoolLng"
+          :scale="16"
+          :markers="markers"
+          :polyline="routePolyline"
+          :show-location="true"
+          :enable-satellite="false"
+        ></map>
+        <!-- 实时气候卡 -->
+        <view class="marathon-climate-card">
+          <view class="climate-left">
+            <text class="iconfont icon-wind climate-icon"></text>
+            <view class="climate-info">
+              <text class="climate-label">实时气候</text>
+              <text class="climate-value">22°C · 湿度 45% · 西北风 2级</text>
+            </view>
+          </view>
+          <view class="climate-right">
+            <text class="climate-label">训练强度</text>
+            <text class="climate-intensity">适宜 LSD</text>
+          </view>
+        </view>
+        <!-- 跑步控制面板 -->
+        <view class="marathon-control-card">
+          <view class="marathon-stat">
+            <text class="marathon-stat-label">训练里程</text>
+            <text class="marathon-stat-value">0.00 <text class="marathon-stat-unit">KM</text></text>
+          </view>
+          <view class="marathon-stat-divider"></view>
+          <view class="marathon-stat">
+            <text class="marathon-stat-label">目标配速</text>
+            <text class="marathon-stat-value">05'15''</text>
+          </view>
+          <view class="marathon-start-btn" @tap="toggleRun">
+            <text class="marathon-start-text">{{ isRunning ? '结束训练' : '开始训练' }}</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 四个网格功能入口 -->
+      <view class="marathon-grid-section">
+        <view class="marathon-grid">
+          <view class="marathon-grid-item" v-for="item in marathonMenu" :key="item.name">
+            <view class="marathon-grid-icon" :class="item.bgClass">
+              <text class="iconfont" :class="item.icon"></text>
+            </view>
+            <text class="marathon-grid-name">{{ item.name }}</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 最新赛事活动 -->
+      <view class="marathon-event-section">
+        <view class="marathon-event-header">
+          <text class="section-title">最新赛事活动</text>
+          <view class="section-more">
+            <text>更多</text>
+            <text class="iconfont icon-chevron-right section-more-icon"></text>
+          </view>
+        </view>
+        <view class="marathon-event-scroll">
+          <view class="marathon-event-card" v-for="item in marathonEvents" :key="item.title">
+            <view class="event-card-img">
+              <image class="event-card-real-img" :src="item.img" mode="aspectFill"></image>
+            </view>
+            <view class="event-card-info">
+              <text class="event-card-title">{{ item.title }}</text>
+              <text class="event-card-sub">{{ item.sub }}</text>
+            </view>
+            <view class="event-hot-tag" v-if="item.hot">
+              <text class="event-hot-text">热门</text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 推荐训练计划 -->
+      <view class="marathon-plan-section">
+        <text class="section-title">推荐训练计划</text>
+        <view class="marathon-plan-list">
+          <view class="marathon-plan-item" v-for="item in marathonPlans" :key="item.name">
+            <view class="plan-item-left">
+              <view class="plan-item-icon-sm" :class="item.bgClass">
+                <text class="iconfont" :class="item.icon"></text>
+              </view>
+              <view class="plan-item-text">
+                <text class="plan-item-title">{{ item.name }}</text>
+                <text class="plan-item-desc">周期: {{ item.cycle }} | 难度: {{ item.level }}</text>
+              </view>
+            </view>
+            <text class="iconfont icon-plus-circle plan-plus-icon"></text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 马拉松档案 -->
+      <view class="marathon-profile-section">
+        <view class="marathon-profile-card">
+          <view class="profile-header">
+            <text class="iconfont icon-lightning profile-lightning"></text>
+            <text class="profile-title">我的马拉松档案</text>
+          </view>
+          <view class="profile-main">
+            <view class="profile-pb">
+              <text class="profile-pb-label">个人最佳 PB</text>
+              <text class="profile-pb-value">03:45:12</text>
+            </view>
+            <view class="profile-race">
+              <text class="profile-pb-label">总参赛次数</text>
+              <text class="profile-race-value">05</text>
+            </view>
+          </view>
+          <view class="profile-footer">
+            <view class="profile-stat">
+              <text class="profile-stat-label">累计完赛里程</text>
+              <text class="profile-stat-value">210.97 KM</text>
+            </view>
+            <view class="profile-stat text-right">
+              <text class="profile-stat-label">当前等级</text>
+              <text class="profile-stat-value orange">精英跑者</text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 马拉松训练日历 -->
+      <view class="marathon-calendar-section">
+        <view class="marathon-calendar-card">
+          <text class="marathon-calendar-title">4月训练轨迹</text>
+          <view class="marathon-week-scroll">
+            <view class="marathon-week-item">
+              <text class="week-label">周一</text>
+              <view class="week-circle">06</view>
+            </view>
+            <view class="marathon-week-item">
+              <text class="week-label">周二</text>
+              <view class="week-circle purple">07</view>
+            </view>
+            <view class="marathon-week-item">
+              <text class="week-label">周三</text>
+              <view class="week-circle">08</view>
+            </view>
+            <view class="marathon-week-item">
+              <text class="week-label">周四</text>
+              <view class="week-circle purple">09</view>
+            </view>
+            <view class="marathon-week-item">
+              <text class="week-label today-label">今天</text>
+              <view class="week-circle green">10</view>
+            </view>
+            <view class="marathon-week-item">
+              <text class="week-label">周六</text>
+              <view class="week-circle">11</view>
+            </view>
+            <view class="marathon-week-item">
+              <text class="week-label">周日</text>
+              <view class="week-circle">12</view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 原生月份选择 picker（隐藏） -->
     <picker
       mode="date"
       :value="pickerDate"
@@ -232,10 +634,24 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted, getCurrentInstance } from 'vue'
 
 // ==========================================
-// 模块零：地图配置（学校主定位 + 体育场标记）
+// 模块零：Tab 切换状态
+// ==========================================
+const currentTab = ref('free') // 'free'=校园跑, 'morning'=晨跑, 'marathon'=马拉松
+
+function switchTab(tab) {
+  currentTab.value = tab
+  if (isRunning.value) {
+    clearInterval(timer)
+    isRunning.value = false
+  }
+  isCardExpanded.value = false
+}
+
+// ==========================================
+// 模块零：地图配置
 // ==========================================
 const schoolLat = 26.4451
 const schoolLng = 106.6589
@@ -496,18 +912,70 @@ function onDayTap(day) {
     uni.showToast({ title: `已完成${label}`, icon: 'none' })
     return
   }
-  // 无打卡 → 存入（已有则合并，保持数组）
+  // 无打卡 → 存入
   const key = `${calYear.value}-${calMonth.value}`
   if (!runRecords.value[key]) runRecords.value[key] = {}
   const existing = runRecords.value[key][day]
+  const currentType = currentTab.value === 'morning' ? 'morning' : 'free'
   if (existing) {
     const arr = Array.isArray(existing) ? existing : [existing]
-    if (!arr.includes('morning')) arr.push('morning')
+    if (!arr.includes(currentType)) arr.push(currentType)
     runRecords.value[key][day] = arr
   } else {
-    runRecords.value[key][day] = 'morning'
+    runRecords.value[key][day] = currentType
   }
+  const typeText2 = { morning: '晨跑', free: '自由跑' }
+  uni.showToast({ title: `${typeText2[currentType] || '打卡'}成功`, icon: 'success' })
+}
+
+function onDayTapMorning(day) {
+  if (isFutureDay(day)) {
+    uni.showToast({ title: '还未到这一天哦', icon: 'none' })
+    return
+  }
+  const key = `${calYear.value}-${calMonth.value}`
+  const status = getDayStatus(day)
+  if (status) {
+    uni.showToast({ title: '已完成晨跑', icon: 'none' })
+    return
+  }
+  if (!runRecords.value[key]) runRecords.value[key] = {}
+  runRecords.value[key][day] = 'morning'
   uni.showToast({ title: '晨跑打卡成功', icon: 'success' })
+}
+
+// 晨跑日历格子样式：浅绿底矩形
+function getDayCellStyleMorning(day) {
+  const status = getDayStatus(day)
+  const future = isFutureDay(day)
+  const today = isToday(day)
+  if (future) return ''
+  const types = Array.isArray(status) ? status : (status ? [status] : [])
+  const hasMorning = types.includes('morning') || types.includes('free')
+  if (hasMorning) {
+    return 'background-color: #dcfce7; color: #16a34a; border: 2rpx solid #86efac;'
+  }
+  if (today) {
+    return 'background-color: #f97316; color: #fff; border: none;'
+  }
+  return ''
+}
+
+// 马拉松日历格子样式
+function getDayCellStyleMarathon(day) {
+  const status = getDayStatus(day)
+  const future = isFutureDay(day)
+  const today = isToday(day)
+  if (future || status == null) return ''
+  const types = Array.isArray(status) ? status : [status]
+  if (types.includes('marathon')) {
+    return 'background-color: #ede9fe; border: 2rpx solid #c4b5fd; color: #7c3aed;'
+  }
+  if (types.includes('free')) {
+    return 'background-color: #ede9fe; border: 2rpx solid #c4b5fd; color: #7c3aed;'
+  }
+  if (today) return 'background-color: #f97316; color: #fff; border: none;'
+  return ''
 }
 
 // 月份切换
@@ -575,8 +1043,123 @@ function goToTotalRun() {
   uni.showToast({ title: '总运动详情页开发中', icon: 'none' })
 }
 
+function onBindDevice() {
+  uni.showToast({ title: '绑定设备功能开发中', icon: 'none' })
+}
+
+function onManualRecord() {
+  uni.showToast({ title: '手动记录功能开发中', icon: 'none' })
+}
+
 onUnmounted(() => {
   if (timer) clearInterval(timer)
+})
+
+// ==========================================
+// 晨跑 Tab 数据
+// ==========================================
+const morningHistory = ref([
+  { date: '2026.04.09 晨跑', km: '5.20', time: '31:40', pace: "06'05''", faded: false, img: 'https://modao.cc/agent-py/media/generated_images/2026-04-10/d7294226572d438d8e8de2fe6568f8d1.jpg' },
+  { date: '2026.04.08 晨跑', km: '3.80', time: '22:15', pace: "05'51''", faded: false, img: 'https://modao.cc/agent-py/media/generated_images/2026-04-10/d7294226572d438d8e8de2fe6568f8d1.jpg' },
+  { date: '2026.04.07 晨跑', km: '4.50', time: '28:20', pace: "06'17''", faded: true, img: 'https://modao.cc/agent-py/media/generated_images/2026-04-10/d7294226572d438d8e8de2fe6568f8d1.jpg' },
+])
+
+const morningCompletedDays = computed(() => {
+  const key = `${calYear.value}-${calMonth.value}`
+  const monthData = runRecords.value[key] || {}
+  return Object.entries(monthData).filter(([day, val]) => {
+    if (!val) return false
+    const types = Array.isArray(val) ? val : [val]
+    return types.includes('morning')
+  }).length
+})
+
+// ==========================================
+// 马拉松 Tab 数据
+// ==========================================
+const marathonMenu = ref([
+  { name: '马拉松学院', icon: 'icon-graduation', bgClass: 'menu-blue' },
+  { name: '赛事活动', icon: 'icon-calendar', bgClass: 'menu-orange' },
+  { name: '我的马拉松', icon: 'icon-user', bgClass: 'menu-green' },
+  { name: '训练计划', icon: 'icon-list', bgClass: 'menu-indigo' },
+])
+
+const marathonEvents = ref([
+  { title: '2026 校园半程马拉松', sub: '报名中 · 04月25日 开启', hot: true, img: 'https://modao.cc/agent-py/media/generated_images/2026-04-10/3aff83eeb7bc4e4e89e1263d70ba099b.jpg' },
+  { title: '城市低碳公益跑', sub: '进行中 · 累计跑量赢好礼', hot: false, img: 'https://modao.cc/agent-py/media/generated_images/2026-04-10/c70df215739d494b8bb3fe1c2eb3d864.jpg' },
+])
+
+const marathonPlans = ref([
+  { name: 'LSD 耐力提升计划', cycle: '4周', level: '中等', icon: 'icon-hourglass', bgClass: 'plan-indigo' },
+  { name: '间歇跑速度训练', cycle: '2周', level: '困难', icon: 'icon-gauge', bgClass: 'plan-red' },
+])
+
+// 校园跑成就数据
+const achievements = ref([
+  { name: '早起鸟', icon: 'icon-medal', iconClass: 'ach-orange', locked: false },
+  { name: '低碳达人', icon: 'icon-tree', iconClass: 'ach-green', locked: false },
+  { name: '极速跑者', icon: 'icon-lightning', iconClass: 'ach-blue', locked: false },
+  { name: '100KM达成', icon: 'icon-target', iconClass: 'ach-gray', locked: true },
+  { name: '马拉松之星', icon: 'icon-star', iconClass: 'ach-gray', locked: true },
+])
+
+// 跑步数据图表（ECharts）
+onMounted(() => {
+  const query = uni.createSelectorQuery().in(getCurrentInstance?.())
+  if (query) {
+    query.select('#runChart')
+      .fields({ node: true, size: true })
+      .exec((res) => {
+        const canvas = res[0]?.node
+        if (!canvas) return
+        const ctx = canvas.getContext('2d')
+        const dpr = uni.getSystemInfoSync().pixelRatio || 2
+        canvas.width = (res[0].width) * dpr
+        canvas.height = (res[0].height) * dpr
+        ctx.scale(dpr, dpr)
+        const w = res[0].width
+        const h = res[0].height
+        const data = [3.2, 5.4, 2.1, 4.8, 6.2, 8.5, 4.1]
+        const maxVal = Math.max(...data)
+        const labels = ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
+        const barW = (w - 30 - 10) / 7 - 8
+        const top = 20, bottom = 20, left = 30, right = 10
+        const chartH = h - top - bottom
+        const chartW = w - left - right
+        // Y轴虚线
+        ctx.strokeStyle = '#f0f0f0'
+        ctx.setLineDash([4, 4])
+        for (let i = 0; i <= 4; i++) {
+          const y = top + (chartH / 4) * i
+          ctx.beginPath()
+          ctx.moveTo(left, y)
+          ctx.lineTo(w - right, y)
+          ctx.stroke()
+        }
+        ctx.setLineDash([])
+        // 柱状图
+        data.forEach((val, i) => {
+          const barH = (val / maxVal) * chartH
+          const x = left + i * (barW + 8) + 4
+          const y = top + chartH - barH
+          const grad = ctx.createLinearGradient(0, y, 0, y + barH)
+          grad.addColorStop(0, '#22C55E')
+          grad.addColorStop(1, '#86efac')
+          ctx.fillStyle = grad
+          ctx.beginPath()
+          ctx.roundRect(x, y, barW, barH, [4, 4, 0, 0])
+          ctx.fill()
+        })
+        // X轴标签
+        ctx.fillStyle = '#999'
+        ctx.font = '10px sans-serif'
+        ctx.textAlign = 'center'
+        data.forEach((val, i) => {
+          const x = left + i * (barW + 8) + 4 + barW / 2
+          ctx.fillText(labels[i], x, h - 4)
+        })
+      })
+  }
 })
 </script>
 
@@ -674,7 +1257,7 @@ onUnmounted(() => {
 
 .floating-card {
   position: relative;
-  z-index: 5;
+  z-index: 10;
   margin: -40rpx 30rpx 0;
   border-radius: 40rpx;
   overflow: hidden;
@@ -946,6 +1529,44 @@ onUnmounted(() => {
   color: #ffffff;
   text-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.15);
 }
+
+/* ============================================= */
+/* 校园跑 Tab Quick Actions                    */
+/* ============================================= */
+.quick-actions {
+  display: flex;
+  gap: 24rpx;
+  margin: 20rpx 30rpx 0;
+  position: relative;
+  z-index: 5;
+}
+.quick-action-item {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  background: rgba(255, 255, 255, 0.80);
+  backdrop-filter: blur(10px);
+  padding: 24rpx;
+  border-radius: 24rpx;
+  border: 1px solid rgba(255, 255, 255, 0.30);
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.05);
+}
+.qa-icon {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.qa-icon.blue { background: #dbeafe; }
+.qa-icon.blue .iconfont { color: #3b82f6; font-size: 40rpx; }
+.qa-icon.orange { background: #ffedd5; }
+.qa-icon.orange .iconfont { color: #f97316; font-size: 40rpx; }
+.qa-title { font-size: 24rpx; font-weight: bold; color: #374151; display: block; }
+.qa-sub { font-size: 20rpx; color: #9ca3af; }
 
 /* ============================================= */
 /* Total Run Bar                                */
@@ -1270,5 +1891,1204 @@ onUnmounted(() => {
   height: 0;
   opacity: 0;
   pointer-events: none;
+}
+
+/* ============================================= */
+/* 晨跑 Tab 样式                                  */
+/* ============================================= */
+.map-morning {
+  height: 480px;
+}
+
+.morning-weather-card {
+  position: absolute;
+  top: 24rpx;
+  left: 24rpx;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  border-radius: 20rpx;
+  padding: 16rpx 20rpx;
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  border: 2rpx solid rgba(255, 255, 255, 0.60);
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.08);
+  width: auto;
+}
+
+.morning-weather-left {
+  flex-shrink: 0;
+}
+
+.morning-weather-icon {
+  font-size: 36rpx;
+  color: #f97316;
+}
+
+.morning-weather-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.morning-weather-label {
+  font-size: 18rpx;
+  color: #9ca3af;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.morning-weather-value {
+  font-size: 20rpx;
+  font-weight: bold;
+  color: #374151;
+}
+
+.morning-control-card {
+  position: absolute;
+  bottom: 24rpx;
+  left: 24rpx;
+  right: 24rpx;
+  background: rgba(255, 255, 255, 0.90);
+  backdrop-filter: blur(12px);
+  border-radius: 32rpx;
+  padding: 28rpx;
+  border: 2rpx solid rgba(255, 255, 255, 0.60);
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.12);
+}
+
+.morning-stats-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24rpx;
+}
+
+.morning-stat {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.morning-stat-label {
+  font-size: 18rpx;
+  color: #9ca3af;
+  font-weight: bold;
+  text-transform: uppercase;
+  margin-bottom: 6rpx;
+}
+
+.morning-stat-value {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #374151;
+}
+
+.morning-stat-unit {
+  font-size: 18rpx;
+}
+
+.morning-stat-divider {
+  width: 2rpx;
+  height: 48rpx;
+  background: #e5e7eb;
+  flex-shrink: 0;
+}
+
+.morning-btn-area {}
+
+.morning-btn {
+  width: 100%;
+  background: linear-gradient(135deg, #f97316, #ea580c);
+  border-radius: 24rpx;
+  padding: 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10rpx;
+  box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.4);
+  animation: pulseOrange 2s ease-in-out infinite;
+}
+
+@keyframes pulseOrange {
+  0% { box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.4); }
+  70% { box-shadow: 0 0 0 16rpx rgba(249, 115, 22, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(249, 115, 22, 0); }
+}
+
+.morning-btn-icon {
+  font-size: 32rpx;
+  color: #fff;
+}
+
+.morning-btn-text {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #fff;
+}
+
+/* 晨跑目标 */
+.morning-goal-section {
+  padding: 20rpx 30rpx 0;
+}
+
+.morning-goal-card {
+  background: #fff;
+  border-radius: 24rpx;
+  padding: 28rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.05);
+  border: 2rpx solid #f3f4f6;
+}
+
+.morning-goal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16rpx;
+}
+
+.morning-goal-title {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #374151;
+}
+
+.morning-goal-count {
+  font-size: 24rpx;
+  color: #f97316;
+  font-weight: bold;
+}
+
+.morning-goal-bar-bg {
+  height: 16rpx;
+  background: #f3f4f6;
+  border-radius: 10rpx;
+  overflow: hidden;
+  margin-bottom: 20rpx;
+}
+
+.morning-segments {
+  height: 100%;
+  border-radius: 10rpx;
+  display: flex;
+  gap: 1rpx;
+  overflow: hidden;
+}
+
+.segment {
+  height: 100%;
+  flex-shrink: 0;
+}
+
+.segment.active {
+  background: linear-gradient(90deg, #f97316, #fb923c);
+}
+
+.segment.inactive {
+  background: #e5e7eb;
+}
+
+.morning-goal-stats {
+  display: flex;
+  gap: 16rpx;
+}
+
+.morning-goal-stat {
+  flex: 1;
+  background: #f9fafb;
+  border-radius: 16rpx;
+  padding: 16rpx;
+}
+
+.morning-goal-stat-label {
+  font-size: 18rpx;
+  color: #9ca3af;
+  display: block;
+  margin-bottom: 4rpx;
+}
+
+.morning-goal-stat-value {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #374151;
+}
+
+.morning-goal-stat-value.green {
+  color: #22c55e;
+}
+
+/* 晨跑历史 */
+.morning-history-section {
+  padding: 20rpx 30rpx 40rpx;
+}
+
+.morning-history-card {
+  background: #fff;
+  border-radius: 24rpx;
+  padding: 28rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.05);
+  border: 2rpx solid #f3f4f6;
+}
+
+.morning-history-title {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #374151;
+  margin-bottom: 20rpx;
+}
+
+.morning-history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.history-item {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  padding: 16rpx;
+  background: #f9fafb;
+  border-radius: 16rpx;
+}
+
+.history-item-faded {
+  opacity: 0.6;
+}
+
+.history-map-img {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 16rpx;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: #e5e7eb;
+}
+
+.history-map-real-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.history-info {
+  flex: 1;
+}
+
+.history-date {
+  font-size: 24rpx;
+  font-weight: bold;
+  color: #374151;
+  display: block;
+}
+
+.history-detail {
+  font-size: 20rpx;
+  color: #9ca3af;
+}
+
+.history-status {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4rpx;
+}
+
+.history-status-text {
+  font-size: 20rpx;
+  font-weight: bold;
+}
+
+.history-status-text.green {
+  color: #22c55e;
+}
+
+.history-leaf {
+  font-size: 20rpx;
+  color: #22c55e;
+}
+
+/* ============================================= */
+/* 马拉松 Tab 样式                                */
+/* ============================================= */
+.map-marathon {
+  height: 480px;
+}
+
+.marathon-climate-card {
+  position: absolute;
+  top: 24rpx;
+  left: 24rpx;
+  right: 24rpx;
+  background: rgba(30, 41, 59, 0.90);
+  backdrop-filter: blur(8px);
+  border-radius: 24rpx;
+  padding: 20rpx 24rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 2rpx solid rgba(255, 255, 255, 0.20);
+}
+
+.climate-left {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.climate-icon {
+  font-size: 40rpx;
+  color: #60a5fa;
+}
+
+.climate-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.climate-label {
+  font-size: 16rpx;
+  color: #94a3b8;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.climate-value {
+  font-size: 22rpx;
+  font-weight: bold;
+  color: #fff;
+}
+
+.climate-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.climate-intensity {
+  font-size: 22rpx;
+  font-weight: bold;
+  color: #fb923c;
+}
+
+.marathon-control-card {
+  position: absolute;
+  bottom: 24rpx;
+  left: 24rpx;
+  right: 24rpx;
+  background: #fff;
+  border-radius: 24rpx;
+  padding: 20rpx 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 2rpx solid #f3f4f6;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.10);
+  z-index: 5;
+}
+
+.marathon-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.marathon-stat-label {
+  font-size: 18rpx;
+  color: #9ca3af;
+  font-weight: bold;
+  margin-bottom: 4rpx;
+}
+
+.marathon-stat-value {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #374151;
+}
+
+.marathon-stat-unit {
+  font-size: 16rpx;
+}
+
+.marathon-stat-divider {
+  width: 2rpx;
+  height: 48rpx;
+  background: #e5e7eb;
+}
+
+.marathon-start-btn {
+  background: #1e293b;
+  border-radius: 16rpx;
+  padding: 16rpx 24rpx;
+}
+
+.marathon-start-text {
+  font-size: 22rpx;
+  font-weight: bold;
+  color: #fff;
+}
+
+/* 四个网格 */
+.marathon-grid-section {
+  padding: 120rpx 30rpx 0;
+}
+
+.marathon-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20rpx;
+}
+
+.marathon-grid-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.marathon-grid-icon {
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.menu-blue { background: #dbeafe; }
+.menu-blue .iconfont { color: #3b82f6; font-size: 40rpx; }
+.menu-orange { background: #ffedd5; }
+.menu-orange .iconfont { color: #f97316; font-size: 40rpx; }
+.menu-green { background: #dcfce7; }
+.menu-green .iconfont { color: #22c55e; font-size: 40rpx; }
+.menu-indigo { background: #e0e7ff; }
+.menu-indigo .iconfont { color: #6366f1; font-size: 40rpx; }
+
+.marathon-grid-name {
+  font-size: 20rpx;
+  font-weight: bold;
+  color: #374151;
+  text-align: center;
+}
+
+/* 赛事活动 */
+.marathon-event-section {
+  padding: 28rpx 30rpx 0;
+}
+
+.marathon-event-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16rpx;
+}
+
+.section-title {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #374151;
+}
+
+.section-more {
+  font-size: 22rpx;
+  color: #9ca3af;
+  display: flex;
+  align-items: center;
+}
+
+.section-more-icon {
+  font-size: 20rpx;
+  color: #9ca3af;
+  margin-left: 2rpx;
+}
+
+.marathon-event-scroll {
+  display: flex;
+  gap: 16rpx;
+  overflow-x: auto;
+  padding-bottom: 8rpx;
+}
+
+.marathon-event-card {
+  flex-shrink: 0;
+  width: 256rpx;
+  background: #1e293b;
+  border-radius: 24rpx;
+  overflow: hidden;
+  position: relative;
+}
+
+.event-card-img {
+  height: 128rpx;
+  background: linear-gradient(135deg, #334155, #475569);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+}
+
+.event-card-real-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.event-card-info {
+  padding: 16rpx;
+}
+
+.event-card-title {
+  font-size: 22rpx;
+  font-weight: bold;
+  color: #fff;
+  display: block;
+}
+
+.event-card-sub {
+  font-size: 18rpx;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.event-hot-tag {
+  position: absolute;
+  top: 12rpx;
+  right: 12rpx;
+  background: #f97316;
+  border-radius: 20rpx;
+  padding: 4rpx 12rpx;
+}
+
+.event-hot-text {
+  font-size: 16rpx;
+  font-weight: bold;
+  color: #fff;
+}
+
+/* 推荐训练计划 */
+.marathon-plan-section {
+  padding: 28rpx 30rpx 0;
+}
+
+.marathon-plan-list {
+  margin-top: 16rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.marathon-plan-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #fff;
+  border-radius: 20rpx;
+  padding: 20rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.05);
+}
+
+.plan-item-left {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.plan-item-icon-sm {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.plan-indigo { background: #e0e7ff; }
+.plan-indigo .iconfont { color: #6366f1; font-size: 28rpx; }
+.plan-red { background: #fee2e2; }
+.plan-red .iconfont { color: #ef4444; font-size: 28rpx; }
+
+.plan-item-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.plan-item-title {
+  font-size: 24rpx;
+  font-weight: bold;
+  color: #374151;
+}
+
+.plan-item-desc {
+  font-size: 20rpx;
+  color: #9ca3af;
+}
+
+.plan-plus-icon {
+  font-size: 40rpx;
+  color: #6366f1;
+}
+
+/* 马拉松档案 */
+.marathon-profile-section {
+  padding: 28rpx 30rpx 0;
+}
+
+.marathon-profile-card {
+  background: #1e293b;
+  border-radius: 32rpx;
+  padding: 32rpx;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.15);
+}
+
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+  margin-bottom: 24rpx;
+}
+
+.profile-lightning {
+  font-size: 32rpx;
+  color: #fbbf24;
+}
+
+.profile-title {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #fff;
+}
+
+.profile-main {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 24rpx;
+}
+
+.profile-pb-label {
+  font-size: 16rpx;
+  color: #64748b;
+  font-weight: bold;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 4rpx;
+}
+
+.profile-pb-value {
+  font-size: 96rpx;
+  font-weight: bold;
+  color: #fff;
+}
+
+.profile-race-value {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #fff;
+}
+
+.profile-footer {
+  border-top: 2rpx solid rgba(255, 255, 255, 0.10);
+  padding-top: 20rpx;
+  display: flex;
+  justify-content: space-between;
+}
+
+.profile-stat {}
+
+.profile-stat-label {
+  font-size: 18rpx;
+  color: #64748b;
+  display: block;
+  margin-bottom: 4rpx;
+}
+
+.profile-stat-value {
+  font-size: 24rpx;
+  font-weight: bold;
+  color: #fff;
+}
+
+.profile-stat-value.orange {
+  color: #fb923c;
+}
+
+.text-right {
+  text-align: right;
+}
+
+/* 马拉松训练日历 */
+.marathon-calendar-section {
+  padding: 28rpx 30rpx 40rpx;
+}
+
+.marathon-calendar-card {
+  background: #fff;
+  border-radius: 24rpx;
+  padding: 28rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.05);
+}
+
+.marathon-calendar-title {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #374151;
+  display: block;
+  margin-bottom: 20rpx;
+}
+
+.marathon-week-scroll {
+  display: flex;
+  gap: 12rpx;
+  overflow-x: auto;
+  padding: 8rpx 0;
+}
+
+.marathon-week-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.marathon-week-item {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.week-label {
+  font-size: 18rpx;
+  color: #9ca3af;
+  font-weight: bold;
+}
+
+.week-label.today-label {
+  color: #22c55e;
+  font-weight: bold;
+}
+
+.week-circle {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 50%;
+  background: #f9fafb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20rpx;
+  font-weight: bold;
+  color: #374151;
+}
+
+.week-circle.purple {
+  background: #ede9fe;
+  border: 2rpx solid #c4b5fd;
+  color: #7c3aed;
+}
+
+.week-circle.green {
+  background: #22c55e;
+  color: #fff;
+  box-shadow: 0 4rpx 12rpx rgba(34, 197, 94, 0.30);
+}
+
+/* ============================================= */
+/* 校园跑 Tab 新增样式                            */
+/* ============================================= */
+.free-map-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 6;
+}
+
+.free-start-btn {
+  width: 160rpx;
+  height: 160rpx;
+  background: #22c55e;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8rpx 32rpx rgba(34, 197, 94, 0.40);
+}
+
+.free-start-icon {
+  font-size: 64rpx;
+  color: #fff;
+}
+
+.free-start-text {
+  font-size: 24rpx;
+  font-weight: bold;
+  color: #fff;
+}
+
+/* 体育课任务卡片 */
+.campus-task-section {
+  padding: 0 30rpx;
+  margin-top: 20rpx;
+}
+
+.campus-task-card {
+  background: #fff;
+  border-radius: 24rpx;
+  padding: 28rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.05);
+}
+
+.campus-task-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.campus-task-title {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #374151;
+}
+
+.campus-task-badge {
+  background: #dcfce7;
+  padding: 4rpx 16rpx;
+  border-radius: 20rpx;
+}
+
+.campus-task-badge-text {
+  font-size: 18rpx;
+  font-weight: bold;
+  color: #16a34a;
+}
+
+.campus-progress-item {
+  margin-bottom: 16rpx;
+}
+
+.campus-progress-label-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8rpx;
+}
+
+.campus-progress-label {
+  font-size: 20rpx;
+  color: #6b7280;
+}
+
+.campus-progress-count {
+  font-size: 20rpx;
+  font-weight: bold;
+  color: #374151;
+}
+
+.campus-progress-bar {
+  height: 12rpx;
+  background: #f3f4f6;
+  border-radius: 6rpx;
+  overflow: hidden;
+}
+
+.campus-progress-fill {
+  height: 100%;
+  border-radius: 6rpx;
+}
+
+.campus-progress-fill.green { background: #22c55e; }
+.campus-progress-fill.orange { background: #f97316; }
+
+.campus-carbon-tip {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  margin-top: 16rpx;
+  padding-top: 16rpx;
+  border-top: 2rpx solid #f3f4f6;
+}
+
+.campus-tip-icon {
+  font-size: 24rpx;
+  color: #22c55e;
+}
+
+.campus-tip-text {
+  font-size: 18rpx;
+  color: #9ca3af;
+}
+
+/* 我的计划 */
+.campus-plan-section {
+  padding: 20rpx 30rpx 0;
+}
+
+.campus-plan-card {
+  background: #fff;
+  border-radius: 24rpx;
+  padding: 28rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.05);
+}
+
+.campus-plan-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.campus-plan-tabs {
+  display: flex;
+  gap: 24rpx;
+}
+
+.campus-plan-tab {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #9ca3af;
+  padding-bottom: 4rpx;
+}
+
+.campus-plan-tab.active {
+  color: #f97316;
+  border-bottom: 4rpx solid #f97316;
+}
+
+.campus-plan-add {
+  display: flex;
+  align-items: center;
+  gap: 6rpx;
+}
+
+.campus-add-icon {
+  font-size: 24rpx;
+  color: #3b82f6;
+}
+
+.campus-add-text {
+  font-size: 22rpx;
+  color: #3b82f6;
+  font-weight: 500;
+}
+
+.campus-plan-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+}
+
+.campus-plan-item {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  padding: 16rpx;
+  background: #f9fafb;
+  border-radius: 16rpx;
+}
+
+.campus-plan-icon {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 16rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.campus-plan-icon.fire {
+  background: #fef2f2;
+}
+
+.campus-plan-icon.fire .iconfont {
+  font-size: 32rpx;
+  color: #ef4444;
+}
+
+.campus-plan-info {
+  flex: 1;
+}
+
+.campus-plan-name {
+  font-size: 24rpx;
+  font-weight: bold;
+  color: #374151;
+  display: block;
+}
+
+.campus-plan-desc {
+  font-size: 18rpx;
+  color: #9ca3af;
+}
+
+.campus-plan-arrow {
+  font-size: 24rpx;
+  color: #d1d5db;
+}
+
+/* 跑步数据明细图表 */
+.campus-data-section {
+  padding: 20rpx 30rpx 0;
+}
+
+.campus-data-card {
+  background: #fff;
+  border-radius: 24rpx;
+  padding: 28rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.05);
+}
+
+.campus-data-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16rpx;
+}
+
+.campus-data-title {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #374151;
+}
+
+.campus-data-sub {
+  font-size: 18rpx;
+  color: #9ca3af;
+}
+
+.campus-chart-area {
+  height: 160rpx;
+  position: relative;
+}
+
+.chart-canvas {
+  width: 100%;
+  height: 160rpx;
+}
+
+.chart-bar-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8rpx;
+  flex: 1;
+}
+
+.chart-bar {
+  width: 32rpx;
+  background: linear-gradient(180deg, #22c55e 0%, #86efac 100%);
+  border-radius: 6rpx 6rpx 0 0;
+  min-height: 20rpx;
+  position: relative;
+}
+
+.chart-val {
+  font-size: 18rpx;
+  font-weight: bold;
+  color: #059669;
+  position: absolute;
+  top: -28rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+
+.chart-label {
+  font-size: 18rpx;
+  color: #9ca3af;
+}
+
+/* 我的成就 */
+.campus-achievement-section {
+  padding: 20rpx 30rpx 40rpx;
+}
+
+.campus-achievement-card {
+  background: #fff;
+  border-radius: 24rpx;
+  padding: 28rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.05);
+}
+
+.campus-achievement-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24rpx;
+}
+
+.campus-achievement-title {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #374151;
+}
+
+.campus-achievement-more {
+  font-size: 20rpx;
+  color: #3b82f6;
+}
+
+.campus-achievement-list {
+  display: flex;
+  gap: 24rpx;
+  overflow-x: auto;
+  padding-bottom: 8rpx;
+}
+
+.achievement-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8rpx;
+  flex-shrink: 0;
+}
+
+.achievement-icon {
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.achievement-icon .iconfont {
+  font-size: 40rpx;
+}
+
+.ach-orange { background: #ffedd5; }
+.ach-orange .iconfont { color: #f97316; }
+.ach-green { background: #dcfce7; }
+.ach-green .iconfont { color: #22c55e; }
+.ach-blue { background: #dbeafe; }
+.ach-blue .iconfont { color: #3b82f6; }
+.ach-gray { background: #f3f4f6; opacity: 0.5; }
+.ach-gray .iconfont { color: #9ca3af; }
+
+.achievement-locked .achievement-icon {
+  opacity: 0.5;
+}
+
+.achievement-name {
+  font-size: 18rpx;
+  font-weight: bold;
+  color: #374151;
+}
+
+.achievement-locked .achievement-name {
+  color: #9ca3af;
+}
+
+/* 校园跑 Tab 日历卡片（白色底，对齐 index.html） */
+.campus-calendar .calendar-card {
+  background: #fff;
+  border-radius: 24rpx;
+  padding: 28rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.05);
+}
+
+/* 晨跑日历：浅绿底矩形打卡标志 */
+.calendar-section {
+  padding: 20rpx 30rpx 0;
 }
 </style>
