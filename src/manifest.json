@@ -46,6 +46,11 @@
     "enable": false
   },
   "h5": {
+    "publicPath": "/",
+    "router": {
+      "mode": "hash",
+      "base": "/"
+    },
     "devServer": {
       "port": 5173,
       "disableHostCheck": true
@@ -60,6 +65,5 @@
         }
       }
     }
-  },
-  "vueVersion": "3"
+  }
 }
