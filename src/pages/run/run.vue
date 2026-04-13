@@ -19,9 +19,6 @@
         :class="{ active: currentTab === tab.key }"
         @click="switchTab(tab.key)"
       >
-        <text v-if="tab.key === 'campus'" class="iconfont icon-field tab-icon"></text>
-        <text v-else-if="tab.key === 'morning'" class="iconfont icon-sun tab-icon"></text>
-        <text v-else-if="tab.key === 'marathon'" class="iconfont icon-trophy tab-icon"></text>
         {{ tab.name }}
       </view>
     </view>
@@ -209,40 +206,28 @@
               <view class="calendar-grid">
                 <text v-for="day in weekdays" :key="day" class="weekday">{{ day }}</text>
                 <view
-                  v-for="n in prevMonthPadding"
-                  :key="'prev-' + n"
-                  class="day-cell empty"
-                >
-                  <text class="day-num">{{ getPrevMonthDay(n) }}</text>
-                </view>
-                <view
-                  v-for="day in daysInMonth"
-                  :key="'cur-' + day"
+                  v-for="(item, index) in displayCalendarDays"
+                  :key="index"
                   class="day-cell"
-                  :class="getDayState(day).cls"
-                  :style="getDayCellStyle(day)"
-                  @tap="onDayTap(day)"
+                  :class="{
+                    active: item.hasRun,
+                    today: item.isToday,
+                    empty: !item.isCurrentMonth
+                  }"
+                  @click="selectDate(item)"
                 >
-                  <text class="day-num">{{ day }}</text>
-                  <view
-                    v-for="(badge, idx) in getDayBadges(day)"
-                    :key="idx"
-                    :class="badge === 'marathon' ? 'day-dot marathon-badge' : ''"
-                  ></view>
+                  {{ item.date }}
+                  <view v-if="item.hasRun" class="day-dot"></view>
                 </view>
               </view>
               <view class="calendar-legend">
                 <view class="legend-item">
                   <view class="legend-dot green"></view>
-                  <text class="legend-text">自由跑</text>
-                </view>
-                <view class="legend-item">
-                  <view class="legend-dot dark-green"></view>
-                  <text class="legend-text">晨跑</text>
+                  <text>已运动</text>
                 </view>
                 <view class="legend-item">
                   <view class="legend-dot orange"></view>
-                  <text class="legend-text">马拉松训练</text>
+                  <text>今日</text>
                 </view>
               </view>
             </view>
@@ -362,17 +347,17 @@
             <view class="section-card">
               <view class="card-header">
                 <text class="card-title">本阶段晨跑目标</text>
-                <text class="progress-text">{{ morningCompletedDays }}/26 次</text>
+                <text class="progress-text">{{ morningCheckins.length }}/26 次</text>
               </view>
               <view class="segmented-progress">
                 <view
                   v-for="i in 6"
                   :key="i"
                   class="progress-segment"
-                  :class="{ filled: i <= Math.floor(morningCompletedDays / 5), half: i === Math.ceil(morningCompletedDays / 5) && morningCompletedDays % 5 !== 0 }"
-                  :style="{ width: i === Math.ceil(morningCompletedDays / 5) && morningCompletedDays % 5 !== 0 ? (morningCompletedDays % 5 * 3) + '%' : '15%' }"
+                  :class="{ filled: i <= Math.floor(morningCheckins.length / 5), half: i === Math.ceil(morningCheckins.length / 5) && morningCheckins.length % 5 !== 0 }"
+                  :style="{ width: i === Math.ceil(morningCheckins.length / 5) && morningCheckins.length % 5 !== 0 ? (morningCheckins.length % 5 * 3) + '%' : '15%' }"
                 ></view>
-                <view class="progress-segment empty" :style="{ width: (100 - morningCompletedDays * 3.85) + '%' }"></view>
+                <view class="progress-segment empty" :style="{ width: (100 - morningCheckins.length * 3.85) + '%' }"></view>
               </view>
               <view class="stats-grid-2">
                 <view class="stat-box">
@@ -399,26 +384,27 @@
               </view>
               <view class="checkin-calendar">
                 <view
-                  v-for="n in prevMorningMonthPadding"
-                  :key="'prev-' + n"
-                  class="day-cell empty"
+                  v-for="item in displayMorningCalendar"
+                  :key="item.dateStr"
+                  class="checkin-day"
+                  :class="{
+                    checked: item.checked,
+                    today: item.isToday,
+                    future: item.isFuture
+                  }"
+                  @click="toggleCheckin(item)"
                 >
-                  <text class="day-num">{{ getPrevMonthDay(n) }}</text>
-                </view>
-                <view
-                  v-for="day in daysInMorningMonth"
-                  :key="'cur-' + day"
-                  class="day-cell"
-                  :style="getDayCellStyleMorning(day)"
-                  @tap="onDayTapMorning(day)"
-                >
-                  <text class="day-num">{{ day }}</text>
+                  {{ item.day }}
                 </view>
               </view>
               <view class="calendar-legend">
                 <view class="legend-item">
-                  <view class="legend-dot dark-green"></view>
-                  <text class="legend-text">晨跑已打卡</text>
+                  <view class="legend-dot green"></view>
+                  <text>已打卡</text>
+                </view>
+                <view class="legend-item">
+                  <view class="legend-dot orange"></view>
+                  <text>今日</text>
                 </view>
               </view>
             </view>
@@ -439,7 +425,6 @@
                 </view>
                 <view class="history-status">
                   <text class="status-text">打卡成功</text>
-                  <text class="status-time">{{ item.time }}</text>
                   <text class="iconfont icon-leaf green"></text>
                 </view>
               </view>
@@ -715,22 +700,6 @@ if (typeof CanvasRenderingContext2D !== 'undefined') {
 export default {
   data() {
     return {
-      // 状态设计（统一、清晰、可扩展）
-      DAY_STYLES: {
-        empty:   { cls: 'empty',   bg: '',                        badge: false },
-        future:  { cls: 'future',  bg: '',                        badge: false },
-        today:   { cls: 'today',   bg: '',                        badge: false },
-        morning: { cls: 'morning', bg: 'background-color:#d1fae5;', badge: false },
-        free:    { cls: 'free',    bg: 'background-color:#d1fae5;', badge: false },
-        marathon:{ cls: 'marathon',bg: '',                        badge: true  },
-      },
-      // 多打卡优先级：自由跑 > 晨跑 > 马拉松
-      TYPE_PRIORITY: ['free', 'morning', 'marathon'],
-      // 当天日期常量
-      TODAY_YEAR: 2026,
-      TODAY_MONTH: 4,
-      TODAY_DAY: 8,
-      
       currentTab: 'campus',
       statusTime: '09:41',
       scrollTop: 0,
@@ -797,6 +766,7 @@ export default {
       currentMonth: 4,
       calendarDate: '2026-04',
       weekdays: ['一', '二', '三', '四', '五', '六', '日'],
+      runRecords: [],
       
       // 晨跑相关
       morningYear: 2026,
@@ -807,30 +777,7 @@ export default {
       morningDuration: '00:00',
       morningTotalDistance: '39.41',
       morningPoints: 450,
-      
-      // 打卡记录数据 - 扩展类型：morning(晨跑)/free(自由跑)/marathon(马拉松)
-      runRecords: {
-        '2026-4': {
-          1: ['free', 'morning'],
-          2: 'morning',
-          3: ['free', 'morning', 'marathon'],
-          5: 'free',
-          6: ['free', 'morning', 'marathon'],
-          7: 'marathon',
-          8: ['free', 'marathon']
-        },
-        '2026-3': { 
-          2: 'morning', 5: 'free', 12: 'free', 18: 'marathon', 25: 'marathon', 28: 'morning' 
-        },
-        '2026-2': { 
-          3: 'morning', 7: 'free', 14: 'marathon', 20: 'free', 27: 'morning' 
-        },
-        '2026-1': { 
-          5: 'morning', 10: 'free', 15: 'marathon', 22: 'free', 29: 'morning' 
-        },
-        '2026-5': { 3: 'free', 10: 'marathon' },
-        '2026-6': { 1: 'free', 5: 'marathon', 15: 'free' },
-      },
+      morningCheckins: [],
       
       // 马拉松相关
       trainingYear: 2026,
@@ -849,7 +796,7 @@ export default {
         { key: 'marathon', name: '马拉松训练' }
       ],
       bottomTabs: [
-        { key: 'campus', name: '校园跑', icon: 'icon-field' },
+        { key: 'campus', name: '校园跑', icon: 'icon-sneaker' },
         { key: 'morning', name: '晨跑计划', icon: 'icon-sun' },
         { key: 'marathon', name: '马拉松训练', icon: 'icon-trophy' }
       ],
@@ -870,9 +817,9 @@ export default {
       ],
       
       morningHistory: [
-        { id: 1, date: '2026.04.09', distance: '5.20KM', duration: '31:40', pace: '06\'05"', time: '6:50-7:20', thumb: 'https://modao.cc/agent-py/media/generated_images/2026-04-10/d7294226572d438d8e8de2fe6568f8d1.jpg' },
-        { id: 2, date: '2026.04.08', distance: '3.80KM', duration: '22:15', pace: '05\'51"', time: '6:45-7:10', thumb: 'https://modao.cc/agent-py/media/generated_images/2026-04-10/d7294226572d438d8e8de2fe6568f8d1.jpg' },
-        { id: 3, date: '2026.04.07', distance: '4.50KM', duration: '28:20', pace: '06\'17"', time: '7:00-7:30', thumb: 'https://modao.cc/agent-py/media/generated_images/2026-04-10/d7294226572d438d8e8de2fe6568f8d1.jpg' }
+        { id: 1, date: '2026.04.09', distance: '5.20KM', duration: '31:40', pace: '06\'05"', thumb: 'https://modao.cc/agent-py/media/generated_images/2026-04-10/d7294226572d438d8e8de2fe6568f8d1.jpg' },
+        { id: 2, date: '2026.04.08', distance: '3.80KM', duration: '22:15', pace: '05\'51"', thumb: 'https://modao.cc/agent-py/media/generated_images/2026-04-10/d7294226572d438d8e8de2fe6568f8d1.jpg' },
+        { id: 3, date: '2026.04.07', distance: '4.50KM', duration: '28:20', pace: '06\'17"', thumb: 'https://modao.cc/agent-py/media/generated_images/2026-04-10/d7294226572d438d8e8de2fe6568f8d1.jpg' }
       ],
       
       marathonEvents: [
@@ -892,7 +839,73 @@ export default {
       return this.plans.filter(p => p.status === this.planFilter)
     },
     
-
+    displayCalendarDays() {
+      const days = []
+      const firstDay = new Date(this.currentYear, this.currentMonth - 1, 1)
+      const lastDay = new Date(this.currentYear, this.currentMonth, 0)
+      const startWeekday = firstDay.getDay() || 7
+      
+      const prevMonthLastDay = new Date(this.currentYear, this.currentMonth - 1, 0).getDate()
+      for (let i = startWeekday - 1; i > 0; i--) {
+        days.push({
+          date: prevMonthLastDay - i + 1,
+          isCurrentMonth: false,
+          hasRun: this.hasRunRecord(this.currentYear, this.currentMonth - 1, prevMonthLastDay - i + 1),
+          isToday: false
+        })
+      }
+      
+      const today = new Date()
+      for (let i = 1; i <= lastDay.getDate(); i++) {
+        days.push({
+          date: i,
+          isCurrentMonth: true,
+          hasRun: this.hasRunRecord(this.currentYear, this.currentMonth, i),
+          isToday: today.getFullYear() === this.currentYear && 
+                   today.getMonth() + 1 === this.currentMonth && 
+                   today.getDate() === i
+        })
+      }
+      
+      const remainingDays = 42 - days.length
+      for (let i = 1; i <= remainingDays; i++) {
+        days.push({
+          date: i,
+          isCurrentMonth: false,
+          hasRun: this.hasRunRecord(this.currentYear, this.currentMonth + 1, i),
+          isToday: false
+        })
+      }
+      
+      return days
+    },
+    
+    displayMorningCalendar() {
+      const days = []
+      const today = new Date()
+      const year = this.morningYear
+      const month = this.morningMonth
+      
+      for (let i = 1; i <= 12; i++) {
+        const date = new Date(year, month - 1, i)
+        const dateStr = `${year}-${month.toString().padStart(2, '0')}-${i.toString().padStart(2, '0')}`
+        const isChecked = this.morningCheckins.includes(dateStr)
+        const isToday = today.getFullYear() === year && 
+                       today.getMonth() + 1 === month && 
+                       today.getDate() === i
+        const isFuture = date > today
+        
+        days.push({
+          day: i,
+          dateStr,
+          checked: isChecked,
+          isToday,
+          isFuture
+        })
+      }
+      
+      return days
+    },
     
     displayTrainingWeek() {
       const days = []
@@ -918,6 +931,7 @@ export default {
     this.getCurrentLocation()
     this.getWeatherInfo()
     this.loadRunRecords()
+    this.loadMorningCheckins()
     this.$nextTick(() => {
       this.initChart()
     })
@@ -925,86 +939,6 @@ export default {
     setInterval(() => {
       this.updateStatusTime()
     }, 60000)
-  },
-  
-  computed: {
-    filteredPlans() {
-      return this.plans.filter(p => p.status === this.planFilter)
-    },
-    
-    // 当月「有任意跑步打卡」的天数：一天无论几种类型都只算 1 天（与日历格子一致）
-    completedDays() {
-      const dim = new Date(this.currentYear, this.currentMonth, 0).getDate()
-      let n = 0
-      for (let d = 1; d <= dim; d++) {
-        const s = this.getDayStatus(d)
-        if (s == null || s === '') continue
-        if (Array.isArray(s) && s.length === 0) continue
-        n++
-      }
-      return n
-    },
-    
-    displayMonthText() {
-      const map = { 1:'1月',2:'2月',3:'3月',4:'4月',5:'5月',6:'6月',7:'7月',8:'8月',9:'9月',10:'10月',11:'11月',12:'12月' }
-      return map[this.currentMonth] || `${this.currentMonth}月`
-    },
-    
-    daysInMonth() {
-      return new Date(this.currentYear, this.currentMonth, 0).getDate()
-    },
-    
-    firstDayWeekday() {
-      const d = new Date(this.currentYear, this.currentMonth - 1, 1).getDay()
-      return d === 0 ? 7 : d
-    },
-    
-    prevMonthPadding() {
-      return this.firstDayWeekday - 1
-    },
-    
-    // 晨跑日历相关计算属性
-    morningCompletedDays() {
-      const dim = new Date(this.morningYear, this.morningMonth, 0).getDate()
-      let n = 0
-      for (let d = 1; d <= dim; d++) {
-        const s = this.getDayStatusMorning(d)
-        const hasMorning = Array.isArray(s) ? s.includes('morning') : s === 'morning'
-        if (hasMorning) n++
-      }
-      return n
-    },
-    
-    daysInMorningMonth() {
-      return new Date(this.morningYear, this.morningMonth, 0).getDate()
-    },
-    
-    firstDayWeekdayMorning() {
-      const d = new Date(this.morningYear, this.morningMonth - 1, 1).getDay()
-      return d === 0 ? 7 : d
-    },
-    
-    prevMorningMonthPadding() {
-      return this.firstDayWeekdayMorning - 1
-    },
-    
-    displayTrainingWeek() {
-      const days = []
-      const today = new Date()
-      const weekdays = ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
-      
-      for (let i = 0; i < 7; i++) {
-        const date = new Date(this.trainingYear, this.trainingMonth - 1, i + 6)
-        days.push({
-          week: weekdays[i],
-          date: date.getDate(),
-          trained: this.hasTrainingRecord(date),
-          isToday: date.toDateString() === today.toDateString()
-        })
-      }
-      
-      return days
-    }
   },
   
   beforeDestroy() {
@@ -1019,213 +953,6 @@ export default {
         this.$nextTick(() => {
           this.initChart()
         })
-      }
-    },
-    
-    // ==========================================
-    // 状态管理函数
-    // ==========================================
-    getDayState(day) {
-      const status = this.getDayStatus(day)
-      const future = this.isFutureDay(day)
-      const today = this.isToday(day)
-
-      if (future) return this.DAY_STYLES.future
-      if (today) return this.DAY_STYLES.today
-      if (!status) return this.DAY_STYLES.empty
-      // 有打卡时，背景/边框样式取优先级最高的那个
-      const types = Array.isArray(status) ? status : [status]
-      const top = this.TYPE_PRIORITY.find(t => types.includes(t)) || 'morning'
-      return this.DAY_STYLES[top]
-    },
-
-    getDayCellStyle(day) {
-      const state = this.getDayState(day)
-      const status = this.getDayStatus(day)
-      if (state.cls === 'empty') return ''
-      if (state.cls === 'future') return ''
-      if (state.cls === 'today') return 'border: 4rpx solid #065f46;'
-      
-      const types = Array.isArray(status) ? status : [status]
-      const hasFree = types.includes('free')
-      const hasMorning = types.includes('morning')
-      
-      let style = ''
-      
-      if (hasMorning) {
-        style += 'background-color: #d1fae5;'
-      }
-      
-      if (hasFree) {
-        style += 'border: 4rpx solid #065f46; box-shadow: 0 0 16rpx rgba(5, 150, 105, 0.7), 0 0 32rpx rgba(5, 150, 105, 0.4);'
-      }
-      
-      return style
-    },
-
-    getDayBadges(day) {
-      const status = this.getDayStatus(day)
-      if (!status) return []
-      const types = Array.isArray(status) ? status : [status]
-      return types.filter(t => t === 'marathon')
-    },
-
-    getDayStatus(day) {
-      const key = `${this.currentYear}-${this.currentMonth}`
-      const val = this.runRecords[key]?.[day]
-      if (!val) return null
-      // 如果是数组说明当天有多条打卡，取第一个作为主样式（可按优先级调整顺序）
-      if (Array.isArray(val)) return val
-      return val
-    },
-
-    isFutureDay(day) {
-      if (this.currentYear > this.TODAY_YEAR) return true
-      if (this.currentYear === this.TODAY_YEAR && this.currentMonth > this.TODAY_MONTH) return true
-      if (this.currentYear === this.TODAY_YEAR && this.currentMonth === this.TODAY_MONTH && day > this.TODAY_DAY) return true
-      return false
-    },
-
-    isToday(day) {
-      return this.currentYear === this.TODAY_YEAR && this.currentMonth === this.TODAY_MONTH && day === this.TODAY_DAY
-    },
-
-    getPrevMonthDay(n) {
-      const prevM = this.currentMonth === 1 ? 12 : this.currentMonth - 1
-      const prevY = this.currentMonth === 1 ? this.currentYear - 1 : this.currentYear
-      const prevDays = new Date(prevY, prevM, 0).getDate()
-      return prevDays - this.prevMonthPadding + n
-    },
-
-    onDayTap(day) {
-      if (this.isFutureDay(day)) {
-        uni.showToast({ title: '还未到这一天哦', icon: 'none' })
-        return
-      }
-      const state = this.getDayState(day)
-      // 有打卡记录 → 只提示，不修改
-      if (state !== this.DAY_STYLES.empty && state !== this.DAY_STYLES.future && state !== this.DAY_STYLES.today) {
-        const typeText = { morning: '晨跑', free: '自由跑', marathon: '马拉松训练' }
-        const types = Array.isArray(this.getDayStatus(day)) ? this.getDayStatus(day) : [this.getDayStatus(day)]
-        const label = types.map(t => typeText[t]).join('、') || '打卡'
-        uni.showToast({ title: `已完成${label}`, icon: 'none' })
-        return
-      }
-      // 无打卡 → 存入
-      const key = `${this.currentYear}-${this.currentMonth}`
-      if (!this.runRecords[key]) this.runRecords[key] = {}
-      const existing = this.runRecords[key][day]
-      const currentType = this.currentTab === 'morning' ? 'morning' : 'free'
-      if (existing) {
-        const arr = Array.isArray(existing) ? existing : [existing]
-        if (!arr.includes(currentType)) arr.push(currentType)
-        this.runRecords[key][day] = arr
-      } else {
-        this.runRecords[key][day] = currentType
-      }
-      const typeText2 = { morning: '晨跑', free: '自由跑' }
-      uni.showToast({ title: `${typeText2[currentType] || '打卡'}成功`, icon: 'success' })
-    },
-
-    onDayTapMorning(day) {
-      if (this.isFutureDayMorning(day)) {
-        uni.showToast({ title: '还未到这一天哦', icon: 'none' })
-        return
-      }
-      const key = `${this.morningYear}-${this.morningMonth}`
-      const status = this.getDayStatusMorning(day)
-      if (status) {
-        uni.showToast({ title: '已完成晨跑', icon: 'none' })
-        return
-      }
-      if (!this.runRecords[key]) this.runRecords[key] = {}
-      this.runRecords[key][day] = 'morning'
-      uni.showToast({ title: '晨跑打卡成功', icon: 'success' })
-    },
-
-    getDayStatusMorning(day) {
-      const key = `${this.morningYear}-${this.morningMonth}`
-      const val = this.runRecords[key]?.[day]
-      if (!val) return null
-      if (Array.isArray(val)) return val
-      return val
-    },
-
-    getDayBadgesMorning(day) {
-      const status = this.getDayStatusMorning(day)
-      if (!status) return []
-      const types = Array.isArray(status) ? status : [status]
-      return types.filter(t => t === 'marathon')
-    },
-
-    getDayCellStyleMorning(day) {
-      const status = this.getDayStatusMorning(day)
-      const future = this.isFutureDayMorning(day)
-      const today = this.isTodayMorning(day)
-      if (future) return ''
-      const hasMorning = Array.isArray(status) ? status.includes('morning') : status === 'morning'
-      if (hasMorning) {
-        return 'background-color: #d1fae5; color: #059669; border: 2rpx solid #10b981;'
-      }
-      if (today) {
-        return 'background-color: #d1fae5; color: #059669; border: 2rpx solid #10b981;'
-      }
-      return ''
-    },
-
-    isFutureDayMorning(day) {
-      if (this.morningYear > this.TODAY_YEAR) return true
-      if (this.morningYear === this.TODAY_YEAR && this.morningMonth > this.TODAY_MONTH) return true
-      if (this.morningYear === this.TODAY_YEAR && this.morningMonth === this.TODAY_MONTH && day > this.TODAY_DAY) return true
-      return false
-    },
-
-    isTodayMorning(day) {
-      return this.morningYear === this.TODAY_YEAR && this.morningMonth === this.TODAY_MONTH && day === this.TODAY_DAY
-    },
-
-    // 月份切换
-    prevMonth() {
-      if (this.currentMonth === 1) {
-        this.currentMonth = 12
-        this.currentYear--
-      } else {
-        this.currentMonth--
-      }
-    },
-
-    nextMonth() {
-      if (this.currentYear === this.TODAY_YEAR && this.currentMonth >= this.TODAY_MONTH) {
-        uni.showToast({ title: '只能翻到当月', icon: 'none' })
-        return
-      }
-      if (this.currentMonth === 12) {
-        this.currentMonth = 1
-        this.currentYear++
-      } else {
-        this.currentMonth++
-      }
-    },
-
-    prevMorningMonth() {
-      if (this.morningMonth === 1) {
-        this.morningMonth = 12
-        this.morningYear--
-      } else {
-        this.morningMonth--
-      }
-    },
-
-    nextMorningMonth() {
-      if (this.morningYear === this.TODAY_YEAR && this.morningMonth >= this.TODAY_MONTH) {
-        uni.showToast({ title: '只能翻到当月', icon: 'none' })
-        return
-      }
-      if (this.morningMonth === 12) {
-        this.morningMonth = 1
-        this.morningYear++
-      } else {
-        this.morningMonth++
       }
     },
     
@@ -1604,14 +1331,16 @@ export default {
     
     saveMorningRunRecord() {
       const today = new Date()
-      const year = today.getFullYear()
-      const month = today.getMonth() + 1
-      const day = today.getDate()
-      const key = `${year}-${month}`
+      const dateStr = `${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, '0')}-${today.getDate().toString().padStart(2, '0')}`
       
-      // 保存晨跑记录到runRecords
-      if (!this.runRecords[key]) this.runRecords[key] = {}
-      this.runRecords[key][day] = 'morning'
+      if (!this.morningCheckins.includes(dateStr)) {
+        this.morningCheckins.push(dateStr)
+        try {
+          uni.setStorageSync('morningCheckins', JSON.stringify(this.morningCheckins))
+        } catch (e) {
+          console.error('保存失败', e)
+        }
+      }
       
       this.morningTotalDistance = (parseFloat(this.morningTotalDistance) + parseFloat(this.morningDistance)).toFixed(2)
       this.morningPoints += Math.floor(parseFloat(this.morningDistance) * 10)
@@ -1620,6 +1349,10 @@ export default {
         title: '晨跑完成！',
         icon: 'success'
       })
+    },
+    
+    morningPunch() {
+      this.punchMorning()
     },
     
     viewMorningStats() {
@@ -1780,6 +1513,11 @@ export default {
       }
     },
     
+    hasRunRecord(year, month, day) {
+      const dateStr = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`
+      return this.runRecords.some(r => r.date === dateStr)
+    },
+    
     loadRunRecords() {
       try {
         const records = uni.getStorageSync('runRecords')
@@ -1810,10 +1548,6 @@ export default {
     },
     
     nextMorningMonth() {
-      if (this.morningYear === this.TODAY_YEAR && this.morningMonth >= this.TODAY_MONTH) {
-        uni.showToast({ title: '只能翻到当月', icon: 'none' })
-        return
-      }
       if (this.morningMonth === 12) {
         this.morningMonth = 1
         this.morningYear++
@@ -1821,6 +1555,71 @@ export default {
         this.morningMonth++
       }
       this.morningCalendarDate = `${this.morningYear}-${this.morningMonth.toString().padStart(2, '0')}`
+    },
+    
+    punchMorning() {
+      const today = new Date()
+      const dateStr = `${today.getFullYear()}-${(today.getMonth() + 1).toString().padStart(2, '0')}-${today.getDate().toString().padStart(2, '0')}`
+      
+      if (!this.morningCheckins.includes(dateStr)) {
+        this.morningCheckins.push(dateStr)
+        try {
+          uni.setStorageSync('morningCheckins', JSON.stringify(this.morningCheckins))
+        } catch (e) {
+          console.error('保存失败', e)
+        }
+        
+        uni.showToast({
+          title: '打卡成功！',
+          icon: 'success'
+        })
+      } else {
+        uni.showToast({
+          title: '今日已打卡',
+          icon: 'none'
+        })
+      }
+    },
+    
+    toggleCheckin(item) {
+      if (item.isFuture) {
+        uni.showToast({
+          title: '不能提前打卡',
+          icon: 'none'
+        })
+        return
+      }
+      
+      if (!item.checked) {
+        this.morningCheckins.push(item.dateStr)
+      } else {
+        const index = this.morningCheckins.indexOf(item.dateStr)
+        if (index > -1) {
+          this.morningCheckins.splice(index, 1)
+        }
+      }
+      
+      try {
+        uni.setStorageSync('morningCheckins', JSON.stringify(this.morningCheckins))
+      } catch (e) {
+        console.error('保存失败', e)
+      }
+      
+      uni.showToast({
+        title: item.checked ? '取消打卡' : '打卡成功',
+        icon: 'success'
+      })
+    },
+    
+    loadMorningCheckins() {
+      try {
+        const checkins = uni.getStorageSync('morningCheckins')
+        if (checkins) {
+          this.morningCheckins = JSON.parse(checkins)
+        }
+      } catch (e) {
+        console.error('加载失败', e)
+      }
     },
     
     onTrainingDateChange(e) {
@@ -2007,9 +1806,6 @@ export default {
 </script>
 
 <style>
-/* 引入图标字体 */
-@import url('/src/static/iconfont.css');
-
 /* 全局样式 - 保持与之前相同 */
 page {
   background-color: #f3f4f6;
@@ -2072,11 +1868,6 @@ page {
   color: #22c55e;
   border-bottom-color: #22c55e;
   font-weight: bold;
-}
-
-.tab-icon {
-  margin-right: 6px;
-  font-size: 16px;
 }
 
 .content-scroll {
@@ -2633,143 +2424,86 @@ page {
   text-align: center;
 }
 
-.weekday {
-  text-align: center;
-  font-size: 20rpx;
-  color: #d1d5db;
-  font-weight: 600;
-  padding: 8rpx 0;
-}
-
 .calendar-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 12rpx;
+  gap: 3px;
+  text-align: center;
+}
+
+.weekday {
+  font-size: 9px;
+  color: #9ca3af;
+  margin-bottom: 5px;
 }
 
 .day-cell {
-  height: 68rpx;
+  aspect-ratio: 1;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  border-radius: 16rpx;
+  font-size: 10px;
   position: relative;
-  font-weight: 700;
-  transition: transform 0.15s ease;
-}
-
-.day-cell:active {
-  transform: scale(0.90);
-}
-
-.day-num {
-  font-size: 24rpx;
-  color: inherit;
-  line-height: 1;
+  border-radius: 5px;
+  background-color: #f9fafb;
+  cursor: pointer;
+  padding: 2px;
 }
 
 .day-cell.empty {
-  color: #e5e7eb;
+  color: #d1d5db;
 }
 
-.day-cell.future {
-  color: #e5e7eb;
-}
-
-.day-cell.free {
-  background-color: transparent;
-  color: #065f46;
-  border: 4rpx solid #065f46;
-  box-shadow: 0 0 16rpx rgba(5, 150, 105, 0.7), 0 0 32rpx rgba(5, 150, 105, 0.4);
-}
-
-.day-cell.morning {
-  background-color: #d1fae5;
-  color: #059669;
-  box-shadow: 0 4rpx 12rpx rgba(16, 185, 129, 0.15);
-}
-
-.day-cell.marathon {
-  box-shadow: none;
+.day-cell.active {
+  background-color: #dcfce7;
+  color: #16a34a;
+  font-weight: bold;
 }
 
 .day-cell.today {
-  background-color: transparent;
-  color: #065f46;
-  border: 4rpx solid #065f46;
-  box-shadow: 0 0 16rpx rgba(5, 150, 105, 0.7), 0 0 32rpx rgba(5, 150, 105, 0.4);
+  background-color: #22c55e;
+  color: #ffffff;
+  font-weight: bold;
 }
 
 .day-dot {
   position: absolute;
-  top: 4rpx;
-  width: 14rpx;
-  height: 14rpx;
-  background-color: #f97316;
+  bottom: 2px;
+  width: 3px;
+  height: 3px;
+  background-color: #22c55e;
   border-radius: 50%;
-  border: 2rpx solid #fff;
-}
-
-.day-dot.orange {
-  background-color: #f97316;
-}
-
-.day-dot.marathon-badge {
-  position: absolute;
-  top: 4rpx;
-  right: 4rpx;
-  width: 16rpx;
-  height: 16rpx;
-  background-color: #f97316;
-  border-radius: 50%;
-  border: 2rpx solid #fff;
-  box-shadow: 0 2rpx 6rpx rgba(249, 115, 22, 0.40);
-  z-index: 2;
 }
 
 .calendar-legend {
   display: flex;
-  gap: 24rpx;
-  margin-top: 24rpx;
-  padding-top: 16rpx;
-  border-top: 2rpx solid #f3f4f6;
-  flex-wrap: wrap;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid #f3f4f6;
 }
 
 .legend-item {
   display: flex;
   align-items: center;
-  gap: 8rpx;
+  gap: 4px;
+  font-size: 9px;
+  color: #6b7280;
 }
 
 .legend-dot {
-  width: 16rpx;
-  height: 16rpx;
-  border-radius: 4rpx;
-  flex-shrink: 0;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
 }
 
 .legend-dot.green {
-  background-color: transparent;
-  border: 3rpx solid #065f46;
-  box-shadow: 0 0 16rpx rgba(5, 150, 105, 0.7), 0 0 32rpx rgba(5, 150, 105, 0.4);
-}
-
-.legend-dot.dark-green {
-  background-color: #d1fae5;
-  border: none;
+  background-color: #22c55e;
 }
 
 .legend-dot.orange {
   background-color: #f97316;
-  border-radius: 50%;
-  border: 2rpx solid rgba(255,255,255,0.6);
-  box-shadow: 0 2rpx 6rpx rgba(249, 115, 22, 0.40);
-}
-
-.legend-dot.future {
-  background-color: #e5e7eb;
 }
 
 /* 成就 */
@@ -2984,13 +2718,6 @@ page {
   font-size: 10px;
   color: #16a34a;
   font-weight: bold;
-  margin-bottom: 3px;
-}
-
-.status-time {
-  display: block;
-  font-size: 9px;
-  color: #9ca3af;
   margin-bottom: 3px;
 }
 
@@ -3326,9 +3053,6 @@ page {
 .iconfont {
   font-size: 22px;
 }
-
-/* 操场图标 */
-.icon-field:before { content: "🏟️"; }
 
 .green-text {
   color: #22c55e;
