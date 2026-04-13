@@ -2,7 +2,9 @@
   <view class="page-low-carbon">
     <!-- 头部 -->
     <view class="lc-header">
-      <text class="iconfont icon-chevron-left" @tap="goBack"></text>
+      <view class="sport-back-btn" @tap="goBack">
+        <text class="iconfont icon-chevron-left"></text>
+      </view>
       <text class="lc-logo">Travel<text class="lc-logo-accent">Zero</text></text>
       <text class="lc-date-blue">2026.04.11</text>
     </view>
@@ -46,7 +48,6 @@
               <text class="travel-name">公交地铁</text>
               <text class="travel-desc">线路选择 · 乘车次数凭证</text>
             </view>
-            <button class="travel-btn">补录</button>
           </view>
           <view class="travel-item">
             <view class="travel-icon green-icon">
@@ -56,7 +57,6 @@
               <text class="travel-name">共享单车/私车</text>
               <text class="travel-desc">扫码自动记录公里数</text>
             </view>
-            <button class="travel-btn blue-btn-sm">开启</button>
           </view>
           <view class="travel-item">
             <view class="travel-icon orange-icon-sm">
@@ -66,7 +66,6 @@
               <text class="travel-name">步行通勤</text>
               <text class="travel-desc">上下学通勤路径校验</text>
             </view>
-            <button class="travel-btn">核验</button>
           </view>
           <view class="travel-item">
             <view class="travel-icon purple-icon-sm">
@@ -76,7 +75,6 @@
               <text class="travel-name">拼车共享</text>
               <text class="travel-desc">多人结伴奖励积分 x1.5</text>
             </view>
-            <button class="travel-btn">添加队友</button>
           </view>
           <view class="travel-item">
             <view class="travel-icon cyan-icon-sm">
@@ -86,7 +84,6 @@
               <text class="travel-name">新能源代步</text>
               <text class="travel-desc">电车/滑板车合规打卡</text>
             </view>
-            <button class="travel-btn">认证</button>
           </view>
           <view class="travel-item">
             <view class="travel-icon rose-icon-sm">
@@ -96,7 +93,6 @@
               <text class="travel-name">校车通勤</text>
               <text class="travel-desc">扫码记录校内校车次数</text>
             </view>
-            <button class="travel-btn">扫码</button>
           </view>
         </view>
       </view>
@@ -149,8 +145,25 @@ const switchTab = (tab) => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 80rpx 30rpx 24rpx 16rpx;
+  padding: 80rpx 24rpx 24rpx 16rpx;
   background: #fff;
+  gap: 16rpx;
+}
+
+.sport-back-btn {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 16rpx;
+  background: #f3f4f6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.sport-back-btn .iconfont {
+  font-size: 34rpx;
+  color: #1f2937;
 }
 
 .lc-logo {
@@ -353,18 +366,6 @@ const switchTab = (tab) => {
   color: #9ca3af;
 }
 
-.travel-btn {
-  font-size: 20rpx;
-  font-weight: bold;
-  padding: 12rpx 20rpx;
-  border-radius: 16rpx;
-  border: none;
-  background: #f3f4f6;
-  color: #4b5563;
-  flex-shrink: 0;
-}
-
-.blue-btn-sm { background: #3b82f6; color: #fff; }
 
 /* ============================================= */
 /* 底部导航                                     */

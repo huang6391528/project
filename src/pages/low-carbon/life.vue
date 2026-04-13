@@ -2,7 +2,9 @@
   <view class="page-low-carbon">
     <!-- 头部 -->
     <view class="lc-header">
-      <text class="iconfont icon-chevron-left" @tap="goBack"></text>
+      <view class="sport-back-btn" @tap="goBack">
+        <text class="iconfont icon-chevron-left"></text>
+      </view>
       <text class="lc-logo">Life<text class="lc-logo-accent">Eco</text></text>
       <text class="lc-date">2026.04.11</text>
     </view>
@@ -134,8 +136,25 @@ const switchTab = (tab) => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 80rpx 30rpx 24rpx 16rpx;
+  padding: 80rpx 24rpx 24rpx 16rpx;
   background: #fff;
+  gap: 16rpx;
+}
+
+.sport-back-btn {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 16rpx;
+  background: #f3f4f6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.sport-back-btn .iconfont {
+  font-size: 34rpx;
+  color: #1f2937;
 }
 
 .lc-logo {

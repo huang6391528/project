@@ -2,15 +2,20 @@
   <view class="page-low-carbon">
     <!-- 头部 -->
     <view class="lc-header">
-      <!-- 碳资产小卡（左上角） -->
-      <view class="sport-carbon-mini">
-        <view class="carbon-mini-left">
-          <text class="carbon-mini-label">碳资产</text>
-          <text class="carbon-mini-value">2,840</text>
+      <view class="header-left-group">
+        <view class="sport-back-btn" @tap="goBack">
+          <text class="iconfont icon-chevron-left"></text>
         </view>
-        <view class="carbon-mini-right">
-          <text class="carbon-mini-kg">125.4 kg</text>
-          <text class="carbon-mini-tag">减排</text>
+        <!-- 碳资产小卡（左上角） -->
+        <view class="sport-carbon-mini">
+          <view class="carbon-mini-left">
+            <text class="carbon-mini-label">碳资产</text>
+            <text class="carbon-mini-value">2,840</text>
+          </view>
+          <view class="carbon-mini-right">
+            <text class="carbon-mini-kg">125.4 kg</text>
+            <text class="carbon-mini-tag">减排</text>
+          </view>
         </view>
       </view>
       <text class="lc-logo">Campus<text class="lc-logo-accent">Eco</text></text>
@@ -134,8 +139,32 @@ const switchTab = (tab) => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 80rpx 30rpx 24rpx 16rpx;
+  padding: 80rpx 24rpx 24rpx 16rpx;
   background: #fff;
+  gap: 16rpx;
+}
+
+.header-left-group {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  min-width: 0;
+}
+
+.sport-back-btn {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 16rpx;
+  background: #f3f4f6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.sport-back-btn .iconfont {
+  font-size: 34rpx;
+  color: #1f2937;
 }
 
 .lc-logo {
@@ -166,10 +195,10 @@ const switchTab = (tab) => {
 .sport-carbon-mini {
   background: linear-gradient(135deg, #059669 0%, #10b981 100%);
   border-radius: 20rpx;
-  padding: 16rpx 24rpx;
+  padding: 14rpx 18rpx;
   display: flex;
   align-items: center;
-  gap: 20rpx;
+  gap: 16rpx;
   box-shadow: 0 4rpx 12rpx rgba(16,185,129,0.3);
 }
 .carbon-mini-left { display: flex; flex-direction: column; }
