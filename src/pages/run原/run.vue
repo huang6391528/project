@@ -182,38 +182,7 @@
             <text class="campus-data-sub">本周跑量趋势</text>
           </view>
           <view class="campus-chart-area">
-            <view class="chart-bar-container">
-              <view class="chart-bar-row">
-                <view class="chart-bar-wrap">
-                  <view class="chart-bar" style="height: 40rpx;"></view>
-                  <text class="chart-label">周一</text>
-                </view>
-                <view class="chart-bar-wrap">
-                  <view class="chart-bar" style="height: 65rpx;"></view>
-                  <text class="chart-label">周二</text>
-                </view>
-                <view class="chart-bar-wrap">
-                  <view class="chart-bar" style="height: 25rpx;"></view>
-                  <text class="chart-label">周三</text>
-                </view>
-                <view class="chart-bar-wrap">
-                  <view class="chart-bar" style="height: 55rpx;"></view>
-                  <text class="chart-label">周四</text>
-                </view>
-                <view class="chart-bar-wrap">
-                  <view class="chart-bar" style="height: 75rpx;"></view>
-                  <text class="chart-label">周五</text>
-                </view>
-                <view class="chart-bar-wrap">
-                  <view class="chart-bar" style="height: 100rpx;"></view>
-                  <text class="chart-label">周六</text>
-                </view>
-                <view class="chart-bar-wrap">
-                  <view class="chart-bar" style="height: 50rpx;"></view>
-                  <text class="chart-label">周日</text>
-                </view>
-              </view>
-            </view>
+            <canvas canvas-id="runChart" id="runChart" class="chart-canvas"></canvas>
           </view>
         </view>
       </view>
@@ -222,7 +191,7 @@
       <view class="calendar-section">
         <view class="calendar-card">
           <view class="calendar-header">
-            <view class="title-area" @tap="showMonthPicker">
+            <view class="title-area" @tap="openMonthPicker">
               <text class="calendar-title">{{ displayMonthText }} 运动轨迹日历</text>
               <view class="picker-trigger">
                 <text class="iconfont icon-chevron-down picker-icon"></text>
@@ -404,7 +373,7 @@
       <view class="calendar-section">
         <view class="calendar-card">
           <view class="calendar-header">
-            <view class="title-area" @tap="showMonthPicker">
+            <view class="title-area" @tap="openMonthPicker">
               <text class="calendar-title">{{ displayMonthText }} 晨跑打卡</text>
               <view class="picker-trigger">
                 <text class="iconfont icon-chevron-down picker-icon"></text>
@@ -614,80 +583,53 @@
       <!-- 马拉松训练日历 -->
       <view class="marathon-calendar-section">
         <view class="marathon-calendar-card">
-          <view class="marathon-calendar-header">
-            <view class="marathon-title-area" @tap="showMarathonMonthPicker">
-              <text class="marathon-calendar-title">{{ marathonDisplayMonthText }}训练轨迹</text>
-              <view class="marathon-picker-trigger">
-                <text class="iconfont icon-chevron-down marathon-picker-icon"></text>
-              </view>
+          <text class="marathon-calendar-title">4月训练轨迹</text>
+          <view class="marathon-week-scroll">
+            <view class="marathon-week-item">
+              <text class="week-label">周一</text>
+              <view class="week-circle">06</view>
             </view>
-            <view class="marathon-header-right">
-              <text class="marathon-calendar-sub">已跑 {{ marathonCompletedDays }} 天</text>
-              <view class="marathon-month-switcher">
-                <view class="marathon-switch-btn" @tap="marathonPrevMonth">
-                  <text class="iconfont icon-chevron-left"></text>
-                </view>
-                <text class="marathon-switch-year">{{ marathonCalYear }}</text>
-                <view class="marathon-switch-btn" @tap="marathonNextMonth">
-                  <text class="iconfont icon-chevron-right"></text>
-                </view>
-              </view>
+            <view class="marathon-week-item">
+              <text class="week-label">周二</text>
+              <view class="week-circle purple">07</view>
             </view>
-          </view>
-          
-          <!-- 星期标题行 -->
-          <view class="marathon-calendar-weekdays">
-            <text class="marathon-weekday">一</text>
-            <text class="marathon-weekday">二</text>
-            <text class="marathon-weekday">三</text>
-            <text class="marathon-weekday">四</text>
-            <text class="marathon-weekday">五</text>
-            <text class="marathon-weekday">六</text>
-            <text class="marathon-weekday">日</text>
-          </view>
-          
-          <!-- 日历网格（动态渲染） -->
-          <view class="marathon-calendar-grid">
-            <!-- 上月占位格 -->
-            <view
-              v-for="n in marathonPrevMonthPadding"
-              :key="'prev-' + n"
-              class="marathon-day-cell empty"
-            >
-              <text class="marathon-day-num">{{ getMarathonPrevMonthDay(n) }}</text>
+            <view class="marathon-week-item">
+              <text class="week-label">周三</text>
+              <view class="week-circle">08</view>
             </view>
-            <!-- 当月日期 -->
-            <view
-              v-for="day in marathonDaysInMonth"
-              :key="'cur-' + day"
-              class="marathon-day-cell"
-              :class="getMarathonDayState(day).cls"
-              :style="getMarathonDayCellStyle(day)"
-              @tap="onMarathonDayTap(day)"
-            >
-              <text class="marathon-day-num">{{ day }}</text>
-              <view
-                v-for="(badge, idx) in getMarathonDayBadges(day)"
-                :key="idx"
-                class="marathon-day-dot"
-              ></view>
+            <view class="marathon-week-item">
+              <text class="week-label">周四</text>
+              <view class="week-circle purple">09</view>
             </view>
-          </view>
-          
-          <!-- 图例 -->
-          <view class="marathon-calendar-legend">
-            <view class="marathon-legend-item">
-              <view class="marathon-legend-dot purple"></view>
-              <text class="marathon-legend-text">马拉松训练</text>
+            <view class="marathon-week-item">
+              <text class="week-label today-label">今天</text>
+              <view class="week-circle green">10</view>
             </view>
-            <view class="marathon-legend-item">
-              <view class="marathon-legend-dot future"></view>
-              <text class="marathon-legend-text">未到/未打卡</text>
+            <view class="marathon-week-item">
+              <text class="week-label">周六</text>
+              <view class="week-circle">11</view>
+            </view>
+            <view class="marathon-week-item">
+              <text class="week-label">周日</text>
+              <view class="week-circle">12</view>
             </view>
           </view>
         </view>
       </view>
     </view>
+
+    <!-- 原生月份选择 picker（隐藏） -->
+    <picker
+      mode="date"
+      :value="pickerDate"
+      :fields="pickerFields"
+      :start="pickerStart"
+      :end="pickerEnd"
+      @change="onPickerChange"
+      @cancel="onPickerCancel"
+    >
+      <view id="month-picker-trigger"></view>
+    </picker>
   </view>
 </template>
 
@@ -825,7 +767,7 @@ const calMonth = ref(TODAY_MONTH)
 // picker 配置
 const pickerFields = 'month'
 const pickerStart = '2026-01'
-const pickerEnd = '2026-12'
+const pickerEnd = '2026-04'
 const pickerDate = computed(() => `${calYear.value}-${String(calMonth.value).padStart(2, '0')}`)
 
 // 打卡记录数据 - 扩展类型：morning(晨跑)/free(自由跑)/marathon(马拉松)
@@ -1060,25 +1002,25 @@ function nextMonth() {
 }
 
 // ==========================================
-// 模块二·附：月份选择器
+// 模块二·附：原生月份 picker 集成
 // ==========================================
 
-// 显示月份选择器（校园跑/晨跑）
-function showMonthPicker() {
-  // 简单的月份切换，使用左右箭头
-  // 点击标题时提示用户
-  uni.showToast({
-    title: '请点击左右箭头切换月份',
-    icon: 'none'
-  })
-}
-
-// 显示月份选择器（马拉松）
-function showMarathonMonthPicker() {
-  uni.showToast({
-    title: '请点击左右箭头切换月份',
-    icon: 'none'
-  })
+// 点击标题区域，通过操作隐藏的 picker 触发原生弹窗
+function openMonthPicker() {
+  const trigger = document.querySelector('#month-picker-trigger')
+  if (trigger) trigger.dispatchEvent(new Event('tap'))
+  // uni-app 中直接调用 uni.showPicker 的兼容写法
+  // 使用延迟确保 picker 被渲染后再触发
+  setTimeout(() => {
+    const picker = uni.createSelectorQuery().select('#month-picker-trigger')
+    // 兼容 uni-app: picker 是隐藏的，直接通知用户可操作
+    // 在实际 uni-app 运行时，<picker> 本身就是一个可点击触发器
+    // 这里通过 JS 主动调用 picker 组件的内部方法
+    const pickerNode = document.querySelector('#month-picker-trigger')
+    if (pickerNode && pickerNode.__pickerInstance) {
+      pickerNode.__pickerInstance.open()
+    }
+  }, 50)
 }
 
 // picker 选中后回调：解析 YYYY-MM，更新年月，标题自动联动
@@ -1157,186 +1099,9 @@ const achievements = ref([
   { name: '早起鸟', icon: 'icon-medal', iconClass: 'ach-orange', locked: false },
   { name: '低碳达人', icon: 'icon-tree', iconClass: 'ach-green', locked: false },
   { name: '极速跑者', icon: 'icon-lightning', iconClass: 'ach-blue', locked: false },
-  { name: '100KM 达成', icon: 'icon-target', iconClass: 'ach-gray', locked: true },
+  { name: '100KM达成', icon: 'icon-target', iconClass: 'ach-gray', locked: true },
   { name: '马拉松之星', icon: 'icon-star', iconClass: 'ach-gray', locked: true },
 ])
-
-// ==========================================
-// 马拉松月历数据
-// ==========================================
-const marathonCalYear = ref(TODAY_YEAR)
-const marathonCalMonth = ref(TODAY_MONTH)
-
-// 马拉松 picker 配置（年月滚轮）
-const marathonPickerFields = 'month'
-const marathonPickerStart = '2026-01'
-const marathonPickerEnd = '2026-12'
-const marathonPickerDate = computed(() => `${marathonCalYear.value}-${String(marathonCalMonth.value).padStart(2, '0')}`)
-
-// 马拉松月历：当月已跑天数
-const marathonCompletedDays = computed(() => {
-  const dim = new Date(marathonCalYear.value, marathonCalMonth.value, 0).getDate()
-  let n = 0
-  for (let d = 1; d <= dim; d++) {
-    const s = getMarathonDayStatus(d)
-    if (!s) continue
-    const types = Array.isArray(s) ? s : [s]
-    if (types.includes('marathon')) n++
-  }
-  return n
-})
-
-const marathonDisplayMonthText = computed(() => {
-  const map = { 1:'1 月',2:'2 月',3:'3 月',4:'4 月',5:'5 月',6:'6 月',7:'7 月',8:'8 月',9:'9 月',10:'10 月',11:'11 月',12:'12 月' }
-  return map[marathonCalMonth.value] || `${marathonCalMonth.value}月`
-})
-
-const marathonDaysInMonth = computed(() => {
-  return new Date(marathonCalYear.value, marathonCalMonth.value, 0).getDate()
-})
-
-const marathonFirstDayWeekday = computed(() => {
-  const d = new Date(marathonCalYear.value, marathonCalMonth.value - 1, 1).getDay()
-  return d === 0 ? 7 : d
-})
-
-const marathonPrevMonthPadding = computed(() => marathonFirstDayWeekday.value - 1)
-
-// 马拉松日历状态设计
-const MARATHON_DAY_STYLES = {
-  empty:   { cls: 'empty',   bg: '',                        hasDot: false },
-  future:  { cls: 'future',  bg: '',                        hasDot: false },
-  today:   { cls: 'today',   bg: '',                        hasDot: false },
-  marathon:{ cls: 'marathon',bg: 'background-color:#f3e8ff; border: 2rpx solid #c084fc;', hasDot: true },
-}
-
-function getMarathonDayState(day) {
-  const status = getMarathonDayStatus(day)
-  const future = isMarathonFutureDay(day)
-  const today  = isMarathonToday(day)
-
-  if (future) return MARATHON_DAY_STYLES.future
-  if (today)  return MARATHON_DAY_STYLES.today
-  if (!status) return MARATHON_DAY_STYLES.empty
-  
-  const types = Array.isArray(status) ? status : [status]
-  if (types.includes('marathon')) return MARATHON_DAY_STYLES.marathon
-  
-  return MARATHON_DAY_STYLES.empty
-}
-
-function getMarathonDayCellStyle(day) {
-  const state = getMarathonDayState(day)
-  if (state.cls === 'empty') return ''
-  if (state.cls === 'future') return ''
-  if (state.cls === 'today')  return 'border: 2rpx solid #a855f7; color: #a855f7;'
-  return state.bg
-}
-
-function getMarathonDayBadges(day) {
-  const status = getMarathonDayStatus(day)
-  if (!status) return []
-  const types = Array.isArray(status) ? status : [status]
-  if (types.includes('marathon')) return ['marathon']
-  return []
-}
-
-function getMarathonPrevMonthDay(n) {
-  const prevM = marathonCalMonth.value === 1 ? 12 : marathonCalMonth.value - 1
-  const prevY = marathonCalMonth.value === 1 ? marathonCalYear.value - 1 : marathonCalYear.value
-  const prevDays = new Date(prevY, prevM, 0).getDate()
-  return prevDays - marathonPrevMonthPadding.value + n
-}
-
-function getMarathonDayStatus(day) {
-  const key = `${marathonCalYear.value}-${marathonCalMonth.value}`
-  const val = runRecords.value[key]?.[day]
-  if (!val) return null
-  if (Array.isArray(val)) return val
-  return val
-}
-
-function isMarathonFutureDay(day) {
-  if (marathonCalYear.value > TODAY_YEAR) return true
-  if (marathonCalYear.value === TODAY_YEAR && marathonCalMonth.value > TODAY_MONTH) return true
-  if (marathonCalYear.value === TODAY_YEAR && marathonCalMonth.value === TODAY_MONTH && day > TODAY_DAY) return true
-  return false
-}
-
-function isMarathonToday(day) {
-  return marathonCalYear.value === TODAY_YEAR && marathonCalMonth.value === TODAY_MONTH && day === TODAY_DAY
-}
-
-function onMarathonDayTap(day) {
-  if (isMarathonFutureDay(day)) {
-    uni.showToast({ title: '还未到这一天哦', icon: 'none' })
-    return
-  }
-  const state = getMarathonDayState(day)
-  // 有打卡记录 → 只提示，不修改
-  if (state !== MARATHON_DAY_STYLES.empty && state !== MARATHON_DAY_STYLES.future && state !== MARATHON_DAY_STYLES.today) {
-    uni.showToast({ title: '已完成马拉松训练', icon: 'none' })
-    return
-  }
-  // 无打卡 → 存入马拉松记录
-  const key = `${marathonCalYear.value}-${marathonCalMonth.value}`
-  if (!runRecords.value[key]) runRecords.value[key] = {}
-  const existing = runRecords.value[key][day]
-  if (existing) {
-    const arr = Array.isArray(existing) ? existing : [existing]
-    if (!arr.includes('marathon')) arr.push('marathon')
-    runRecords.value[key][day] = arr
-  } else {
-    runRecords.value[key][day] = 'marathon'
-  }
-  uni.showToast({ title: '马拉松训练打卡成功', icon: 'success' })
-}
-
-// 月份切换
-function marathonPrevMonth() {
-  if (marathonCalMonth.value === 1) {
-    marathonCalMonth.value = 12
-    marathonCalYear.value--
-  } else {
-    marathonCalMonth.value--
-  }
-}
-
-function marathonNextMonth() {
-  if (marathonCalYear.value === TODAY_YEAR && marathonCalMonth.value >= TODAY_MONTH) {
-    uni.showToast({ title: '只能翻到当月', icon: 'none' })
-    return
-  }
-  if (marathonCalMonth.value === 12) {
-    marathonCalMonth.value = 1
-    marathonCalYear.value++
-  } else {
-    marathonCalMonth.value++
-  }
-}
-
-// 马拉松 picker
-function openMarathonMonthPicker() {
-  setTimeout(() => {
-    const picker = uni.createSelectorQuery().select('#marathon-month-picker-trigger')
-    const pickerNode = document.querySelector('#marathon-month-picker-trigger')
-    if (pickerNode && pickerNode.__pickerInstance) {
-      pickerNode.__pickerInstance.open()
-    }
-  }, 50)
-}
-
-function onMarathonPickerChange(e) {
-  const val = e.detail.value  // 'YYYY-MM'
-  if (!val) return
-  const [y, m] = val.split('-').map(Number)
-  marathonCalYear.value = y
-  marathonCalMonth.value = m
-}
-
-function onMarathonPickerCancel() {
-  // 用户取消，什么都不做
-}
 
 // 跑步数据图表（ECharts）
 onMounted(() => {
@@ -1878,16 +1643,6 @@ onMounted(() => {
   display: flex;
   align-items: center;
   gap: 8rpx;
-  cursor: pointer;
-}
-
-/* 日历 picker 组件样式 */
-.calendar-picker {
-  display: flex;
-  align-items: center;
-}
-
-.calendar-picker .title-area {
   cursor: pointer;
 }
 
@@ -2872,191 +2627,67 @@ onMounted(() => {
   box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.05);
 }
 
-/* 马拉松日历头部 */
-.marathon-calendar-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20rpx;
-}
-
-.marathon-title-area {
-  display: flex;
-  align-items: center;
-  gap: 8rpx;
-}
-
 .marathon-calendar-title {
   font-size: 28rpx;
   font-weight: bold;
   color: #374151;
+  display: block;
+  margin-bottom: 20rpx;
 }
 
-.marathon-picker-trigger {
+.marathon-week-scroll {
   display: flex;
-  align-items: center;
+  gap: 12rpx;
+  overflow-x: auto;
+  padding: 8rpx 0;
 }
 
-.marathon-picker-icon {
-  font-size: 20rpx;
-  color: #9ca3af;
+.marathon-week-scroll::-webkit-scrollbar {
+  display: none;
 }
 
-.marathon-header-right {
-  display: flex;
-  align-items: center;
-  gap: 16rpx;
-}
-
-.marathon-calendar-sub {
-  font-size: 20rpx;
-  color: #a855f7;
-  font-weight: 500;
-}
-
-.marathon-month-switcher {
-  display: flex;
-  align-items: center;
-  gap: 8rpx;
-}
-
-.marathon-switch-btn {
-  width: 32rpx;
-  height: 32rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #f3f4f6;
-  border-radius: 50%;
-}
-
-.marathon-switch-btn .iconfont {
-  font-size: 18rpx;
-  color: #6b7280;
-}
-
-.marathon-switch-year {
-  font-size: 22rpx;
-  font-weight: bold;
-  color: #374151;
-}
-
-/* 星期标题行 */
-.marathon-calendar-weekdays {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 8rpx;
-  margin-bottom: 12rpx;
-}
-
-.marathon-weekday {
-  font-size: 18rpx;
-  color: #9ca3af;
-  text-align: center;
-  font-weight: 500;
-}
-
-/* 日历网格 */
-.marathon-calendar-grid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 8rpx;
-}
-
-.marathon-day-cell {
-  aspect-ratio: 1;
+.marathon-week-item {
+  flex-shrink: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  position: relative;
-  border-radius: 16rpx;
-  background: #f9fafb;
-}
-
-.marathon-day-cell.empty {
-  background: transparent;
-}
-
-.marathon-day-cell.future {
-  background: transparent;
-}
-
-.marathon-day-cell.today {
-  background: #f3f4f6;
-}
-
-.marathon-day-cell.marathon {
-  background: #f3e8ff;
-  border: 2rpx solid #c084fc;
-}
-
-.marathon-day-num {
-  font-size: 20rpx;
-  font-weight: 500;
-  color: #374151;
-  margin-bottom: 4rpx;
-}
-
-.marathon-day-cell.empty .marathon-day-num,
-.marathon-day-cell.future .marathon-day-num {
-  color: #d1d5db;
-}
-
-.marathon-day-cell.today .marathon-day-num {
-  color: #a855f7;
-  font-weight: bold;
-}
-
-.marathon-day-cell.marathon .marathon-day-num {
-  color: #7c3aed;
-  font-weight: bold;
-}
-
-/* 马拉松打卡标志：紫色圆环 */
-.marathon-day-dot {
-  width: 12rpx;
-  height: 12rpx;
-  border-radius: 50%;
-  background: #a855f7;
-  border: 2rpx solid #c084fc;
-  position: absolute;
-  bottom: 8rpx;
-}
-
-/* 图例 */
-.marathon-calendar-legend {
-  display: flex;
-  gap: 24rpx;
-  margin-top: 20rpx;
-  justify-content: center;
-}
-
-.marathon-legend-item {
-  display: flex;
-  align-items: center;
   gap: 8rpx;
 }
 
-.marathon-legend-dot {
-  width: 16rpx;
-  height: 16rpx;
-  border-radius: 50%;
-}
-
-.marathon-legend-dot.purple {
-  background: #a855f7;
-  border: 2rpx solid #c084fc;
-}
-
-.marathon-legend-dot.future {
-  background: #f3f4f6;
-  border: 2rpx dashed #d1d5db;
-}
-
-.marathon-legend-text {
+.week-label {
   font-size: 18rpx;
   color: #9ca3af;
+  font-weight: bold;
+}
+
+.week-label.today-label {
+  color: #22c55e;
+  font-weight: bold;
+}
+
+.week-circle {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 50%;
+  background: #f9fafb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20rpx;
+  font-weight: bold;
+  color: #374151;
+}
+
+.week-circle.purple {
+  background: #ede9fe;
+  border: 2rpx solid #c4b5fd;
+  color: #7c3aed;
+}
+
+.week-circle.green {
+  background: #22c55e;
+  color: #fff;
+  box-shadow: 0 4rpx 12rpx rgba(34, 197, 94, 0.30);
 }
 
 /* ============================================= */
@@ -3333,24 +2964,6 @@ onMounted(() => {
 .chart-canvas {
   width: 100%;
   height: 160rpx;
-}
-
-.chart-bar-container {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-}
-
-.chart-bar-row {
-  display: flex;
-  justify-content: space-around;
-  align-items: flex-end;
-  width: 100%;
-  height: 120rpx;
-  padding: 0 20rpx;
-  box-sizing: border-box;
 }
 
 .chart-bar-wrap {
