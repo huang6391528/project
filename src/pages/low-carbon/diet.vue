@@ -5,11 +5,21 @@
       <view class="sport-back-btn" @tap="goBack">
         <text class="iconfont icon-chevron-left"></text>
       </view>
-      <text class="lc-logo">Eco<text class="lc-logo-accent">Meal</text></text>
-      <text class="lc-date-orange-tag">Canteen Open</text>
     </view>
 
     <view class="page-content">
+      <!-- 连续打卡卡片 -->
+      <view class="diet-streak-card">
+        <view class="streak-content">
+          <text class="streak-label">连续光盘打卡</text>
+          <text class="streak-days">12 天</text>
+          <text class="streak-reward">光盘打卡奖励积分：+50</text>
+        </view>
+        <view class="streak-icon">
+          <text class="iconfont icon-plate"></text>
+        </view>
+      </view>
+
       <!-- 食堂定位（放大 + 地图） -->
       <view class="diet-map-card">
         <map
@@ -125,43 +135,11 @@
         </view>
       </view>
     </view>
-
-    <!-- 底部 Tab 导航 -->
-    <view class="lc-bottom-nav">
-      <view class="lc-nav-item" @tap="switchTab('sport')">
-        <text class="iconfont icon-run"></text>
-        <text class="nav-text">运动</text>
-      </view>
-      <view class="lc-nav-item" @tap="switchTab('travel')">
-        <text class="iconfont icon-bus"></text>
-        <text class="nav-text">出行</text>
-      </view>
-      <view class="lc-nav-item active" @tap="switchTab('diet')">
-        <text class="iconfont icon-meal"></text>
-        <text class="nav-text">饮食</text>
-      </view>
-      <view class="lc-nav-item" @tap="switchTab('life')">
-        <text class="iconfont icon-home"></text>
-        <text class="nav-text">生活</text>
-      </view>
-    </view>
   </view>
 </template>
 
 <script setup>
 const goBack = () => uni.switchTab({ url: '/pages/action/action' })
-const switchTab = (tab) => {
-  // 所有标签都指向容器页面
-  const tabMap = {
-    sport:  'sport',
-    travel: 'travel',
-    diet:   'diet',
-    life:   'life',
-  }
-  uni.redirectTo({ 
-    url: `/pages/low-carbon/index?tab=${tabMap[tab]}` 
-  })
-}
 
 const canteenMarkers = [{
   id: 1,
@@ -244,7 +222,7 @@ const canteenMarkers = [{
 }
 .diet-map {
   width: 100%;
-  height: 480rpx;
+  height: 600rpx;
   border-radius: 32rpx;
 }
 .diet-map-overlay {
@@ -557,50 +535,49 @@ const canteenMarkers = [{
   flex-shrink: 0;
 }
 
-/* ============================================= */
-/* 底部导航                                     */
-/* ============================================= */
-.lc-bottom-nav {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 160rpx;
-  background: rgba(255,255,255,0.92);
-  backdrop-filter: blur(20px);
-  border-top: 1rpx solid #f0f0f0;
-  display: flex;
-  justify-content: space-around;
-  align-items: flex-start;
-  padding-top: 20rpx;
-  padding-bottom: env(safe-area-inset-bottom);
-  z-index: 100;
-}
 
-.lc-nav-item {
+/* 连续打卡卡片 */
+.diet-streak-card {
+  background: linear-gradient(135deg, #f97316 0%, #fb923c 100%);
+  border-radius: 24rpx;
+  padding: 32rpx;
+  margin-bottom: 24rpx;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 4rpx;
-  color: #94a3b8;
-  padding: 0 16rpx;
+  justify-content: space-between;
+  color: #fff;
+  box-shadow: 0 8rpx 24rpx rgba(249, 115, 22, 0.3);
 }
 
-.lc-nav-item .iconfont { font-size: 48rpx; }
+.streak-content {
+  flex: 1;
+}
 
-.nav-text {
+.streak-label {
+  display: block;
   font-size: 20rpx;
-  font-weight: bold;
+  opacity: 0.9;
+  margin-bottom: 8rpx;
 }
 
-.lc-nav-item.active {
-  color: #f97316;
-  transform: translateY(-6rpx);
+.streak-days {
+  display: block;
+  font-size: 56rpx;
+  font-weight: 900;
+  margin-bottom: 8rpx;
+  line-height: 1;
 }
 
-@supports (padding-bottom: env(safe-area-inset-bottom)) {
-  .lc-bottom-nav {
-    padding-bottom: calc(20rpx + env(safe-area-inset-bottom));
-  }
+.streak-reward {
+  display: block;
+  font-size: 20rpx;
+  opacity: 0.85;
+}
+
+.streak-icon {
+  font-size: 80rpx;
+  opacity: 0.2;
+  flex-shrink: 0;
+  margin-left: 16rpx;
 }
 </style>

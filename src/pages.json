@@ -30,55 +30,6 @@
       }
     },
     {
-      "path": "pages/low-carbon/index",
-      "style": {
-        "navigationBarTitleText": "低碳模块",
-        "navigationStyle": "custom"
-      }
-    },
-    {
-      "path": "pages/low-carbon/diet",
-      "style": {
-        "navigationBarTitleText": "饮食",
-        "navigationStyle": "custom"
-      }
-    },
-    {
-      "path": "pages/low-carbon/sport",
-      "style": {
-        "navigationBarTitleText": "运动",
-        "navigationStyle": "custom"
-      }
-    },
-    {
-      "path": "pages/low-carbon/travel",
-      "style": {
-        "navigationBarTitleText": "出行",
-        "navigationStyle": "custom"
-      }
-    },
-    {
-      "path": "pages/low-carbon/life",
-      "style": {
-        "navigationBarTitleText": "生活",
-        "navigationStyle": "custom"
-      }
-    },
-    {
-      "path": "pages/low-carbon/dorm-energy",
-      "style": {
-        "navigationBarTitleText": "宿舍节能",
-        "navigationStyle": "custom"
-      }
-    },
-    {
-      "path": "pages/low-carbon/low-carbon-study",
-      "style": {
-        "navigationBarTitleText": "低碳学习",
-        "navigationStyle": "custom"
-      }
-    },
-    {
       "path": "pages/store/store",
       "style": {
         "navigationBarTitleText": "积分商城",

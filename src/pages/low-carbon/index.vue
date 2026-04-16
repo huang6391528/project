@@ -310,7 +310,7 @@ import { ref, computed, onMounted } from 'vue'
 
 const currentTab = ref('index')
 const tabs = [
-  { id: 'index', label: '首页' },
+  { id: 'index', label: '推荐' },
   { id: 'sport', label: '运动' },
   { id: 'travel', label: '出行' },
   { id: 'diet', label: '饮食' },
