@@ -117,13 +117,16 @@
 <script setup>
 const goBack = () => uni.switchTab({ url: '/pages/action/action' })
 const switchTab = (tab) => {
-  const appUrls = {
-    sport:  '/pages/low-carbon/sport',
-    travel: '/pages/low-carbon/travel',
-    diet:   '/pages/low-carbon/diet',
-    life:   '/pages/low-carbon/life',
+  // 所有标签都指向容器页面
+  const tabMap = {
+    sport:  'sport',
+    travel: 'travel',
+    diet:   'diet',
+    life:   'life',
   }
-  uni.navigateTo({ url: appUrls[tab] })
+  uni.redirectTo({ 
+    url: `/pages/low-carbon/index?tab=${tabMap[tab]}` 
+  })
 }
 </script>
 

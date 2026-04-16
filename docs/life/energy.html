@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>绿动校园 - 节能</title>
+<script src="https://modao.cc/agent-py/static/source/js/tailwindcss.3.4.3.js"></script>
+<script src="https://modao.cc/agent-py/static/source/js/iconify-icon.min.1.0.7.js"></script>
+<script src="https://modao.cc/agent-py/static/source/js/echarts.min.5.4.3.js"></script>
+<style>
+        @import url('https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&display=swap');
+        body { background-color: #F8FAFC; overflow: hidden; }
+        .mobile-container { width: 375px; height: 812px; margin: 20px auto; background: white; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.1); border-radius: 40px; overflow: hidden; border: 8px solid #333; }
+        .scroll-container { height: calc(812px - 140px); overflow-y: auto; scrollbar-width: none; }
+        .scroll-container::-webkit-scrollbar { display: none; }
+        .title-font { font-family: 'ZCOOL KuaiLe', cursive; }
+        .tab-active { color: #4ADE80; transform: scale(1.1); }
+        .tab-inactive { color: #94A3B8; }
+        .toggle-active { background: #4ADE80; border-color: #4ADE80; }
+    </style>
+</head>
+<body>
+<div class="mobile-container">
+<!-- Status Bar -->
+<div class="h-11 px-5 flex justify-between items-center text-xs font-bold">
+<span>09:41</span>
+<div class="flex gap-1.5"><iconify-icon icon="mdi:signal"></iconify-icon><iconify-icon icon="mdi:battery"></iconify-icon></div>
+</div>
+<!-- Header -->
+<div class="px-5 py-2 flex items-center gap-3 border-b border-gray-50">
+<a class="text-gray-400" href="index.html"><iconify-icon class="text-2xl" icon="mdi:chevron-left"></iconify-icon></a>
+<h1 class="text-xl font-bold title-font text-yellow-500 flex-1">低碳节能</h1>
+<iconify-icon class="text-2xl text-yellow-500" icon="mdi:flash-auto"></iconify-icon>
+</div>
+<div class="scroll-container bg-slate-50 pb-10">
+<!-- 1. Energy Chart -->
+<div class="p-4">
+<div class="bg-white rounded-3xl p-4 shadow-sm">
+<h3 class="text-xs font-bold text-gray-800 mb-2">宿舍周能耗趋势</h3>
+<div id="mainChart" style="width: 100%; height: 150px;"></div>
+</div>
+</div>
+<!-- 2. One-click Switches -->
+<div class="px-4 py-2">
+<h2 class="text-sm font-bold text-gray-800 mb-3">即时打卡</h2>
+<div class="grid grid-cols-2 gap-4">
+<div class="bg-white p-4 rounded-3xl shadow-sm flex flex-col items-center">
+<iconify-icon class="text-3xl text-yellow-400 mb-2" icon="mdi:lightbulb-on"></iconify-icon>
+<span class="text-xs font-bold">节约用电</span>
+<p class="text-[8px] text-gray-400 mt-1">做到随手关灯</p>
+<button class="mt-3 w-full py-2 rounded-xl bg-yellow-400 text-white text-[10px] font-bold">打卡成功</button>
+</div>
+<div class="bg-white p-4 rounded-3xl shadow-sm flex flex-col items-center">
+<iconify-icon class="text-3xl text-blue-400 mb-2" icon="mdi:water-pump"></iconify-icon>
+<span class="text-xs font-bold">节约用水</span>
+<p class="text-[8px] text-gray-400 mt-1">缩短淋浴时间</p>
+<button class="mt-3 w-full py-2 rounded-xl border border-blue-400 text-blue-400 text-[10px] font-bold">去打卡</button>
+</div>
+</div>
+</div>
+<!-- 3. Monitoring -->
+<div class="p-4">
+<div class="space-y-3">
+<div class="bg-white p-4 rounded-2xl flex justify-between items-center shadow-sm">
+<div class="flex items-center gap-3">
+<iconify-icon class="text-2xl text-emerald-500" icon="mdi:air-conditioner"></iconify-icon>
+<span class="text-xs font-bold">空调温控 (当前 26℃)</span>
+</div>
+<iconify-icon class="text-2xl text-emerald-500" icon="mdi:check-circle"></iconify-icon>
+</div>
+<div class="bg-white p-4 rounded-2xl flex justify-between items-center shadow-sm">
+<div class="flex items-center gap-3">
+<iconify-icon class="text-2xl text-indigo-500" icon="mdi:sleep"></iconify-icon>
+<span class="text-xs font-bold">熄灯自律打卡</span>
+</div>
+<span class="text-[10px] text-gray-400 italic">23:00 后开启</span>
+</div>
+</div>
+</div>
+<!-- 4. Competition -->
+<div class="px-4 py-2">
+<div class="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-3xl p-4 text-white">
+<h3 class="text-xs font-bold">节能寝室 PK 赛</h3>
+<div class="flex justify-between items-end mt-2">
+<div>
+<p class="text-[10px] opacity-70">本楼栋排名</p>
+<p class="text-xl font-bold italic">No.12</p>
+</div>
+<button class="bg-white/20 px-3 py-1 rounded-full text-[10px]">查看对比</button>
+</div>
+</div>
+</div>
+<!-- 5. Tips -->
+<div class="p-4">
+<h2 class="text-sm font-bold text-gray-800 mb-3">宿舍节能小妙招</h2>
+<div class="space-y-2">
+<div class="bg-yellow-50 p-3 rounded-xl flex items-center gap-3">
+<span class="w-6 h-6 bg-yellow-200 rounded-full flex items-center justify-center text-[10px] font-bold text-yellow-700">1</span>
+<p class="text-[10px] text-yellow-800">拔掉不常用的电器插头，减少待机功耗。</p>
+</div>
+<div class="bg-emerald-50 p-3 rounded-xl flex items-center gap-3">
+<span class="w-6 h-6 bg-emerald-200 rounded-full flex items-center justify-center text-[10px] font-bold text-emerald-700">2</span>
+<p class="text-[10px] text-emerald-800">利用宿舍阳台自然采光，减少白天开灯。</p>
+</div>
+</div>
+</div>
+<!-- 6. Calculator -->
+<div class="px-4 py-2">
+<button class="w-full bg-white border-2 border-dashed border-gray-300 py-4 rounded-3xl text-xs font-bold text-gray-400 flex items-center justify-center gap-2">
+<iconify-icon class="text-xl" icon="mdi:calculator"></iconify-icon> 开启减碳量计算器
+                </button>
+</div>
+</div>
+<!-- Navigation -->
+<div class="absolute bottom-0 w-full h-24 bg-white border-t border-gray-100 px-6 flex justify-between items-center pb-6">
+<a class="flex flex-col items-center gap-1 tab-inactive" href="index.html">
+<iconify-icon class="text-2xl" icon="mdi:star-face"></iconify-icon>
+<span class="text-[10px] font-bold">推荐</span>
+</a>
+<a class="flex flex-col items-center gap-1 tab-inactive" href="cycle.html">
+<iconify-icon class="text-2xl" icon="mdi:autorenew"></iconify-icon>
+<span class="text-[10px] font-bold">循环</span>
+</a>
+<a class="flex flex-col items-center gap-1 tab-active" href="energy.html">
+<iconify-icon class="text-2xl" icon="mdi:lightning-bolt"></iconify-icon>
+<span class="text-[10px] font-bold">节能</span>
+</a>
+<a class="flex flex-col items-center gap-1 tab-inactive" href="office.html">
+<iconify-icon class="text-2xl" icon="mdi:briefcase-variant"></iconify-icon>
+<span class="text-[10px] font-bold">办公</span>
+</a>
+</div>
+</div>
+<script>
+        window.onload = function() {
+            var chartDom = document.getElementById('mainChart');
+            var myChart = echarts.init(chartDom);
+            var option = {
+                xAxis: { type: 'category', data: ['M', 'T', 'W', 'T', 'F', 'S', 'S'], axisLine: {show: false}, axisTick: {show: false} },
+                yAxis: { type: 'value', splitLine: {show: false}, axisLabel: {show: false} },
+                series: [{ data: [120, 200, 150, 80, 70, 110, 130], type: 'bar', itemStyle: { borderRadius: 5, color: '#FACC15' } }],
+                grid: { top: 10, bottom: 20, left: 10, right: 10 }
+            };
+            myChart.setOption(option);
+        }
+    </script>
+</body>
+</html>

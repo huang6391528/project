@@ -1,9 +1,9 @@
 <template>
-  <view class="page-home">
+  <view class="page-home" @click="closeScanMenu">
     <!-- 侧边栏遮罩层 -->
     <view v-if="sidebarShow" class="sidebar-mask" @click="toggleSidebar"></view>
-    
-    <!-- 侧边栏容器 - 宽度已调整为1/3屏宽 -->
+
+    <!-- 侧边栏容器 -->
     <view class="sidebar" :class="{ 'sidebar-show': sidebarShow }">
       <!-- 用户资料区 -->
       <view class="sidebar-profile">
@@ -30,7 +30,6 @@
 
       <!-- 菜单列表（可滚动） -->
       <scroll-view class="sidebar-menu" scroll-y>
-        <!-- 可折叠：已加入班级 -->
         <view class="menu-group">
           <view class="menu-item parent-item" @click="toggleJoinedClass">
             <text class="menu-icon">🏫</text>
@@ -47,7 +46,6 @@
           </view>
         </view>
 
-        <!-- 可折叠：我的打卡团 -->
         <view class="menu-group">
           <view class="menu-item parent-item" @click="toggleCheckinGroup">
             <text class="menu-icon">🤝</text>
@@ -64,7 +62,6 @@
           </view>
         </view>
 
-        <!-- 直接入口 -->
         <view class="menu-item direct-item" @click="navigateTo('/pages/message/message')">
           <text class="menu-icon">💬</text>
           <text class="menu-label">消息</text>
@@ -84,16 +81,33 @@
       </scroll-view>
     </view>
 
-    <!-- Header Stats - 左侧三条杠，右侧扫码+铃铛 -->
+    <!-- Header -->
     <view class="header-stats">
       <view class="header-left">
-        <view class="sidebar-trigger-btn" @click="toggleSidebar">
+        <view class="sidebar-trigger-btn" @click.stop="toggleSidebar">
           <text class="icon-btn">☰</text>
         </view>
       </view>
       <view class="header-right">
-        <view class="scan-btn" @click="handleScan">
-          <text class="icon-btn">🔍</text>
+        <!-- 扫码按钮 + 下拉菜单 -->
+        <view class="scan-btn-container" @click.stop="toggleScanMenu">
+          <view class="scan-btn">
+            <view class="scan-frame">
+              <view class="scan-corner sc-tl"></view>
+              <view class="scan-corner sc-tr"></view>
+              <view class="scan-corner sc-bl"></view>
+              <view class="scan-corner sc-br"></view>
+            </view>
+          </view>
+          <!-- 下拉菜单 -->
+          <view v-if="scanMenuShow" class="scan-dropdown" @click.stop>
+            <view class="scan-dropdown-arrow"></view>
+            <view class="scan-dropdown-inner">
+              <view class="scan-dropdown-item" @click.stop="handleScanScan">扫一扫</view>
+              <view class="scan-dropdown-divider"></view>
+              <view class="scan-dropdown-item" @click.stop="handleInviteCode">邀请码</view>
+            </view>
+          </view>
         </view>
         <view class="bell-icon">
           <text class="icon-btn">🔔</text>
@@ -128,121 +142,157 @@
         </view>
         <view class="progress-footer">
           <view class="tree-count">
-            <view class="tree-anim">
-              <text>🌳</text>
-            </view>
+            <view class="tree-anim"><text>🌳</text></view>
             <text class="count-num">3.2 <text class="count-unit">棵</text></text>
           </view>
           <view class="fire-streak">
-            <view class="fire-anim">
-              <text>🔥</text>
-            </view>
+            <view class="fire-anim"><text>🔥</text></view>
             <text class="streak-text">连续打卡 <text class="streak-num">12</text> 天</text>
           </view>
         </view>
       </view>
     </view>
 
-    <!-- 统计卡片 -->
-    <view class="stats-grid">
-      <view class="stat-item stat-blue">
-        <text class="icon-emoji">🏃</text>
-        <text class="stat-label">运动减碳</text>
-        <text class="stat-value stat-blue-text">+1.2kg</text>
+    <!-- ── UNIFIED 数据仪表面板（单一无缝横向面板）── -->
+    <view class="unified-stats-panel">
+      <view class="unified-stat-cell">
+        <text class="unified-stat-emoji">🏃</text>
+        <text class="unified-stat-value u-blue">+1.2kg</text>
+        <text class="unified-stat-label">运动减碳</text>
       </view>
-      <view class="stat-item stat-orange">
-        <text class="icon-emoji">🏠</text>
-        <text class="stat-label">生活减碳</text>
-        <text class="stat-value stat-orange-text">+0.8kg</text>
+      <view class="unified-stat-sep"></view>
+      <view class="unified-stat-cell">
+        <text class="unified-stat-emoji">🏠</text>
+        <text class="unified-stat-value u-orange">+0.8kg</text>
+        <text class="unified-stat-label">生活减碳</text>
       </view>
-      <view class="stat-item stat-purple">
-        <text class="icon-emoji">🏆</text>
-        <text class="stat-label">全校排名</text>
-        <text class="stat-value stat-purple-text">第28名</text>
-      </view>
-    </view>
-
-    <!-- 快捷打卡入口 -->
-    <view class="section-title">
-      <text class="icon-emoji">📅</text>
-      <text>快捷打卡入口</text>
-    </view>
-    <view class="action-grid">
-      <view class="action-item">
-        <text class="icon-emoji">⚡</text>
-        <text class="action-text">校园跑</text>
-      </view>
-      <view class="action-item opacity-60">
-        <text class="icon-emoji">🚲</text>
-        <text class="action-text">绿色出行</text>
-      </view>
-      <view class="action-item">
-        <text class="icon-emoji">🥗</text>
-        <text class="action-text">低碳饮食</text>
-      </view>
-      <view class="action-item">
-        <text class="icon-emoji">📦</text>
-        <text class="action-text">减外卖</text>
-      </view>
-      <view class="action-item action-highlight">
-        <text class="icon-emoji">📸</text>
-        <text class="action-text action-text-highlight">旧物利用</text>
-      </view>
-      <view class="action-item">
-        <text class="icon-emoji">🚶</text>
-        <text class="action-text">步行计步</text>
+      <view class="unified-stat-sep"></view>
+      <view class="unified-stat-cell">
+        <text class="unified-stat-emoji">🏆</text>
+        <text class="unified-stat-value u-purple">第28名</text>
+        <text class="unified-stat-label">全校排名</text>
       </view>
     </view>
 
-    <!-- 今日任务 -->
-    <view class="daily-task">
-      <view class="task-left">
-        <view class="task-icon">
-          <text class="icon-emoji task-check">✅</text>
+    <!-- 区域分隔：数据展示 → 快捷操作 -->
+    <view class="zone-divider">
+      <view class="zone-divider-line"></view>
+      <view class="zone-divider-badge">
+        <text class="zone-divider-text">快 捷 操 作</text>
+      </view>
+      <view class="zone-divider-line zone-divider-line-right"></view>
+    </view>
+
+    <!-- ── 快捷操作区容器 ── -->
+    <view class="action-zone">
+
+      <!-- 快捷打卡入口标题 -->
+      <view class="section-title">
+        <text>快捷打卡入口</text>
+      </view>
+
+      <!-- Alipay-style 圆形图标网格 -->
+      <view class="circle-action-grid">
+        <view class="circle-action-item">
+          <view class="circle-icon circle-running">
+            <text class="circle-emoji">⚡</text>
+          </view>
+          <text class="circle-label">校园跑</text>
         </view>
-        <view class="task-info">
-          <text class="task-title">今日任务进度</text>
-          <text class="task-sub">已完成 3/5 个任务</text>
+        <view class="circle-action-item circle-dimmed">
+          <view class="circle-icon circle-transport">
+            <text class="circle-emoji">🚲</text>
+          </view>
+          <text class="circle-label">绿色出行</text>
         </view>
-      </view>
-      <button class="task-btn">去完成</button>
-    </view>
-
-    <!-- 活动 Banner -->
-    <view class="section-title">
-      <text class="icon-emoji">📅</text>
-      <text>活动</text>
-    </view>
-    <view class="banner">
-      <image class="banner-img" src="https://modao.cc/agent-py/media/generated_images/2026-04-05/b9c8194c51e2407997135fdc0513e984.jpg" mode="aspectFill"></image>
-      <view class="banner-overlay">
-        <text class="banner-title">2026 校园春季马拉松</text>
-        <text class="banner-sub">即刻报名，最高奖励 500 积分</text>
-      </view>
-    </view>
-
-    <!-- 环保小贴士 -->
-    <view class="knowledge-section">
-      <view class="knowledge-title">
-        <text class="icon-emoji">💡</text>
-        <text>环保小贴士</text>
-      </view>
-      <text class="knowledge-text">"回收一吨废纸，可造好纸850公斤，节省木材3立方米，同时减少污染排放。"</text>
-    </view>
-
-    <!-- 二维码弹窗 -->
-    <view v-if="showQrModal" class="qr-modal-mask" @click="closeQrModal">
-      <view class="qr-modal-container" @click.stop>
-        <view class="qr-modal-header">
-          <text class="qr-modal-title">扫描二维码</text>
-          <view class="qr-close-btn" @click="closeQrModal">✕</view>
+        <view class="circle-action-item">
+          <view class="circle-icon circle-diet">
+            <text class="circle-emoji">🥗</text>
+          </view>
+          <text class="circle-label">低碳饮食</text>
         </view>
-        <view class="qr-code-wrapper">
-          <image class="qr-code-image" mode="widthFix" :src="qrCodeUrl"></image>
-          <text class="qr-tip">请使用微信/支付宝扫一扫</text>
+        <view class="circle-action-item">
+          <view class="circle-icon circle-takeout">
+            <text class="circle-emoji">📦</text>
+          </view>
+          <text class="circle-label">减外卖</text>
+        </view>
+        <view class="circle-action-item">
+          <view class="circle-icon circle-reuse">
+            <text class="circle-emoji">📸</text>
+          </view>
+          <text class="circle-label circle-label-featured">旧物利用</text>
+        </view>
+        <view class="circle-action-item">
+          <view class="circle-icon circle-walk">
+            <text class="circle-emoji">🚶</text>
+          </view>
+          <text class="circle-label">步行计步</text>
         </view>
       </view>
+
+      <!-- 今日任务 -->
+      <view class="daily-task">
+        <view class="task-left">
+          <view class="task-icon">
+            <text class="icon-emoji task-check">✅</text>
+          </view>
+          <view class="task-info">
+            <text class="task-title">今日任务进度</text>
+            <text class="task-sub">已完成 3/5 个任务</text>
+          </view>
+        </view>
+        <button class="task-btn">去完成</button>
+      </view>
+
+      <!-- 活动 Banner -->
+      <view class="section-title">
+        <text>活动</text>
+      </view>
+      <view class="banner">
+        <image class="banner-img" src="https://modao.cc/agent-py/media/generated_images/2026-04-05/b9c8194c51e2407997135fdc0513e984.jpg" mode="aspectFill"></image>
+        <view class="banner-overlay">
+          <text class="banner-title">2026 校园春季马拉松</text>
+          <text class="banner-sub">即刻报名，最高奖励 500 积分</text>
+        </view>
+      </view>
+
+      <!-- 环保小贴士 -->
+      <view class="knowledge-section">
+        <view class="knowledge-title">
+          <text class="icon-emoji">💡</text>
+          <text>环保小贴士</text>
+        </view>
+        <text class="knowledge-text">"回收一吨废纸，可造好纸850公斤，节省木材3立方米，同时减少污染排放。"</text>
+      </view>
+
+    </view><!-- /action-zone -->
+
+    <!-- ── 邀请码输入弹窗 ── -->
+    <view v-if="showInviteModal" class="invite-modal-mask" @click="closeInviteModal">
+      <view class="invite-modal-box" @click.stop>
+        <view class="invite-modal-header">
+          <text class="invite-modal-title">邀请码</text>
+          <view class="invite-close-btn" @click="closeInviteModal">✕</view>
+        </view>
+        <text class="invite-modal-desc">输入好友邀请码，加入班级或打卡团</text>
+        <view class="invite-input-wrap">
+          <input
+            class="invite-input"
+            v-model="inviteCodeInput"
+            placeholder="请输入邀请码"
+            placeholder-class="invite-placeholder"
+            maxlength="20"
+            focus
+          />
+        </view>
+        <view class="invite-modal-actions">
+          <view class="invite-btn invite-btn-cancel" @click="closeInviteModal">取消</view>
+          <view class="invite-btn invite-btn-confirm" @click="confirmInviteCode">确认</view>
+        </view>
+      </view>
     </view>
+
   </view>
 </template>
 
@@ -252,13 +302,12 @@ import { ref } from 'vue'
 const sidebarShow = ref(false)
 const joinedClassExpanded = ref(false)
 const checkinGroupExpanded = ref(false)
-const showQrModal = ref(false)
-
-const qrCodeUrl = ref('https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=https://example.com/carbon-campus')
+const showInviteModal = ref(false)
+const inviteCodeInput = ref('')
+const scanMenuShow = ref(false)
 
 const toggleSidebar = () => {
   sidebarShow.value = !sidebarShow.value
-  console.log('侧边栏状态:', sidebarShow.value)
 }
 
 const toggleJoinedClass = () => {
@@ -274,13 +323,37 @@ const navigateTo = (url) => {
   uni.navigateTo({ url })
 }
 
-const handleScan = () => {
-  console.log('点击了扫码按钮，显示二维码')
-  showQrModal.value = true
+const toggleScanMenu = () => {
+  scanMenuShow.value = !scanMenuShow.value
 }
 
-const closeQrModal = () => {
-  showQrModal.value = false
+const closeScanMenu = () => {
+  scanMenuShow.value = false
+}
+
+const handleScanScan = () => {
+  scanMenuShow.value = false
+  uni.showToast({ title: '启动扫一扫', icon: 'none' })
+}
+
+const handleInviteCode = () => {
+  scanMenuShow.value = false
+  inviteCodeInput.value = ''
+  showInviteModal.value = true
+}
+
+const closeInviteModal = () => {
+  showInviteModal.value = false
+}
+
+const confirmInviteCode = () => {
+  const code = inviteCodeInput.value.trim()
+  if (!code) {
+    uni.showToast({ title: '请输入邀请码', icon: 'none' })
+    return
+  }
+  showInviteModal.value = false
+  uni.showToast({ title: '邀请码已提交', icon: 'success' })
 }
 </script>
 
@@ -297,10 +370,7 @@ const closeQrModal = () => {
 /* 侧边栏遮罩层 */
 .sidebar-mask {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  top: 0; left: 0; right: 0; bottom: 0;
   background-color: rgba(0, 0, 0, 0.5);
   z-index: 99;
   transition: opacity 0.3s ease;
@@ -309,8 +379,7 @@ const closeQrModal = () => {
 /* 侧边栏容器 */
 .sidebar {
   position: fixed;
-  top: 0;
-  left: 0;
+  top: 0; left: 0;
   width: 33.33vw;
   max-width: 320rpx;
   height: 100vh;
@@ -371,7 +440,6 @@ const closeQrModal = () => {
 .sidebar-follow-row {
   display: flex;
   align-items: center;
-  gap: 0;
 }
 .follow-item {
   display: flex;
@@ -414,9 +482,7 @@ const closeQrModal = () => {
 .menu-item:active {
   background-color: #f0f0f0;
 }
-.parent-item {
-  cursor: pointer;
-}
+.parent-item { cursor: pointer; }
 .menu-icon {
   font-size: 28rpx;
   flex-shrink: 0;
@@ -437,25 +503,20 @@ const closeQrModal = () => {
 .sub-item {
   padding: 12rpx 8rpx;
 }
-.sub-item .menu-icon {
-  font-size: 24rpx;
-}
 .sub-item .menu-label {
   font-size: 24rpx;
   color: #555;
 }
-.direct-item {
-  cursor: pointer;
-}
+.direct-item { cursor: pointer; }
 
-/* 通用 Emoji 图标样式 */
+/* 通用 Emoji 图标 */
 .icon-emoji {
   font-size: 48rpx;
   display: inline-block;
   line-height: 1;
 }
 
-/* Header 按钮样式 */
+/* ── Header ── */
 .header-stats {
   display: flex;
   justify-content: space-between;
@@ -473,7 +534,6 @@ const closeQrModal = () => {
 }
 
 .sidebar-trigger-btn,
-.scan-btn,
 .bell-icon {
   width: 80rpx;
   height: 80rpx;
@@ -493,16 +553,117 @@ const closeQrModal = () => {
 
 .bell-dot {
   position: absolute;
-  top: 10rpx;
-  right: 10rpx;
-  width: 16rpx;
-  height: 16rpx;
+  top: 10rpx; right: 10rpx;
+  width: 16rpx; height: 16rpx;
   background-color: #ef4444;
   border-radius: 50%;
   border: 2rpx solid #fff;
 }
 
-/* 个人卡片 */
+/* ── 扫码按钮 + 下拉菜单 ── */
+.scan-btn-container {
+  position: relative;
+  z-index: 300;
+}
+
+.scan-btn {
+  width: 80rpx;
+  height: 80rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background-color: #f5f5f5;
+  cursor: pointer;
+}
+
+/* CSS 绘制扫描框图标 */
+.scan-frame {
+  width: 34rpx;
+  height: 34rpx;
+  position: relative;
+}
+.scan-corner {
+  position: absolute;
+  width: 11rpx;
+  height: 11rpx;
+}
+.sc-tl {
+  top: 0; left: 0;
+  border-top: 3rpx solid #555;
+  border-left: 3rpx solid #555;
+  border-radius: 2rpx 0 0 0;
+}
+.sc-tr {
+  top: 0; right: 0;
+  border-top: 3rpx solid #555;
+  border-right: 3rpx solid #555;
+  border-radius: 0 2rpx 0 0;
+}
+.sc-bl {
+  bottom: 0; left: 0;
+  border-bottom: 3rpx solid #555;
+  border-left: 3rpx solid #555;
+  border-radius: 0 0 0 2rpx;
+}
+.sc-br {
+  bottom: 0; right: 0;
+  border-bottom: 3rpx solid #555;
+  border-right: 3rpx solid #555;
+  border-radius: 0 0 2rpx 0;
+}
+
+/* 下拉菜单容器 */
+.scan-dropdown {
+  position: absolute;
+  top: 92rpx;
+  right: 0;
+  width: 220rpx;
+  z-index: 301;
+}
+
+/* 向上三角箭头 */
+.scan-dropdown-arrow {
+  position: absolute;
+  top: -14rpx;
+  right: 30rpx;
+  width: 0; height: 0;
+  border-left: 13rpx solid transparent;
+  border-right: 13rpx solid transparent;
+  border-bottom: 14rpx solid #fff;
+  z-index: 2;
+  filter: drop-shadow(0 -2px 2px rgba(0,0,0,0.06));
+}
+
+/* 菜单内容区 */
+.scan-dropdown-inner {
+  background: #fff;
+  border-radius: 20rpx;
+  box-shadow: 0 8rpx 40rpx rgba(0, 0, 0, 0.13),
+              0 2rpx 10rpx rgba(0, 0, 0, 0.07);
+  overflow: hidden;
+  position: relative;
+  z-index: 1;
+}
+
+.scan-dropdown-item {
+  padding: 32rpx 0;
+  text-align: center;
+  font-size: 30rpx;
+  color: #222;
+  font-weight: 500;
+  letter-spacing: 1rpx;
+}
+.scan-dropdown-item:active {
+  background-color: #f5f5f5;
+}
+.scan-dropdown-divider {
+  height: 1rpx;
+  background-color: #f0f0f0;
+  margin: 0 28rpx;
+}
+
+/* ── 个人卡片 ── */
 .personal-card {
   margin-top: 48rpx;
   background: linear-gradient(135deg, #10b981, #059669);
@@ -517,8 +678,7 @@ const closeQrModal = () => {
 }
 
 .avatar {
-  width: 112rpx;
-  height: 112rpx;
+  width: 112rpx; height: 112rpx;
   border-radius: 50%;
   border: 4rpx solid rgba(255,255,255,0.5);
 }
@@ -663,56 +823,98 @@ const closeQrModal = () => {
   font-weight: bold;
 }
 
-/* 统计卡片 */
-.stats-grid {
+/* ══════════════════════════════════════════
+   UNIFIED 数据仪表面板（单一无缝横向面板）
+   ══════════════════════════════════════════ */
+.unified-stats-panel {
   display: flex;
-  justify-content: space-between;
+  align-items: stretch;
   margin-top: 32rpx;
-  gap: 24rpx;
+  background-color: #ffffff;
+  border-radius: 36rpx;
+  box-shadow: 0 6rpx 28rpx rgba(0, 0, 0, 0.08),
+              0 1rpx 6rpx rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+  padding: 36rpx 0;
 }
 
-.stat-item {
+.unified-stat-cell {
   flex: 1;
-  text-align: center;
-  padding: 24rpx 12rpx;
-  border-radius: 32rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8rpx;
+  padding: 0 8rpx;
 }
 
-.stat-blue {
-  background-color: #eff6ff;
-  border: 2rpx solid #dbeafe;
+/* 极细分割线 */
+.unified-stat-sep {
+  width: 1.5rpx;
+  background-color: #f0f0f0;
+  align-self: stretch;
+  margin: 4rpx 0;
 }
 
-.stat-orange {
-  background-color: #fff7ed;
-  border: 2rpx solid #fed7aa;
+.unified-stat-emoji {
+  font-size: 30rpx;
+  line-height: 1;
+  opacity: 0.7;
 }
 
-.stat-purple {
-  background-color: #faf5ff;
-  border: 2rpx solid #e9d5ff;
+.unified-stat-value {
+  font-size: 44rpx;
+  font-weight: 900;
+  line-height: 1.1;
+  letter-spacing: -1rpx;
 }
 
-.stat-label {
-  display: block;
+.unified-stat-label {
   font-size: 20rpx;
-  color: #666;
-  margin-top: 8rpx;
+  color: #9ca3af;
+  font-weight: 500;
+  letter-spacing: 0.5rpx;
 }
 
-.stat-value {
-  display: block;
-  font-size: 28rpx;
-  font-weight: bold;
-  margin-top: 4rpx;
+.u-blue   { color: #1d4ed8; }
+.u-orange { color: #c2410c; }
+.u-purple { color: #7c3aed; }
+
+/* ── 区域分隔线 ── */
+.zone-divider {
+  display: flex;
+  align-items: center;
+  margin: 48rpx 0 0;
+  gap: 20rpx;
+}
+.zone-divider-line {
+  flex: 1;
+  height: 2rpx;
+  background: linear-gradient(90deg, transparent, #a7f3d0);
+}
+.zone-divider-line-right {
+  background: linear-gradient(90deg, #a7f3d0, transparent);
+}
+.zone-divider-badge {
+  background: linear-gradient(135deg, #d1fae5, #bbf7d0);
+  border-radius: 20rpx;
+  padding: 8rpx 28rpx;
+  box-shadow: 0 4rpx 12rpx rgba(16, 185, 129, 0.15);
+}
+.zone-divider-text {
+  font-size: 20rpx;
+  color: #059669;
+  font-weight: 700;
+  letter-spacing: 6rpx;
 }
 
-.stat-blue-text { color: #1d4ed8; }
-.stat-orange-text { color: #c2410c; }
-.stat-purple-text { color: #7c3aed; }
-
-.stat-item .icon-emoji {
-  font-size: 40rpx;
+/* ── 快捷操作区容器 ── */
+.action-zone {
+  background: linear-gradient(180deg, #f0fdf4 0%, #f7fffe 60%, #ffffff 100%);
+  border-radius: 40rpx;
+  padding: 0 20rpx 24rpx;
+  margin-top: 16rpx;
+  box-shadow: inset 0 2rpx 8rpx rgba(16, 185, 129, 0.06),
+              0 2rpx 16rpx rgba(16, 185, 129, 0.08);
 }
 
 /* 分区标题 */
@@ -727,54 +929,79 @@ const closeQrModal = () => {
   gap: 12rpx;
 }
 
-/* 快捷打卡网格 */
-.action-grid {
+/* ══════════════════════════════════════════
+   Alipay-style 圆形图标操作网格
+   ══════════════════════════════════════════ */
+.circle-action-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 24rpx;
+  gap: 40rpx 16rpx;
+  padding: 4rpx 8rpx;
 }
 
-.action-item {
+.circle-action-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16rpx;
+  cursor: pointer;
+}
+
+.circle-icon {
+  width: 108rpx;
+  height: 108rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.circle-action-item:active .circle-icon {
+  transform: scale(0.88);
+}
+
+.circle-emoji {
+  font-size: 46rpx;
+  line-height: 1;
+}
+
+.circle-label {
+  font-size: 24rpx;
+  color: #4b5563;
+  font-weight: 500;
   text-align: center;
-  padding: 24rpx 12rpx;
-  background-color: #f9fafb;
-  border: 2rpx solid #f3f4f6;
-  border-radius: 24rpx;
 }
 
-.action-item .icon-emoji {
-  font-size: 48rpx;
-}
-
-.action-text {
-  display: block;
-  font-size: 22rpx;
-  color: #374151;
-  margin-top: 8rpx;
-}
-
-.action-highlight {
-  background-color: #ecfdf5;
-  border-color: #a7f3d0;
-}
-
-.action-text-highlight {
+.circle-label-featured {
   color: #059669;
-  font-weight: bold;
+  font-weight: 700;
 }
 
-.opacity-60 {
-  opacity: 0.6;
+.circle-dimmed {
+  opacity: 0.45;
 }
+
+/* 各圆圈配色 */
+.circle-running   { background-color: #dbeafe; }
+.circle-transport { background-color: #d1fae5; }
+.circle-diet      { background-color: #fef3c7; }
+.circle-takeout   { background-color: #fee2e2; }
+.circle-reuse     {
+  background-color: #d1fae5;
+  box-shadow: 0 6rpx 20rpx rgba(16, 185, 129, 0.32);
+  border: 2.5rpx solid #6ee7b7;
+}
+.circle-walk      { background-color: #ede9fe; }
 
 /* 今日任务 */
 .daily-task {
-  margin-top: 48rpx;
+  margin-top: 40rpx;
   display: flex;
   justify-content: space-between;
   align-items: center;
   background-color: #fff;
-  border: 4rpx solid #d1fae5;
+  border: 3rpx solid #d1fae5;
   border-radius: 32rpx;
   padding: 32rpx;
   box-shadow: 0 4rpx 12rpx rgba(0,0,0,0.05);
@@ -786,8 +1013,7 @@ const closeQrModal = () => {
 }
 
 .task-icon {
-  width: 96rpx;
-  height: 96rpx;
+  width: 96rpx; height: 96rpx;
   background-color: #d1fae5;
   border-radius: 50%;
   display: flex;
@@ -838,16 +1064,12 @@ const closeQrModal = () => {
 }
 
 .banner-img {
-  width: 100%;
-  height: 100%;
+  width: 100%; height: 100%;
 }
 
 .banner-overlay {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  top: 0; left: 0; right: 0; bottom: 0;
   background-color: rgba(0,0,0,0.3);
   display: flex;
   flex-direction: column;
@@ -892,90 +1114,132 @@ const closeQrModal = () => {
   font-style: italic;
 }
 
-/* 二维码弹窗 */
-.qr-modal-mask {
+/* ══════════════════════════════════════════
+   邀请码输入弹窗
+   ══════════════════════════════════════════ */
+.invite-modal-mask {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.6);
-  z-index: 101;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: rgba(0, 0, 0, 0.55);
+  z-index: 200;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.qr-modal-container {
-  width: 500rpx;
+.invite-modal-box {
+  width: 560rpx;
   background-color: #fff;
-  border-radius: 32rpx;
-  overflow: hidden;
-  animation: fadeInUp 0.2s ease;
+  border-radius: 40rpx;
+  padding: 52rpx 44rpx 44rpx;
+  animation: fadeInUp 0.22s ease;
 }
 
-.qr-modal-header {
+.invite-modal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 30rpx 30rpx 0 30rpx;
+  margin-bottom: 14rpx;
 }
 
-.qr-modal-title {
-  font-size: 32rpx;
-  font-weight: bold;
-  color: #333;
+.invite-modal-title {
+  font-size: 38rpx;
+  font-weight: 700;
+  color: #111827;
+  letter-spacing: 1rpx;
 }
 
-.qr-close-btn {
-  width: 48rpx;
-  height: 48rpx;
+.invite-close-btn {
+  width: 52rpx; height: 52rpx;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 40rpx;
-  color: #999;
+  font-size: 34rpx;
+  color: #9ca3af;
   cursor: pointer;
 }
 
-.qr-code-wrapper {
-  padding: 40rpx 30rpx 50rpx;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.qr-code-image {
-  width: 280rpx;
-  height: 280rpx;
-  border-radius: 16rpx;
-}
-
-.qr-tip {
-  margin-top: 24rpx;
+.invite-modal-desc {
   font-size: 24rpx;
-  color: #666;
+  color: #9ca3af;
+  display: block;
+  margin-bottom: 40rpx;
 }
 
+.invite-input-wrap {
+  background-color: #f9fafb;
+  border: 1.5rpx solid #e5e7eb;
+  border-radius: 20rpx;
+  padding: 0 28rpx;
+  height: 92rpx;
+  display: flex;
+  align-items: center;
+  margin-bottom: 44rpx;
+  transition: border-color 0.15s;
+}
+
+.invite-input-wrap:focus-within {
+  border-color: #10b981;
+}
+
+.invite-input {
+  flex: 1;
+  height: 100%;
+  font-size: 32rpx;
+  color: #111827;
+  background-color: transparent;
+  letter-spacing: 2rpx;
+}
+
+.invite-placeholder {
+  color: #d1d5db;
+}
+
+.invite-modal-actions {
+  display: flex;
+  gap: 20rpx;
+}
+
+.invite-btn {
+  flex: 1;
+  height: 92rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 46rpx;
+  font-size: 30rpx;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.invite-btn-cancel {
+  background-color: #f3f4f6;
+  color: #6b7280;
+}
+
+.invite-btn-confirm {
+  background-color: #10b981;
+  color: #fff;
+  box-shadow: 0 8rpx 24rpx rgba(16, 185, 129, 0.38);
+}
+
+.invite-btn-confirm:active {
+  background-color: #059669;
+}
+
+/* ── 动画 ── */
 @keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30rpx);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(30rpx); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-/* 动画 */
 @keyframes tree-sway {
   0%, 100% { transform: rotate(-5deg); }
-  50% { transform: rotate(5deg); }
+  50%       { transform: rotate(5deg); }
 }
 
 @keyframes fire-flicker {
   0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.8; transform: scale(1.1); }
+  50%       { opacity: 0.8; transform: scale(1.1); }
 }
 </style>

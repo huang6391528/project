@@ -112,21 +112,26 @@
          模块四：底部基础菜单列表
          ============================ -->
     <view class="menu-section">
-      <view class="menu-item">
+      <!-- 账号设置 -->
+      <view class="menu-item" @tap="goToSettings">
         <view class="menu-left">
           <text class="iconfont icon-settings menu-icon"></text>
           <text class="menu-text">账号设置</text>
         </view>
         <text class="iconfont icon-chevron-right menu-arrow"></text>
       </view>
-      <view class="menu-item">
+      
+      <!-- 消息通知 -->
+      <view class="menu-item" @tap="goToNotification">
         <view class="menu-left">
           <text class="iconfont icon-message menu-icon"></text>
           <text class="menu-text">消息通知</text>
         </view>
         <text class="iconfont icon-chevron-right menu-arrow"></text>
       </view>
-      <view class="menu-item">
+      
+      <!-- 帮助与反馈 -->
+      <view class="menu-item" @tap="goToHelp">
         <view class="menu-left">
           <text class="iconfont icon-help-circle menu-icon"></text>
           <text class="menu-text">帮助与反馈</text>
@@ -139,13 +144,33 @@
 </template>
 
 <script setup>
-// 数据变量和逻辑全部保留，不做任何修改
+// 原有方法保留
 function onEditProfile() {
   uni.showToast({ title: '编辑资料开发中', icon: 'none' })
 }
 
 function goToDataCenter() {
   uni.showToast({ title: '数据中心开发中', icon: 'none' })
+}
+
+
+// ========== 修改后的跳转方法 ==========
+function goToSettings() {
+  uni.navigateTo({
+    url: '/pages/profile/settings'
+  })
+}
+
+function goToNotification() {
+  uni.navigateTo({
+    url: '/pages/profile/notification'
+  })
+}
+
+function goToHelp() {
+  uni.navigateTo({
+    url: '/pages/profile/help'
+  })
 }
 </script>
 

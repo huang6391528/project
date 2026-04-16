@@ -8,6 +8,48 @@
       }
     },
     {
+      "path": "pages/message/message",
+      "style": {
+        "navigationBarTitleText": "消息",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/friends/friends",
+      "style": {
+        "navigationBarTitleText": "关注好友",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/class-list/class-list",
+      "style": {
+        "navigationBarTitleText": "班级列表",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/checkin-group/checkin-group",
+      "style": {
+        "navigationBarTitleText": "我的打卡团",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/moments/moments",
+      "style": {
+        "navigationBarTitleText": "我的动态",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/low-carbon-circle/low-carbon-circle",
+      "style": {
+        "navigationBarTitleText": "低碳圈",
+        "navigationStyle": "custom"
+      }
+    },
+    {
       "path": "pages/login/login",
       "style": {
         "navigationBarTitleText": "登录",
@@ -30,55 +72,6 @@
       }
     },
     {
-      "path": "pages/low-carbon/index",
-      "style": {
-        "navigationBarTitleText": "低碳模块",
-        "navigationStyle": "custom"
-      }
-    },
-    {
-      "path": "pages/low-carbon/diet",
-      "style": {
-        "navigationBarTitleText": "饮食",
-        "navigationStyle": "custom"
-      }
-    },
-    {
-      "path": "pages/low-carbon/sport",
-      "style": {
-        "navigationBarTitleText": "运动",
-        "navigationStyle": "custom"
-      }
-    },
-    {
-      "path": "pages/low-carbon/travel",
-      "style": {
-        "navigationBarTitleText": "出行",
-        "navigationStyle": "custom"
-      }
-    },
-    {
-      "path": "pages/low-carbon/life",
-      "style": {
-        "navigationBarTitleText": "生活",
-        "navigationStyle": "custom"
-      }
-    },
-    {
-      "path": "pages/low-carbon/dorm-energy",
-      "style": {
-        "navigationBarTitleText": "宿舍节能",
-        "navigationStyle": "custom"
-      }
-    },
-    {
-      "path": "pages/low-carbon/low-carbon-study",
-      "style": {
-        "navigationBarTitleText": "低碳学习",
-        "navigationStyle": "custom"
-      }
-    },
-    {
       "path": "pages/store/store",
       "style": {
         "navigationBarTitleText": "积分商城",
@@ -93,54 +86,47 @@
       }
     },
     {
-      "path": "pages/profile/settings",
+      "path": "pages/low-carbon/sport",
       "style": {
-        "navigationBarTitleText": "账号设置",
+        "navigationBarTitleText": "运动碳汇打卡",
         "navigationStyle": "custom"
       }
     },
     {
-      "path": "pages/profile/security",
+      "path": "pages/low-carbon/diet",
       "style": {
-        "navigationBarTitleText": "账号与安全",
-        "navigationStyle": "custom"
-      }
-    },
-	{
-	    "path": "pages/profile/about",
-	    "style": {
-	      "navigationBarTitleText": "关于平台",
-	      "navigationStyle": "custom"
-	    }
-	},
-    {
-      "path": "pages/profile/notification",
-      "style": {
-        "navigationBarTitleText": "消息通知",
+        "navigationBarTitleText": "低碳健康饮食",
         "navigationStyle": "custom"
       }
     },
     {
-      "path": "pages/profile/help",
+      "path": "pages/low-carbon/travel",
       "style": {
-        "navigationBarTitleText": "帮助与反馈",
+        "navigationBarTitleText": "绿色低碳出行",
         "navigationStyle": "custom"
       }
     },
-	{
-	    "path": "pages/profile/feedback",
-	    "style": {
-	      "navigationBarTitleText": "意见反馈",
-	      "navigationStyle": "custom"
-	    }
-	},
-	{
-	    "path": "pages/profile/records",
-	    "style": {
-	      "navigationBarTitleText": "反馈记录",
-	      "navigationStyle": "custom"
-	    }
-	}
+    {
+      "path": "pages/low-carbon/life",
+      "style": {
+        "navigationBarTitleText": "生活学习打卡",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/low-carbon/dorm-energy",
+      "style": {
+        "navigationBarTitleText": "宿舍节能助手",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/low-carbon/low-carbon-study",
+      "style": {
+        "navigationBarTitleText": "低碳学习办公",
+        "navigationStyle": "custom"
+      }
+    }
   ],
   "globalStyle": {
     "navigationBarTextStyle": "black",
