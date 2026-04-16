@@ -262,20 +262,8 @@
             </view>
             <view class="calendar-legend">
               <view class="legend-item">
-                <view class="legend-dot green"></view>
-                <text class="legend-text">自由跑</text>
-              </view>
-              <view class="legend-item">
-                <view class="legend-dot dark-green"></view>
-                <text class="legend-text">晨跑</text>
-              </view>
-              <view class="legend-item">
                 <view class="legend-dot purple-ring"></view>
                 <text class="legend-text">马拉松训练</text>
-              </view>
-              <view class="legend-item">
-                <view class="legend-dot future"></view>
-                <text class="legend-text">未到/未打卡</text>
               </view>
             </view>
           </view>

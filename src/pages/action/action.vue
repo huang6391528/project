@@ -411,9 +411,23 @@
 
         <!-- 子功能页签 -->
         <view class="life-sub-tabs">
-          <view class="life-sub-tab life-sub-tab-active">推荐</view>
-          <view class="life-sub-tab">宿舍节能</view>
-          <view class="life-sub-tab">低碳学习</view>
+          <view
+            class="life-sub-tab"
+            :class="lifeSubTab === 'home' ? 'life-sub-tab-active' : ''"
+            @tap="lifeSubTab = 'home'"
+          >推荐<view class="life-tab-line"></view></view>
+          <view class="life-sub-divider"></view>
+          <view
+            class="life-sub-tab"
+            :class="lifeSubTab === 'dorm' ? 'life-sub-tab-active' : ''"
+            @tap="lifeSubTab = 'dorm'"
+          >宿舍节能<view class="life-tab-line"></view></view>
+          <view class="life-sub-divider"></view>
+          <view
+            class="life-sub-tab"
+            :class="lifeSubTab === 'study' ? 'life-sub-tab-active' : ''"
+            @tap="lifeSubTab = 'study'"
+          >低碳学习<view class="life-tab-line"></view></view>
         </view>
 
         <!-- 垃圾分类 AI 核验 -->
@@ -430,57 +444,214 @@
           <button class="life-ai-btn">去拍摄</button>
         </view>
 
-        <!-- 功能网格 -->
-        <view class="life-grid">
-          <view class="life-card">
-            <text class="iconfont icon-gift life-card-icon indigo"></text>
-            <text class="life-card-name">旧物捐赠</text>
-            <text class="life-card-desc">旧书/衣/家电上传</text>
-            <button class="life-card-btn">去捐赠</button>
-          </view>
-          <view class="life-card">
-            <text class="iconfont icon-shopping-bag life-card-icon emerald"></text>
-            <text class="life-card-name">环保购物</text>
-            <text class="life-card-desc">自带布袋/无包装</text>
-            <button class="life-card-btn green-btn">打卡</button>
-          </view>
-          <view class="life-card">
-            <text class="iconfont icon-flower life-card-icon green"></text>
-            <text class="life-card-name">绿植养护</text>
-            <text class="life-card-desc">碳吸附实时记录</text>
-            <button class="life-card-btn green-btn">记录</button>
-          </view>
-          <view class="life-card">
-            <text class="iconfont icon-book life-card-icon blue"></text>
-            <text class="life-card-name">低碳学习</text>
-            <text class="life-card-desc">无纸化/二手教材</text>
-            <button class="life-card-btn blue-btn-sm">上传</button>
-          </view>
-          <view class="life-card life-card-dark">
-            <view class="dark-inner">
-              <text class="dark-title">宿舍节能看板</text>
-              <view class="dark-tags">
-                <view class="dark-tag">
-                  <text class="iconfont icon-temp"></text>
-                  <text class="dark-tag-text">空调温控自律</text>
+        <!-- 推荐内容 -->
+        <view v-if="lifeSubTab === 'home'">
+          <!-- 功能网格 -->
+          <view class="life-grid">
+            <view class="life-card">
+              <text class="iconfont icon-gift life-card-icon indigo"></text>
+              <text class="life-card-name">旧物捐赠</text>
+              <text class="life-card-desc">旧书/衣/家电上传</text>
+              <button class="life-card-btn">去捐赠</button>
+            </view>
+            <view class="life-card">
+              <text class="iconfont icon-shopping-bag life-card-icon emerald"></text>
+              <text class="life-card-name">环保购物</text>
+              <text class="life-card-desc">自带布袋/无包装</text>
+              <button class="life-card-btn green-btn">打卡</button>
+            </view>
+            <view class="life-card">
+              <text class="iconfont icon-flower life-card-icon green"></text>
+              <text class="life-card-name">绿植养护</text>
+              <text class="life-card-desc">碳吸附实时记录</text>
+              <button class="life-card-btn green-btn">记录</button>
+            </view>
+            <view class="life-card">
+              <text class="iconfont icon-book life-card-icon blue"></text>
+              <text class="life-card-name">低碳学习</text>
+              <text class="life-card-desc">无纸化/二手教材</text>
+              <button class="life-card-btn blue-btn-sm">上传</button>
+            </view>
+            <view class="life-card life-card-dark">
+              <view class="dark-inner">
+                <text class="dark-title">宿舍节能看板</text>
+                <view class="dark-tags">
+                  <view class="dark-tag">
+                    <text class="iconfont icon-temp"></text>
+                    <text class="dark-tag-text">空调温控自律</text>
+                  </view>
+                  <view class="dark-tag">
+                    <text class="iconfont icon-night"></text>
+                    <text class="dark-tag-text">熄灯打卡</text>
+                  </view>
                 </view>
-                <view class="dark-tag">
-                  <text class="iconfont icon-night"></text>
-                  <text class="dark-tag-text">熄灯打卡</text>
+              </view>
+              <button class="dark-btn">节能打卡</button>
+            </view>
+            <view class="life-card life-card-wide">
+              <view class="wide-icon-wrap">
+                <text class="iconfont icon-no-plastic"></text>
+              </view>
+              <view class="wide-info">
+                <text class="life-card-name">无塑日常</text>
+                <text class="life-card-desc">拒绝一次性吸管、水杯记录</text>
+              </view>
+              <view class="wide-check"></view>
+            </view>
+          </view>
+        </view>
+
+        <!-- 宿舍节能内容 -->
+        <view v-else-if="lifeSubTab === 'dorm'">
+          <!-- 1. 宿舍周能耗趋势图表 -->
+          <view class="energy-chart-wrap">
+            <view class="energy-chart-card">
+              <text class="energy-chart-title">宿舍周能耗趋势</text>
+              <view class="energy-bar-group">
+                <view class="energy-bar-item" v-for="(item, i) in energyData" :key="i">
+                  <view class="energy-bar" :style="{ height: item.h + 'rpx', background: item.color }"></view>
+                  <text class="energy-bar-label">{{ item.d }}</text>
                 </view>
               </view>
             </view>
-            <button class="dark-btn">节能打卡</button>
           </view>
-          <view class="life-card life-card-wide">
-            <view class="wide-icon-wrap">
-              <text class="iconfont icon-no-plastic"></text>
+
+          <!-- 2. 即时打卡 -->
+          <text class="dorm-sub-title">即时打卡</text>
+          <view class="dorm-quick-grid">
+            <view class="dorm-quick-card">
+              <text class="iconfont icon-lightbulb dorm-quick-icon yellow"></text>
+              <text class="dorm-quick-name">节约用电</text>
+              <text class="dorm-quick-desc">做到随手关灯</text>
+              <button class="dorm-quick-btn done-btn">打卡成功</button>
             </view>
-            <view class="wide-info">
-              <text class="life-card-name">无塑日常</text>
-              <text class="life-card-desc">拒绝一次性吸管、水杯记录</text>
+            <view class="dorm-quick-card">
+              <text class="iconfont icon-water dorm-quick-icon blue"></text>
+              <text class="dorm-quick-name">节约用水</text>
+              <text class="dorm-quick-desc">缩短淋浴时间</text>
+              <button class="dorm-quick-btn outline-btn">去打卡</button>
             </view>
-            <view class="wide-check"></view>
+          </view>
+
+          <!-- 3. 监控列表 -->
+          <view class="dorm-monitor-list">
+            <view class="dorm-monitor-item">
+              <view class="dorm-monitor-left">
+                <text class="iconfont icon-ac dorm-monitor-icon emerald"></text>
+                <text class="dorm-monitor-name">空调温控 (当前 26℃)</text>
+              </view>
+              <text class="iconfont icon-check-circle dorm-monitor-check emerald"></text>
+            </view>
+            <view class="dorm-monitor-item">
+              <view class="dorm-monitor-left">
+                <text class="iconfont icon-night dorm-monitor-icon indigo"></text>
+                <text class="dorm-monitor-name">熄灯自律打卡</text>
+              </view>
+              <text class="dorm-monitor-hint">23:00 后开启</text>
+            </view>
+          </view>
+
+          <!-- 4. 节能PK赛 -->
+          <view class="dorm-pk-card">
+            <text class="dorm-pk-title">节能寝室 PK 赛</text>
+            <view class="dorm-pk-row">
+              <view>
+                <text class="dorm-pk-hint">本楼栋排名</text>
+                <text class="dorm-pk-rank">No.12</text>
+              </view>
+              <button class="dorm-pk-btn">查看对比</button>
+            </view>
+          </view>
+
+          <!-- 5. 节能小妙招 -->
+          <text class="dorm-sub-title">宿舍节能小妙招</text>
+          <view class="dorm-tips">
+            <view class="dorm-tip yellow-tip">
+              <view class="tip-num yellow-num"><text>1</text></view>
+              <text class="tip-text">拔掉不常用的电器插头，减少待机功耗。</text>
+            </view>
+            <view class="dorm-tip green-tip">
+              <view class="tip-num green-num"><text>2</text></view>
+              <text class="tip-text">利用宿舍阳台自然采光，减少白天开灯。</text>
+            </view>
+          </view>
+
+          <!-- 6. 减碳量计算器 -->
+          <view class="dorm-calc-btn-wrap">
+            <button class="dorm-calc-btn">
+              <text class="iconfont icon-calculator"></text>
+              <text>开启减碳量计算器</text>
+            </button>
+          </view>
+        </view>
+
+        <!-- 低碳学习内容 -->
+        <view v-else-if="lifeSubTab === 'study'">
+          <view class="study-achievement-card">
+            <view class="achievement-header">
+              <text class="iconfont icon-file-text achievement-icon"></text>
+              <text class="achievement-label">无纸化学习本学期省下</text>
+            </view>
+            <view class="achievement-num">
+              <text class="achievement-big">425</text>
+              <text class="achievement-unit">张 A4 纸</text>
+            </view>
+            <text class="achievement-sub">相当于保护了 0.05 棵成年树木</text>
+          </view>
+          <view class="study-grid">
+            <view class="study-grid-card">
+              <view class="study-grid-icon green"><text class="iconfont icon-tablet"></text></view>
+              <text class="study-grid-name">无纸化笔记</text>
+              <text class="study-grid-desc">使用平板/电脑记录</text>
+            </view>
+            <view class="study-grid-card">
+              <view class="study-grid-icon blue"><text class="iconfont icon-recycle"></text></view>
+              <text class="study-grid-name">草稿纸回收</text>
+              <text class="study-grid-desc">废旧纸张定点回收</text>
+            </view>
+            <view class="study-grid-card">
+              <view class="study-grid-icon purple"><text class="iconfont icon-share"></text></view>
+              <text class="study-grid-name">电子共享</text>
+              <text class="study-grid-desc">云端传资料免打印</text>
+            </view>
+            <view class="study-grid-card">
+              <view class="study-grid-icon amber"><text class="iconfont icon-book-refresh"></text></view>
+              <text class="study-grid-name">二手教材</text>
+              <text class="study-grid-desc">学长学姐课本转借</text>
+            </view>
+          </view>
+          <view class="study-section-header">
+            <text class="study-section-title">二手教材市场</text>
+            <view class="study-tag-group">
+              <text class="study-tag-active">求购</text>
+              <text class="study-tag">转让</text>
+            </view>
+          </view>
+          <view class="study-book-card">
+            <image class="book-cover" src="https://modao.cc/agent-py/media/generated_images/2026-04-11/ef7a9241798742cabf574a106d337d07.jpg" mode="aspectFill"></image>
+            <view class="book-info">
+              <view class="book-top">
+                <text class="book-title">《高等数学（下）》</text>
+                <text class="book-meta">发布者：23级张同学 · 9成新</text>
+              </view>
+              <view class="book-bottom">
+                <text class="book-price">免费转借</text>
+                <button class="book-btn">联系他</button>
+              </view>
+            </view>
+          </view>
+          <view class="study-book-card">
+            <image class="book-cover" src="https://modao.cc/agent-py/media/generated_images/2026-04-11/ef7a9241798742cabf574a106d337d07.jpg" mode="aspectFill"></image>
+            <view class="book-info">
+              <view class="book-top">
+                <text class="book-title">《计算机组成原理》</text>
+                <text class="book-meta">发布者：王学姐 · 含有精美笔记</text>
+              </view>
+              <view class="book-bottom">
+                <text class="book-price orange">50 碳汇分</text>
+                <button class="book-btn">立即兑换</button>
+              </view>
+            </view>
           </view>
         </view>
       </view>
@@ -497,6 +668,17 @@
 import { ref } from 'vue'
 
 const activeTab = ref('recommend')
+const lifeSubTab = ref('home')
+
+const energyData = [
+  { d: 'M', h: 120, color: '#FACC15' },
+  { d: 'T', h: 200, color: '#FACC15' },
+  { d: 'W', h: 150, color: '#FACC15' },
+  { d: 'T', h: 80,  color: '#FACC15' },
+  { d: 'F', h: 70,  color: '#FACC15' },
+  { d: 'S', h: 110, color: '#FACC15' },
+  { d: 'S', h: 130, color: '#FACC15' }
+]
 
 const switchTab = (tab) => {
   activeTab.value = tab
@@ -1417,53 +1599,53 @@ const canteenMarkers = [{
   font-size: 20rpx;
 }
 
-/* 子功能页签 - 极简文本风格 */
+/* 子功能页签 */
 .life-sub-tabs {
   display: flex;
   align-items: center;
-  gap: 0;
   padding: 0 30rpx;
   margin-top: 32rpx;
 }
 
+.life-sub-divider {
+  width: 2rpx;
+  height: 28rpx;
+  background: #E5E7EB;
+  flex-shrink: 0;
+}
+
 .life-sub-tab {
-  font-size: 24rpx;
+  font-size: 26rpx;
   font-weight: 400;
   color: #9CA3AF;
   padding: 12rpx 20rpx;
   position: relative;
   transition: all 0.3s ease;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-/* 分割线 - 使用 border-right */
-.life-sub-tab:not(:last-child)::after {
-  content: '|';
-  position: absolute;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #E5E7EB;
-  font-size: 20rpx;
-  font-weight: 300;
-}
-
-/* 激活状态 */
-.life-sub-tab-active {
-  font-size: 26rpx;
-  font-weight: 700;
-  color: #7C3AED;
-}
-
-.life-sub-tab-active::after {
-  content: '';
-  position: absolute;
-  bottom: -8rpx;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 32rpx;
+.life-tab-line {
+  display: none;
+  width: 60rpx;
   height: 6rpx;
-  background-color: #7C3AED;
-  border-radius: 4rpx;
+  margin-top: 6rpx;
+  background: linear-gradient(135deg, #7c3aed, #a855f7, #c084fc);
+  border-radius: 3rpx;
+  box-shadow: 0 0 12rpx rgba(124, 58, 237, 0.5);
+}
+
+/* 激活态 */
+.life-sub-tab-active {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #7c3aed;
+}
+
+.life-sub-tab-active .life-tab-line {
+  display: block;
 }
 
 /* 垃圾分类 AI 核验 */
@@ -1657,4 +1839,341 @@ const canteenMarkers = [{
   border: 4rpx solid #8b5cf6;
   flex-shrink: 0;
 }
+
+/* Dorm tab */
+.dorm-room-card {
+  background: #fff; border-radius: 32rpx; padding: 32rpx; margin: 24rpx;
+  display: flex; justify-content: space-between; align-items: flex-end;
+}
+.room-label {
+  display: block; font-size: 24rpx; color: #94a3b8;
+  margin-bottom: 8rpx;
+}
+.room-name { display: block; font-size: 48rpx; font-weight: 900; color: #1f2937; }
+.room-rank { display: flex; align-items: center; gap: 6rpx; }
+.rank-icon { font-size: 28rpx; color: #22c55e; }
+.rank-text { font-size: 24rpx; font-weight: 700; color: #22c55e; }
+.dorm-ac-card {
+  margin: 0 24rpx 24rpx; background: #eff6ff; border-radius: 32rpx;
+  padding: 32rpx; overflow: hidden;
+}
+.ac-top {
+  display: flex; justify-content: space-between; align-items: center; margin-bottom: 32rpx;
+}
+.ac-left { display: flex; align-items: center; gap: 16rpx; }
+.ac-icon-wrap {
+  width: 64rpx; height: 64rpx; background: #3b82f6; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+}
+.ac-icon-wrap .iconfont { font-size: 32rpx; color: #fff; }
+.ac-label { font-size: 28rpx; font-weight: 700; color: #374151; }
+.ac-toggle {
+  width: 96rpx; height: 48rpx; background: #e5e7eb; border-radius: 24rpx;
+  position: relative; padding: 6rpx;
+}
+.toggle-thumb {
+  width: 36rpx; height: 36rpx; background: #fff; border-radius: 50%;
+  position: absolute; right: 6rpx; top: 6rpx;
+  box-shadow: 0 2rpx 4rpx rgba(0,0,0,0.1); transition: right 0.2s;
+}
+.toggle-thumb.on { right: 48rpx; }
+.ac-dial-wrap { display: flex; justify-content: center; margin-bottom: 24rpx; }
+.ac-dial {
+  width: 256rpx; height: 256rpx; border-radius: 50%;
+  border: 8rpx solid rgba(255,255,255,0.5);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  background: linear-gradient(135deg, #3b82f6, #f59e0b, #3b82f6);
+  background-size: 200% 200%; animation: dialGradient 6s linear infinite;
+}
+@keyframes dialGradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+.ac-temp-num { font-size: 72rpx; font-weight: 900; color: #1d4ed8; }
+.ac-temp-unit { font-size: 28rpx; color: #1d4ed8; margin-top: -8rpx; }
+.ac-temp-sub { font-size: 20rpx; color: #93c5fd; margin-top: 4rpx; }
+.ac-hint {
+  background: rgba(59,130,246,0.1); border-radius: 24rpx;
+  padding: 20rpx 24rpx; display: flex; align-items: center; gap: 12rpx;
+}
+.ac-hint-icon { font-size: 28rpx; color: #3b82f6; }
+.ac-hint-text { font-size: 20rpx; color: #1e40af; }
+.dorm-section-title {
+  margin: 0 24rpx 24rpx; font-size: 28rpx; font-weight: 700; color: #1f2937;
+}
+.dorm-checkin-card {
+  margin: 0 24rpx 16rpx; background: #fff; border-radius: 24rpx;
+  padding: 24rpx; display: flex; align-items: center;
+  justify-content: space-between; border: 1px solid #f9fafb;
+  box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.03);
+}
+.dorm-checkin-card.done { opacity: 0.6; }
+.checkin-left { display: flex; align-items: center; gap: 20rpx; }
+.checkin-icon-wrap {
+  width: 80rpx; height: 80rpx; border-radius: 16rpx;
+  display: flex; align-items: center; justify-content: center;
+}
+.checkin-icon-wrap .iconfont { font-size: 36rpx; }
+.checkin-icon-wrap.yellow { background: #fefce8; }
+.checkin-icon-wrap.yellow .iconfont { color: #eab308; }
+.checkin-icon-wrap.blue { background: #eff6ff; }
+.checkin-icon-wrap.blue .iconfont { color: #3b82f6; }
+.checkin-icon-wrap.indigo { background: #eef2ff; }
+.checkin-icon-wrap.indigo .iconfont { color: #6366f1; }
+.checkin-icon-wrap.rose { background: #fff1f2; }
+.checkin-icon-wrap.rose .iconfont { color: #f43f5e; }
+.checkin-info { display: flex; flex-direction: column; gap: 4rpx; }
+.checkin-title { font-size: 28rpx; font-weight: 700; color: #1f2937; }
+.checkin-desc { font-size: 20rpx; color: #9ca3af; }
+.checkin-btn-active {
+  background: #22c55e; color: #fff; font-size: 22rpx; font-weight: 700;
+  padding: 12rpx 28rpx; border-radius: 50rpx; border: none;
+  box-shadow: 0 4rpx 12rpx rgba(34,197,94,0.3);
+}
+.checkin-btn-outline {
+  background: transparent; color: #22c55e; font-size: 22rpx;
+  font-weight: 700; padding: 12rpx 28rpx; border-radius: 50rpx; border: 2rpx solid #22c55e;
+}
+.checkin-btn-done {
+  background: #f3f4f6; color: #9ca3af; font-size: 22rpx;
+  font-weight: 700; padding: 12rpx 28rpx; border-radius: 50rpx; font-style: italic;
+}
+.dorm-rank-card {
+  margin: 32rpx 24rpx; background: #0f172a; border-radius: 32rpx; padding: 32rpx;
+}
+.rank-header {
+  display: flex; justify-content: space-between; align-items: center; margin-bottom: 24rpx;
+}
+.rank-title { font-size: 28rpx; font-weight: 700; color: #fff; }
+.rank-arrow { font-size: 32rpx; color: #64748b; }
+.rank-item {
+  display: flex; align-items: center; gap: 16rpx; margin-bottom: 20rpx;
+}
+.rank-item:last-child { margin-bottom: 0; }
+.rank-num {
+  font-size: 28rpx; font-weight: 900; font-style: italic;
+  width: 48rpx; text-align: center;
+}
+.rank-num-gold { color: #fbbf24; }
+.rank-num-gray { color: #64748b; }
+.rank-bar-wrap { flex: 1; }
+.rank-bar-label { display: flex; justify-content: space-between; margin-bottom: 8rpx; }
+.rank-name { font-size: 20rpx; color: #94a3b8; }
+.rank-val { font-size: 20rpx; color: #94a3b8; }
+.rank-bar {
+  width: 100%; height: 8rpx; background: rgba(255,255,255,0.1);
+  border-radius: 4rpx; overflow: hidden;
+}
+.rank-bar-fill { height: 100%; border-radius: 4rpx; }
+.rank-bar-fill.green {
+  width: 85%; background: #22c55e; box-shadow: 0 0 16rpx rgba(34,197,94,0.6);
+}
+.rank-bar-fill.gray { width: 80%; background: rgba(255,255,255,0.4); }
+
+/* Study tab */
+.study-achievement-card {
+  margin: 24rpx; background: linear-gradient(135deg, #fb923c, #f97316);
+  border-radius: 32rpx; padding: 32rpx; color: #fff;
+  box-shadow: 0 8rpx 24rpx rgba(249, 115, 22, 0.2);
+}
+.achievement-header {
+  display: flex; align-items: center; gap: 12rpx; margin-bottom: 16rpx;
+}
+.achievement-icon { font-size: 32rpx; }
+.achievement-label { font-size: 26rpx; font-weight: 500; opacity: 0.9; }
+.achievement-num {
+  display: flex; align-items: baseline; gap: 12rpx; margin-bottom: 16rpx;
+}
+.achievement-big { font-size: 80rpx; font-weight: 900; }
+.achievement-unit { font-size: 26rpx; opacity: 0.9; }
+.achievement-sub { font-size: 22rpx; opacity: 0.75; }
+.study-grid {
+  margin: 0 24rpx 24rpx; display: grid; grid-template-columns: repeat(2, 1fr); gap: 16rpx;
+}
+.study-grid-card {
+  background: #f9fafb; border-radius: 24rpx; padding: 28rpx;
+  display: flex; flex-direction: column; align-items: center; border: 1px solid #f3f4f6;
+}
+.study-grid-icon {
+  width: 80rpx; height: 80rpx; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center; margin-bottom: 12rpx;
+}
+.study-grid-icon .iconfont { font-size: 36rpx; }
+.study-grid-icon.green { background: #f0fdf4; }
+.study-grid-icon.green .iconfont { color: #16a34a; }
+.study-grid-icon.blue { background: #eff6ff; }
+.study-grid-icon.blue .iconfont { color: #2563eb; }
+.study-grid-icon.purple { background: #faf5ff; }
+.study-grid-icon.purple .iconfont { color: #9333ea; }
+.study-grid-icon.amber { background: #fffbeb; }
+.study-grid-icon.amber .iconfont { color: #d97706; }
+.study-grid-name {
+  font-size: 26rpx; font-weight: 700; color: #374151; margin-bottom: 4rpx;
+}
+.study-grid-desc { font-size: 18rpx; color: #9ca3af; }
+.study-section-header {
+  margin: 0 24rpx 16rpx; display: flex; justify-content: space-between; align-items: center;
+}
+.study-section-title { font-size: 28rpx; font-weight: 700; color: #1f2937; }
+.study-tag-group { display: flex; gap: 8rpx; }
+.study-tag-active {
+  background: #22c55e; color: #fff; font-size: 20rpx; font-weight: 700;
+  padding: 6rpx 16rpx; border-radius: 50rpx;
+}
+.study-tag {
+  background: #f3f4f6; color: #9ca3af; font-size: 20rpx; font-weight: 700;
+  padding: 6rpx 16rpx; border-radius: 50rpx;
+}
+.study-book-card {
+  margin: 0 24rpx 16rpx; display: flex; gap: 16rpx;
+  background: #f9fafb; border-radius: 24rpx; padding: 16rpx;
+}
+.book-cover { width: 120rpx; height: 144rpx; border-radius: 16rpx; flex-shrink: 0; }
+.book-info {
+  flex: 1; display: flex; flex-direction: column; justify-content: space-between;
+}
+.book-top { display: flex; flex-direction: column; gap: 6rpx; }
+.book-title { font-size: 28rpx; font-weight: 700; color: #1f2937; }
+.book-meta { font-size: 20rpx; color: #9ca3af; }
+.book-bottom { display: flex; justify-content: space-between; align-items: center; }
+.book-price { font-size: 26rpx; font-weight: 700; color: #16a34a; }
+.book-price.orange { color: #ea580c; }
+.book-btn {
+  background: #1f2937; color: #fff; font-size: 20rpx; font-weight: 700;
+  padding: 8rpx 24rpx; border-radius: 50rpx; border: none; line-height: 1.8;
+}
+.study-doc-section { margin: 32rpx 24rpx 0; }
+.study-doc-list {
+  margin-top: 16rpx; display: flex; flex-direction: column; gap: 12rpx;
+}
+.study-doc-item {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 20rpx; border: 1px solid #f3f4f6; border-radius: 20rpx;
+}
+.doc-left { display: flex; align-items: center; gap: 16rpx; }
+.doc-icon-pdf { font-size: 48rpx; color: #ef4444; }
+.doc-icon-word { font-size: 48rpx; color: #3b82f6; }
+.doc-info { display: flex; flex-direction: column; gap: 4rpx; }
+.doc-name { font-size: 22rpx; font-weight: 700; color: #374151; }
+.doc-meta { font-size: 18rpx; color: #9ca3af; }
+.doc-download { font-size: 48rpx; color: #d1d5db; }
+
+/* Dorm tab - 完全匹配 energy.html */
+.energy-chart-wrap { padding: 24rpx; }
+.energy-chart-card {
+  background: #fff; border-radius: 24rpx; padding: 24rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.04);
+}
+.energy-chart-title {
+  display: block; font-size: 22rpx; font-weight: 700; color: #1f2937; margin-bottom: 16rpx;
+}
+.energy-bar-group {
+  display: flex; align-items: flex-end; justify-content: space-around;
+  height: 160rpx; padding: 0 8rpx;
+}
+.energy-bar-item {
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: flex-end; gap: 8rpx; flex: 1;
+}
+.energy-bar {
+  width: 36rpx; border-radius: 10rpx; min-height: 10rpx;
+}
+.energy-bar-label { font-size: 20rpx; color: #9ca3af; }
+
+.dorm-sub-title {
+  display: block; padding: 8rpx 24rpx; margin-bottom: 16rpx;
+  font-size: 26rpx; font-weight: 700; color: #1f2937;
+}
+
+.dorm-quick-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 16rpx;
+  padding: 0 24rpx; margin-bottom: 16rpx;
+}
+.dorm-quick-card {
+  background: #fff; border-radius: 32rpx; padding: 24rpx;
+  display: flex; flex-direction: column; align-items: center;
+  box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.04);
+}
+.dorm-quick-icon { font-size: 56rpx; margin-bottom: 8rpx; }
+.dorm-quick-icon.yellow { color: #fbbf24; }
+.dorm-quick-icon.blue { color: #60a5fa; }
+.dorm-quick-name {
+  font-size: 22rpx; font-weight: 700; color: #374151; margin-bottom: 4rpx;
+}
+.dorm-quick-desc { font-size: 18rpx; color: #9ca3af; margin-bottom: 12rpx; }
+.dorm-quick-btn {
+  width: 100%; padding: 12rpx; border-radius: 16rpx;
+  font-size: 18rpx; font-weight: 700; margin-top: 8rpx;
+}
+.dorm-quick-btn.done-btn { background: #fbbf24; color: #fff; border: none; }
+.dorm-quick-btn.outline-btn {
+  background: transparent; color: #60a5fa; border: 2rpx solid #60a5fa;
+}
+
+.dorm-monitor-list {
+  padding: 0 24rpx; margin-bottom: 16rpx; display: flex; flex-direction: column; gap: 12rpx;
+}
+.dorm-monitor-item {
+  background: #fff; border-radius: 24rpx; padding: 20rpx 24rpx;
+  display: flex; justify-content: space-between; align-items: center;
+  box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.04);
+}
+.dorm-monitor-left { display: flex; align-items: center; gap: 16rpx; }
+.dorm-monitor-icon { font-size: 44rpx; }
+.dorm-monitor-icon.emerald { color: #10b981; }
+.dorm-monitor-icon.indigo { color: #6366f1; }
+.dorm-monitor-name { font-size: 22rpx; font-weight: 700; color: #374151; }
+.dorm-monitor-check { font-size: 44rpx; }
+.dorm-monitor-check.emerald { color: #10b981; }
+.dorm-monitor-hint {
+  font-size: 18rpx; color: #9ca3af; font-style: italic;
+}
+
+.dorm-pk-card {
+  margin: 0 24rpx 16rpx;
+  background: linear-gradient(135deg, #2563eb, #4f46e5);
+  border-radius: 32rpx; padding: 24rpx; color: #fff;
+}
+.dorm-pk-title { font-size: 22rpx; font-weight: 700; margin-bottom: 16rpx; }
+.dorm-pk-row {
+  display: flex; justify-content: space-between; align-items: flex-end;
+}
+.dorm-pk-hint { font-size: 18rpx; opacity: 0.7; margin-bottom: 4rpx; }
+.dorm-pk-rank {
+  font-size: 36rpx; font-weight: 900; font-style: italic;
+}
+.dorm-pk-btn {
+  background: rgba(255,255,255,0.2); color: #fff;
+  font-size: 18rpx; font-weight: 700; padding: 8rpx 20rpx;
+  border-radius: 50rpx; border: none;
+}
+
+.dorm-tips {
+  padding: 0 24rpx; margin-bottom: 16rpx; display: flex; flex-direction: column; gap: 12rpx;
+}
+.dorm-tip {
+  border-radius: 20rpx; padding: 16rpx 20rpx;
+  display: flex; align-items: center; gap: 16rpx;
+}
+.dorm-tip.yellow-tip { background: #fefce8; }
+.dorm-tip.green-tip { background: #f0fdf4; }
+.tip-num {
+  width: 48rpx; height: 48rpx; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.tip-num.yellow-num { background: #fde68a; }
+.tip-num.yellow-num text { color: #a16207; font-size: 20rpx; font-weight: 700; }
+.tip-num.green-num { background: #bbf7d0; }
+.tip-num.green-num text { color: #15803d; font-size: 20rpx; font-weight: 700; }
+.tip-text { font-size: 20rpx; color: #374151; flex: 1; }
+
+.dorm-calc-btn-wrap { padding: 0 24rpx 32rpx; }
+.dorm-calc-btn {
+  width: 100%; background: #fff; border: 4rpx dashed #d1d5db;
+  padding: 28rpx; border-radius: 32rpx;
+  font-size: 22rpx; font-weight: 700; color: #9ca3af;
+  display: flex; align-items: center; justify-content: center; gap: 12rpx;
+}
+.dorm-calc-btn .iconfont { font-size: 36rpx; }
 </style>

@@ -40,9 +40,9 @@
 
           <!-- 子功能页签 -->
           <view class="life-tabs">
-            <view class="life-tab" :class="{ 'life-tab-active': lifeSubTab === 'home' }" @tap="goTab('home')">首页</view>
-            <view class="life-tab" :class="{ 'life-tab-active': lifeSubTab === 'dorm' }" @tap="goTab('dorm')">宿舍节能</view>
-            <view class="life-tab" :class="{ 'life-tab-active': lifeSubTab === 'study' }" @tap="goTab('study')">低碳学习</view>
+            <view class="life-tab" :class="{ 'life-tab-active': lifeSubTab === 'home' }" @click="goTab('home')">首页</view>
+            <view class="life-tab" :class="{ 'life-tab-active': lifeSubTab === 'dorm' }" @click="goTab('dorm')">宿舍节能</view>
+            <view class="life-tab" :class="{ 'life-tab-active': lifeSubTab === 'study' }" @click="goTab('study')">低碳学习</view>
           </view>
 
           <!-- 功能网格 -->
@@ -432,9 +432,9 @@
 
           <!-- 子功能页签 -->
           <view class="life-tabs">
-            <view class="life-tab" :class="{ 'life-tab-active': lifeSubTab === 'home' }" @tap="goTab('home')">首页</view>
-            <view class="life-tab" :class="{ 'life-tab-active': lifeSubTab === 'dorm' }" @tap="goTab('dorm')">宿舍节能</view>
-            <view class="life-tab" :class="{ 'life-tab-active': lifeSubTab === 'study' }" @tap="goTab('study')">低碳学习</view>
+            <view class="life-tab" :class="{ 'life-tab-active': lifeSubTab === 'home' }" @click="goTab('home')">首页</view>
+            <view class="life-tab" :class="{ 'life-tab-active': lifeSubTab === 'dorm' }" @click="goTab('dorm')">宿舍节能</view>
+            <view class="life-tab" :class="{ 'life-tab-active': lifeSubTab === 'study' }" @click="goTab('study')">低碳学习</view>
           </view>
 
           <!-- 功能网格 -->
