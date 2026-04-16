@@ -158,7 +158,6 @@
                 <text class="iconfont icon-run"></text>
               </view>
               <text class="sport-name">户外跑步</text>
-              <text class="sport-desc">每公里产出 +5 积分</text>
             </view>
             <view class="sport-card orange-card">
               <view class="sport-badge-wrap"><text class="sport-badge">专属审核</text></view>
@@ -166,35 +165,30 @@
                 <text class="iconfont icon-school"></text>
               </view>
               <text class="sport-name">体育课运动</text>
-              <text class="sport-desc">积分上浮 20%</text>
             </view>
             <view class="sport-card purple-card">
               <view class="sport-icon purple-icon">
                 <text class="iconfont icon-dumbbell"></text>
               </view>
               <text class="sport-name">健身塑形</text>
-              <text class="sport-desc">瑜伽/跳绳/HIIT 录入</text>
             </view>
             <view class="sport-card amber-card">
               <view class="sport-icon amber-icon">
                 <text class="iconfont icon-basketball"></text>
               </view>
               <text class="sport-name">球类运动</text>
-              <text class="sport-desc">篮足羽乒 · 计时打卡</text>
             </view>
             <view class="sport-card cyan-card">
               <view class="sport-icon cyan-icon">
                 <text class="iconfont icon-swim"></text>
               </view>
               <text class="sport-name">水上运动</text>
-              <text class="sport-desc">游泳及水上运动录入</text>
             </view>
             <view class="sport-card green-card">
               <view class="sport-icon green-icon">
                 <text class="iconfont icon-bike"></text>
               </view>
               <text class="sport-name">骑行运动</text>
-              <text class="sport-desc">校园/户外骑行记录</text>
             </view>
           </view>
         </view>

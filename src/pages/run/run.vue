@@ -218,78 +218,80 @@
         </view>
       </view>
 
-      <!-- 运动轨迹日历 -->
-      <view class="calendar-section">
-        <view class="calendar-card">
-          <view class="calendar-header">
-            <view class="title-area" @tap="showMonthPicker">
-              <text class="calendar-title">{{ displayMonthText }} 运动轨迹日历</text>
-              <view class="picker-trigger">
-                <text class="iconfont icon-chevron-down picker-icon"></text>
+      <!-- 双列布局：日历 + 成就 -->
+      <view class="content-wrapper">
+        <view class="two-column">
+          <view class="section-card calendar-card">
+            <view class="card-header">
+              <text class="card-title">运动轨迹日历</text>
+              <view class="calendar-controls">
+                <text class="iconfont icon-chevron-left" @tap="prevMonth"></text>
+                <picker mode="date" fields="month" :value="pickerDate" @change="onPickerChange">
+                  <text class="calendar-month">{{ calYear }}年{{ calMonth }}月</text>
+                </picker>
+                <text class="iconfont icon-chevron-right" @tap="nextMonth"></text>
               </view>
             </view>
-            <view class="header-right">
-              <text class="calendar-sub">已跑 {{ completedDays }} 天</text>
+            <view class="calendar-weekdays">
+              <text class="weekday">一</text><text class="weekday">二</text><text class="weekday">三</text>
+              <text class="weekday">四</text><text class="weekday">五</text><text class="weekday">六</text><text class="weekday">日</text>
             </view>
-          </view>
-          <view class="calendar-weekdays">
-            <text class="weekday">一</text><text class="weekday">二</text><text class="weekday">三</text>
-            <text class="weekday">四</text><text class="weekday">五</text><text class="weekday">六</text><text class="weekday">日</text>
-          </view>
-          <view class="calendar-grid">
-            <view
-              v-for="n in prevMonthPadding"
-              :key="'prev-' + n"
-              class="day-cell empty"
-            >
-              <text class="day-num">{{ getPrevMonthDay(n) }}</text>
-            </view>
-            <view
-              v-for="day in daysInMonth"
-              :key="'cur-' + day"
-              class="day-cell"
-              :class="getDayState(day).cls"
-              :style="getDayCellStyle(day)"
-              @tap="onDayTap(day)"
-            >
-              <text class="day-num">{{ day }}</text>
+            <view class="calendar-grid">
               <view
-                v-for="(badge, idx) in getDayBadges(day)"
-                :key="idx"
-                :class="badge === 'marathon' ? 'day-dot marathon-badge' : ''"
-              ></view>
-            </view>
-          </view>
-          <view class="calendar-legend">
-            <view class="legend-item">
-              <view class="legend-dot green"></view>
-              <text class="legend-text">自由跑</text>
-            </view>
-            <view class="legend-item">
-              <view class="legend-dot dark-green"></view>
-              <text class="legend-text">晨跑</text>
-            </view>
-            <view class="legend-item">
-              <view class="legend-dot orange"></view>
-              <text class="legend-text">马拉松训练</text>
-            </view>
-          </view>
-        </view>
-      </view>
-
-      <!-- 我的成就 -->
-      <view class="campus-achievement-section">
-        <view class="campus-achievement-card">
-          <view class="campus-achievement-header">
-            <text class="campus-achievement-title">我的成就</text>
-            <text class="campus-achievement-more">查看全部</text>
-          </view>
-          <view class="campus-achievement-list">
-            <view class="achievement-item" v-for="a in achievements" :key="a.name" :class="{ 'achievement-locked': a.locked }">
-              <view class="achievement-icon" :class="a.iconClass">
-                <text class="iconfont" :class="a.icon"></text>
+                v-for="n in prevMonthPadding"
+                :key="'prev-' + n"
+                class="day-cell empty"
+              >
+                <text class="day-num">{{ getPrevMonthDay(n) }}</text>
               </view>
-              <text class="achievement-name">{{ a.name }}</text>
+              <view
+                v-for="day in daysInMonth"
+                :key="'cur-' + day"
+                class="day-cell"
+                :class="getDayState(day).cls"
+                :style="getDayCellStyle(day)"
+                @tap="onDayTap(day)"
+              >
+                <text class="day-num">{{ day }}</text>
+                <!-- 马拉松训练的标识显示在左下角 -->
+                <view
+                  v-if="getDayBadges(day).includes('marathon')"
+                  class="marathon-ring-badge"
+                ></view>
+              </view>
+            </view>
+            <view class="calendar-legend">
+              <view class="legend-item">
+                <view class="legend-dot green"></view>
+                <text class="legend-text">自由跑</text>
+              </view>
+              <view class="legend-item">
+                <view class="legend-dot dark-green"></view>
+                <text class="legend-text">晨跑</text>
+              </view>
+              <view class="legend-item">
+                <view class="legend-dot purple-ring"></view>
+                <text class="legend-text">马拉松训练</text>
+              </view>
+              <view class="legend-item">
+                <view class="legend-dot future"></view>
+                <text class="legend-text">未到/未打卡</text>
+              </view>
+            </view>
+          </view>
+
+          <view class="section-card achievement-card">
+            <view class="card-header">
+              <text class="card-title">我的成就</text>
+              <text class="view-all" @tap="viewAllAchievements">查看全部</text>
+            </view>
+            <view class="achievements-grid">
+              <view v-for="a in achievements" :key="a.name" class="achievement-item" :class="{ 'achievement-locked': a.locked }">
+                <view class="achievement-icon" :class="a.iconClass">
+                  <text class="iconfont" :class="a.icon"></text>
+                </view>
+                <text class="achievement-name">{{ a.name }}</text>
+              </view>
             </view>
           </view>
         </view>
@@ -400,76 +402,76 @@
         </view>
       </view>
 
-      <!-- 晨跑打卡日历 -->
-      <view class="calendar-section">
-        <view class="calendar-card">
-          <view class="calendar-header">
-            <view class="title-area" @tap="showMonthPicker">
-              <text class="calendar-title">{{ displayMonthText }} 晨跑打卡</text>
-              <view class="picker-trigger">
-                <text class="iconfont icon-chevron-down picker-icon"></text>
+      <!-- 双列布局：日历 + 历史 -->
+      <view class="content-wrapper">
+        <view class="two-column">
+          <view class="section-card calendar-card">
+            <view class="card-header">
+              <text class="card-title">晨跑打卡</text>
+              <view class="calendar-controls">
+                <text class="iconfont icon-chevron-left" @tap="prevMonth"></text>
+                <picker mode="date" fields="month" :value="pickerDate" @change="onPickerChange">
+                  <text class="calendar-month">{{ calYear }}年{{ calMonth }}月</text>
+                </picker>
+                <text class="iconfont icon-chevron-right" @tap="nextMonth"></text>
               </view>
             </view>
-            <view class="header-right">
-              <text class="calendar-sub">已打卡 {{ morningCompletedDays }} 天</text>
+            <view class="calendar-weekdays">
+              <text class="weekday">一</text><text class="weekday">二</text><text class="weekday">三</text>
+              <text class="weekday">四</text><text class="weekday">五</text><text class="weekday">六</text><text class="weekday">日</text>
+            </view>
+            <view class="calendar-grid">
+              <view
+                v-for="n in prevMonthPadding"
+                :key="'prev-' + n"
+                class="day-cell empty"
+              >
+                <text class="day-num">{{ getPrevMonthDay(n) }}</text>
+              </view>
+              <view
+                v-for="day in daysInMonth"
+                :key="'cur-' + day"
+                class="day-cell"
+                :style="getDayCellStyleMorning(day)"
+                @tap="onDayTapMorning(day)"
+              >
+                <text class="day-num">{{ day }}</text>
+              </view>
+            </view>
+            <view class="calendar-legend">
+              <view class="legend-item">
+                <view class="legend-dot dark-green"></view>
+                <text class="legend-text">晨跑已打卡</text>
+              </view>
             </view>
           </view>
-          <view class="calendar-weekdays">
-            <text class="weekday">一</text><text class="weekday">二</text><text class="weekday">三</text>
-            <text class="weekday">四</text><text class="weekday">五</text><text class="weekday">六</text><text class="weekday">日</text>
-          </view>
-          <view class="calendar-grid">
-            <view
-              v-for="n in prevMonthPadding"
-              :key="'prev-' + n"
-              class="day-cell empty"
-            >
-              <text class="day-num">{{ getPrevMonthDay(n) }}</text>
-            </view>
-            <view
-              v-for="day in daysInMonth"
-              :key="'cur-' + day"
-              class="day-cell"
-              :style="getDayCellStyleMorning(day)"
-              @tap="onDayTapMorning(day)"
-            >
-              <text class="day-num">{{ day }}</text>
-            </view>
-          </view>
-          <view class="calendar-legend">
-            <view class="legend-item">
-              <view class="legend-dot dark-green"></view>
-              <text class="legend-text">晨跑已打卡</text>
-            </view>
-          </view>
-        </view>
-      </view>
 
-      <!-- 晨跑历史 -->
-      <view class="morning-history-section">
-        <view class="morning-history-card">
-          <text class="morning-history-title">晨跑历史</text>
-          <view class="morning-history-list">
-            <view
-              class="history-item"
-              v-for="item in morningHistory"
-              :key="item.date"
-              :class="{ 'history-item-faded': item.faded }"
-            >
-              <view class="history-map-img">
-                <image
-                  class="history-map-real-img"
-                  :src="item.img"
-                  mode="aspectFill"
-                ></image>
-              </view>
-              <view class="history-info">
-                <text class="history-date">{{ item.date }}</text>
-                <text class="history-detail">{{ item.km }}KM · {{ item.time }} · {{ item.pace }}</text>
-              </view>
-              <view class="history-status">
-                <text class="history-status-text green">打卡成功</text>
-                <text class="iconfont icon-leaf history-leaf"></text>
+          <view class="section-card morning-history-card">
+            <view class="card-header">
+              <text class="card-title">晨跑历史</text>
+            </view>
+            <view class="morning-history-list">
+              <view
+                class="history-item"
+                v-for="item in morningHistory"
+                :key="item.date"
+                :class="{ 'history-item-faded': item.faded }"
+              >
+                <view class="history-map-img">
+                  <image
+                    class="history-map-real-img"
+                    :src="item.img"
+                    mode="aspectFill"
+                  ></image>
+                </view>
+                <view class="history-info">
+                  <text class="history-date">{{ item.date }}</text>
+                  <text class="history-detail">{{ item.km }}KM · {{ item.time }} · {{ item.pace }}</text>
+                </view>
+                <view class="history-status">
+                  <text class="history-status-text green">打卡成功</text>
+                  <text class="iconfont icon-leaf history-leaf"></text>
+                </view>
               </view>
             </view>
           </view>
@@ -581,108 +583,111 @@
         </view>
       </view>
 
-      <!-- 马拉松档案 -->
-      <view class="marathon-profile-section">
-        <view class="marathon-profile-card">
-          <view class="profile-header">
-            <text class="iconfont icon-lightning profile-lightning"></text>
-            <text class="profile-title">我的马拉松档案</text>
-          </view>
-          <view class="profile-main">
-            <view class="profile-pb">
-              <text class="profile-pb-label">个人最佳 PB</text>
-              <text class="profile-pb-value">03:45:12</text>
-            </view>
-            <view class="profile-race">
-              <text class="profile-pb-label">总参赛次数</text>
-              <text class="profile-race-value">05</text>
-            </view>
-          </view>
-          <view class="profile-footer">
-            <view class="profile-stat">
-              <text class="profile-stat-label">累计完赛里程</text>
-              <text class="profile-stat-value">210.97 KM</text>
-            </view>
-            <view class="profile-stat text-right">
-              <text class="profile-stat-label">当前等级</text>
-              <text class="profile-stat-value orange">精英跑者</text>
-            </view>
-          </view>
-        </view>
-      </view>
-
-      <!-- 马拉松训练日历 -->
-      <view class="marathon-calendar-section">
-        <view class="marathon-calendar-card">
-          <view class="marathon-calendar-header">
-            <view class="marathon-title-area" @tap="showMarathonMonthPicker">
-              <text class="marathon-calendar-title">{{ marathonDisplayMonthText }}训练轨迹</text>
-              <view class="marathon-picker-trigger">
-                <text class="iconfont icon-chevron-down marathon-picker-icon"></text>
+      <!-- 双列布局：日历 + 档案 -->
+      <view class="content-wrapper">
+        <view class="two-column">
+          <view class="section-card calendar-card">
+            <view class="card-header">
+              <text class="card-title">训练轨迹</text>
+              <view class="calendar-controls">
+                <text class="iconfont icon-chevron-left" @tap="marathonPrevMonth"></text>
+                <picker mode="date" fields="month" :value="marathonPickerDate" @change="onMarathonPickerChange">
+                  <text class="calendar-month">{{ marathonCalYear }}年{{ marathonCalMonth }}月</text>
+                </picker>
+                <text class="iconfont icon-chevron-right" @tap="marathonNextMonth"></text>
               </view>
             </view>
-            <view class="marathon-header-right">
-              <text class="marathon-calendar-sub">已跑 {{ marathonCompletedDays }} 天</text>
-              <view class="marathon-month-switcher">
-                <view class="marathon-switch-btn" @tap="marathonPrevMonth">
-                  <text class="iconfont icon-chevron-left"></text>
-                </view>
-                <text class="marathon-switch-year">{{ marathonCalYear }}</text>
-                <view class="marathon-switch-btn" @tap="marathonNextMonth">
-                  <text class="iconfont icon-chevron-right"></text>
-                </view>
-              </view>
+            
+            <!-- 星期标题行 -->
+            <view class="calendar-weekdays">
+              <text class="weekday">一</text>
+              <text class="weekday">二</text>
+              <text class="weekday">三</text>
+              <text class="weekday">四</text>
+              <text class="weekday">五</text>
+              <text class="weekday">六</text>
+              <text class="weekday">日</text>
             </view>
-          </view>
-          
-          <!-- 星期标题行 -->
-          <view class="marathon-calendar-weekdays">
-            <text class="marathon-weekday">一</text>
-            <text class="marathon-weekday">二</text>
-            <text class="marathon-weekday">三</text>
-            <text class="marathon-weekday">四</text>
-            <text class="marathon-weekday">五</text>
-            <text class="marathon-weekday">六</text>
-            <text class="marathon-weekday">日</text>
-          </view>
-          
-          <!-- 日历网格（动态渲染） -->
-          <view class="marathon-calendar-grid">
-            <!-- 上月占位格 -->
-            <view
-              v-for="n in marathonPrevMonthPadding"
-              :key="'prev-' + n"
-              class="marathon-day-cell empty"
-            >
-              <text class="marathon-day-num">{{ getMarathonPrevMonthDay(n) }}</text>
-            </view>
-            <!-- 当月日期 -->
-            <view
-              v-for="day in marathonDaysInMonth"
-              :key="'cur-' + day"
-              class="marathon-day-cell"
-              :class="getMarathonDayState(day).cls"
-              :style="getMarathonDayCellStyle(day)"
-              @tap="onMarathonDayTap(day)"
-            >
-              <text class="marathon-day-num">{{ day }}</text>
+            
+            <!-- 日历网格（动态渲染） -->
+            <view class="calendar-grid">
+              <!-- 上月占位格 -->
               <view
-                v-for="(badge, idx) in getMarathonDayBadges(day)"
-                :key="idx"
-                class="marathon-day-dot"
-              ></view>
+                v-for="n in marathonPrevMonthPadding"
+                :key="'prev-' + n"
+                class="day-cell empty"
+              >
+                <text class="day-num">{{ getMarathonPrevMonthDay(n) }}</text>
+              </view>
+              <!-- 当月日期 -->
+              <view
+                v-for="day in marathonDaysInMonth"
+                :key="'cur-' + day"
+                class="day-cell"
+                :class="getMarathonDayState(day).cls"
+                :style="getMarathonDayCellStyle(day)"
+                @tap="onMarathonDayTap(day)"
+              >
+                <text class="day-num">{{ day }}</text>
+                <!-- 马拉松训练标识：紫色圆环 -->
+              </view>
+            </view>
+            
+            <!-- 图例 -->
+            <view class="calendar-legend">
+              <view class="legend-item">
+                <view class="legend-dot purple-ring"></view>
+                <text class="legend-text">马拉松训练</text>
+              </view>
             </view>
           </view>
-          
-          <!-- 图例 -->
-          <view class="marathon-calendar-legend">
-            <view class="marathon-legend-item">
-              <view class="marathon-legend-dot purple"></view>
-              <text class="marathon-legend-text">马拉松训练</text>
+
+          <view class="marathon-profile-card marathon-profile-card-col">
+            <!-- 标题行 + 等级徽章 -->
+            <view class="profile-header profile-header-spread">
+              <view class="profile-header-left">
+                <text class="iconfont icon-lightning profile-lightning"></text>
+                <text class="profile-title">我的马拉松档案</text>
+              </view>
+              <view class="profile-level-badge">
+                <text class="profile-level-badge-text">精英跑者</text>
+              </view>
             </view>
-            <view class="marathon-legend-item">
-              <view class="marathon-legend-dot future"></view>
-              <text class="marathon-legend-text">未到/未打卡</text>
+            <!-- PB 主展示 -->
+            <view class="profile-pb-hero">
+              <text class="profile-pb-hero-label">个人最佳 PB</text>
+              <text class="profile-pb-hero-value">03:45:12</text>
+              <text class="profile-pb-hero-sub">全程马拉松 · 2025 贵阳马拉松</text>
+            </view>
+            <!-- 四格统计 -->
+            <view class="profile-stats-grid">
+              <view class="profile-stat-cell">
+                <text class="profile-stat-cell-value">05</text>
+                <text class="profile-stat-cell-label">总参赛次数</text>
+              </view>
+              <view class="profile-stat-cell">
+                <text class="profile-stat-cell-value">210.97</text>
+                <text class="profile-stat-cell-label">完赛里程 KM</text>
+              </view>
+              <view class="profile-stat-cell">
+                <text class="profile-stat-cell-value profile-stat-orange">05'22''</text>
+                <text class="profile-stat-cell-label">平均配速</text>
+              </view>
+              <view class="profile-stat-cell profile-stat-cell-last">
+                <text class="profile-stat-cell-value profile-stat-green">1,240</text>
+                <text class="profile-stat-cell-label">低碳积分</text>
+              </view>
+            </view>
+            <!-- 等级进度条 -->
+            <view class="profile-level-progress">
+              <view class="profile-level-row">
+                <text class="profile-level-cur">精英跑者</text>
+                <text class="profile-level-next">传奇跑者</text>
+              </view>
+              <view class="profile-level-bar-bg">
+                <view class="profile-level-bar-fill" style="width: 68%;"></view>
+              </view>
+              <text class="profile-level-hint">再完赛 2 次即可晋升传奇跑者</text>
             </view>
           </view>
         </view>
@@ -962,28 +967,12 @@ function onDayTap(day) {
     return
   }
   const state = getDayState(day)
-  // 有打卡记录 → 只提示，不修改
   if (state !== DAY_STYLES.empty && state !== DAY_STYLES.future && state !== DAY_STYLES.today) {
     const typeText = { morning: '晨跑', free: '自由跑', marathon: '马拉松训练' }
-    const types    = Array.isArray(getDayStatus(day)) ? getDayStatus(day) : [getDayStatus(day)]
-    const label    = types.map(t => typeText[t]).join('、') || '打卡'
+    const types = Array.isArray(getDayStatus(day)) ? getDayStatus(day) : [getDayStatus(day)]
+    const label = types.map(t => typeText[t]).join('、') || '打卡'
     uni.showToast({ title: `已完成${label}`, icon: 'none' })
-    return
   }
-  // 无打卡 → 存入
-  const key = `${calYear.value}-${calMonth.value}`
-  if (!runRecords.value[key]) runRecords.value[key] = {}
-  const existing = runRecords.value[key][day]
-  const currentType = currentTab.value === 'morning' ? 'morning' : 'free'
-  if (existing) {
-    const arr = Array.isArray(existing) ? existing : [existing]
-    if (!arr.includes(currentType)) arr.push(currentType)
-    runRecords.value[key][day] = arr
-  } else {
-    runRecords.value[key][day] = currentType
-  }
-  const typeText2 = { morning: '晨跑', free: '自由跑' }
-  uni.showToast({ title: `${typeText2[currentType] || '打卡'}成功`, icon: 'success' })
 }
 
 function onDayTapMorning(day) {
@@ -1204,10 +1193,10 @@ const marathonPrevMonthPadding = computed(() => marathonFirstDayWeekday.value - 
 
 // 马拉松日历状态设计
 const MARATHON_DAY_STYLES = {
-  empty:   { cls: 'empty',   bg: '',                        hasDot: false },
-  future:  { cls: 'future',  bg: '',                        hasDot: false },
-  today:   { cls: 'today',   bg: '',                        hasDot: false },
-  marathon:{ cls: 'marathon',bg: 'background-color:#f3e8ff; border: 2rpx solid #c084fc;', hasDot: true },
+  empty:   { cls: 'empty',   bg: '', hasDot: false },
+  future:  { cls: 'future',  bg: '', hasDot: false },
+  today:   { cls: 'today',   bg: '', hasDot: false },
+  marathon:{ cls: 'marathon',bg: '', hasDot: true },
 }
 
 function getMarathonDayState(day) {
@@ -1230,16 +1219,10 @@ function getMarathonDayCellStyle(day) {
   if (state.cls === 'empty') return ''
   if (state.cls === 'future') return ''
   if (state.cls === 'today')  return 'border: 2rpx solid #a855f7; color: #a855f7;'
+  if (state.cls === 'marathon') return 'background-color: #a855f7; color: #fff; border-radius: 50%;'
   return state.bg
 }
 
-function getMarathonDayBadges(day) {
-  const status = getMarathonDayStatus(day)
-  if (!status) return []
-  const types = Array.isArray(status) ? status : [status]
-  if (types.includes('marathon')) return ['marathon']
-  return []
-}
 
 function getMarathonPrevMonthDay(n) {
   const prevM = marathonCalMonth.value === 1 ? 12 : marathonCalMonth.value - 1
@@ -1273,23 +1256,9 @@ function onMarathonDayTap(day) {
     return
   }
   const state = getMarathonDayState(day)
-  // 有打卡记录 → 只提示，不修改
   if (state !== MARATHON_DAY_STYLES.empty && state !== MARATHON_DAY_STYLES.future && state !== MARATHON_DAY_STYLES.today) {
     uni.showToast({ title: '已完成马拉松训练', icon: 'none' })
-    return
   }
-  // 无打卡 → 存入马拉松记录
-  const key = `${marathonCalYear.value}-${marathonCalMonth.value}`
-  if (!runRecords.value[key]) runRecords.value[key] = {}
-  const existing = runRecords.value[key][day]
-  if (existing) {
-    const arr = Array.isArray(existing) ? existing : [existing]
-    if (!arr.includes('marathon')) arr.push('marathon')
-    runRecords.value[key][day] = arr
-  } else {
-    runRecords.value[key][day] = 'marathon'
-  }
-  uni.showToast({ title: '马拉松训练打卡成功', icon: 'success' })
 }
 
 // 月份切换
@@ -1990,7 +1959,7 @@ onMounted(() => {
 }
 
 .day-cell {
-  height: 68rpx;
+  aspect-ratio: 1 / 1;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -2037,6 +2006,7 @@ onMounted(() => {
 /* 马拉松 - 右上角橙色点，无背景 */
 .day-cell.marathon {
   box-shadow: none;
+  position: relative;
 }
 
 .day-cell.today {
@@ -2072,6 +2042,20 @@ onMounted(() => {
   border: 2rpx solid #fff;
   box-shadow: 0 2rpx 6rpx rgba(249, 115, 22, 0.40);
   z-index: 2;
+}
+
+/* 马拉松右上角橙色标识（独立元素） */
+.marathon-corner-badge {
+  width: 12rpx;
+  height: 12rpx;
+  border-radius: 50%;
+  background: #f97316;
+  position: absolute;
+  top: 6rpx;
+  right: 6rpx;
+  border: 2rpx solid #fff;
+  box-shadow: 0 2rpx 4rpx rgba(249, 115, 22, 0.30);
+  z-index: 10;
 }
 
 /* 图例 - 新增橙色（马拉松） */
@@ -2110,12 +2094,19 @@ onMounted(() => {
   border: none;
 }
 
-/* 马拉松-橙色圆点，与日历格子上的徽章样式一致 */
+/* 马拉松-橙色圆点（保留备用） */
 .legend-dot.orange {
   background-color: #f97316;
   border-radius: 50%;
   border: 2rpx solid rgba(255,255,255,0.6);
   box-shadow: 0 2rpx 6rpx rgba(249, 115, 22, 0.40);
+}
+
+/* 马拉松训练-紫色实心圆 */
+.legend-dot.purple-ring {
+  background-color: #a855f7;
+  border-radius: 50%;
+  box-shadow: 0 2rpx 6rpx rgba(168, 85, 247, 0.40);
 }
 
 .legend-dot.future {
@@ -2785,6 +2776,11 @@ onMounted(() => {
   box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.15);
 }
 
+.marathon-profile-card-col {
+  flex: 1;
+  overflow: hidden;
+}
+
 .profile-header {
   display: flex;
   align-items: center;
@@ -3013,15 +3009,27 @@ onMounted(() => {
   font-weight: bold;
 }
 
-/* 马拉松打卡标志：紫色圆环 */
+/* 马拉松打卡标志：紫色矩形 */
 .marathon-day-dot {
-  width: 12rpx;
-  height: 12rpx;
-  border-radius: 50%;
+  width: 24rpx;
+  height: 8rpx;
+  border-radius: 4rpx;
   background: #a855f7;
   border: 2rpx solid #c084fc;
   position: absolute;
   bottom: 8rpx;
+}
+
+/* 马拉松训练标识：紫色实心圆圈 */
+.marathon-ring-badge {
+  width: 28rpx;
+  height: 28rpx;
+  border-radius: 50%;
+  background: #a855f7;
+  position: absolute;
+  bottom: 6rpx;
+  left: 6rpx;
+  box-shadow: 0 2rpx 6rpx rgba(168, 85, 247, 0.40);
 }
 
 /* 图例 */
@@ -3044,14 +3052,9 @@ onMounted(() => {
   border-radius: 50%;
 }
 
-.marathon-legend-dot.purple {
+.marathon-legend-dot.purple-ring {
   background: #a855f7;
-  border: 2rpx solid #c084fc;
-}
-
-.marathon-legend-dot.future {
-  background: #f3f4f6;
-  border: 2rpx dashed #d1d5db;
+  box-shadow: 0 2rpx 6rpx rgba(168, 85, 247, 0.30);
 }
 
 .marathon-legend-text {
@@ -3385,6 +3388,135 @@ onMounted(() => {
   color: #9ca3af;
 }
 
+/* 双列布局 */
+.content-wrapper {
+  padding: 0 30rpx;
+}
+
+.two-column {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20rpx;
+}
+
+.section-card {
+  background: #fff;
+  border-radius: 24rpx;
+  padding: 28rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.05);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24rpx;
+}
+
+.card-title {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #374151;
+}
+
+.view-all {
+  font-size: 20rpx;
+  color: #3b82f6;
+}
+
+/* 日历控件 */
+.calendar-controls {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.calendar-controls .iconfont {
+  font-size: 24rpx;
+  color: #9ca3af;
+}
+
+.calendar-month {
+  font-size: 24rpx;
+  font-weight: bold;
+  color: #374151;
+}
+
+/* 成就网格 */
+.achievements-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16rpx;
+}
+
+.achievement-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.achievement-icon {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #fef3c7, #fde68a);
+}
+
+.achievement-icon .iconfont {
+  font-size: 32rpx;
+  color: #f59e0b;
+}
+
+.achievement-icon.achieve-orange {
+  background: linear-gradient(135deg, #fef3c7, #fde68a);
+}
+
+.achievement-icon.achieve-green {
+  background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+}
+
+.achievement-icon.achieve-green .iconfont {
+  color: #10b981;
+}
+
+.achievement-icon.achieve-blue {
+  background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+}
+
+.achievement-icon.achieve-blue .iconfont {
+  color: #3b82f6;
+}
+
+.achievement-icon.achieve-gray {
+  background: #f3f4f6;
+}
+
+.achievement-icon.achieve-gray .iconfont {
+  color: #9ca3af;
+}
+
+.achievement-name {
+  font-size: 18rpx;
+  color: #374151;
+  text-align: center;
+}
+
+.achievement-locked .achievement-icon {
+  background: #f3f4f6;
+}
+
+.achievement-locked .achievement-icon .iconfont {
+  color: #d1d5db;
+}
+
+.achievement-locked .achievement-name {
+  color: #9ca3af;
+}
+
 /* 我的成就 */
 .campus-achievement-section {
   padding: 20rpx 30rpx 40rpx;
@@ -3477,5 +3609,154 @@ onMounted(() => {
 /* 晨跑日历：浅绿底矩形打卡标志 */
 .calendar-section {
   padding: 20rpx 30rpx 0;
+}
+
+/* ============================================= */
+/* 马拉松档案 — 重排版样式                        */
+/* ============================================= */
+.profile-header-spread {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24rpx;
+}
+
+.profile-header-left {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+}
+
+.profile-level-badge {
+  background: linear-gradient(135deg, #fb923c, #f97316);
+  border-radius: 20rpx;
+  padding: 6rpx 20rpx;
+}
+
+.profile-level-badge-text {
+  font-size: 20rpx;
+  font-weight: bold;
+  color: #fff;
+}
+
+/* PB 英雄区 */
+.profile-pb-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24rpx 0 28rpx;
+  border-bottom: 2rpx solid rgba(255,255,255,0.10);
+  margin-bottom: 24rpx;
+}
+
+.profile-pb-hero-label {
+  font-size: 18rpx;
+  color: #64748b;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 2rpx;
+  margin-bottom: 8rpx;
+}
+
+.profile-pb-hero-value {
+  font-size: 80rpx;
+  font-weight: 900;
+  color: #fff;
+  letter-spacing: -2rpx;
+  line-height: 1;
+  margin-bottom: 8rpx;
+}
+
+.profile-pb-hero-sub {
+  font-size: 20rpx;
+  color: #94a3b8;
+}
+
+/* 四格统计 */
+.profile-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  margin-bottom: 24rpx;
+  border: 2rpx solid rgba(255,255,255,0.08);
+  border-radius: 16rpx;
+  overflow: hidden;
+}
+
+.profile-stat-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20rpx 8rpx;
+  border-right: 2rpx solid rgba(255,255,255,0.08);
+}
+
+.profile-stat-cell-last {
+  border-right: none;
+}
+
+.profile-stat-cell-value {
+  font-size: 32rpx;
+  font-weight: 900;
+  color: #fff;
+  line-height: 1;
+  margin-bottom: 6rpx;
+}
+
+.profile-stat-orange {
+  color: #fb923c;
+}
+
+.profile-stat-green {
+  color: #34d399;
+}
+
+.profile-stat-cell-label {
+  font-size: 16rpx;
+  color: #64748b;
+  text-align: center;
+}
+
+/* 等级进度条 */
+.profile-level-progress {
+  padding-top: 20rpx;
+  border-top: 2rpx solid rgba(255,255,255,0.10);
+}
+
+.profile-level-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10rpx;
+}
+
+.profile-level-cur {
+  font-size: 20rpx;
+  font-weight: bold;
+  color: #fb923c;
+}
+
+.profile-level-next {
+  font-size: 20rpx;
+  color: #94a3b8;
+}
+
+.profile-level-bar-bg {
+  height: 12rpx;
+  background: rgba(255,255,255,0.12);
+  border-radius: 8rpx;
+  overflow: hidden;
+  margin-bottom: 10rpx;
+}
+
+.profile-level-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #fb923c, #fbbf24);
+  border-radius: 8rpx;
+}
+
+.profile-level-hint {
+  font-size: 18rpx;
+  color: #64748b;
+  text-align: center;
 }
 </style>

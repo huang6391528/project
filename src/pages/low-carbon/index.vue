@@ -40,13 +40,13 @@
 
           <!-- 子功能页签 -->
           <view class="life-tabs">
-            <view class="life-tab life-tab-active">首页</view>
-            <view class="life-tab" @tap="goTab('dorm')">宿舍节能</view>
-            <view class="life-tab" @tap="goTab('study')">低碳学习</view>
+            <view class="life-tab" :class="{ 'life-tab-active': lifeSubTab === 'home' }" @tap="goTab('home')">首页</view>
+            <view class="life-tab" :class="{ 'life-tab-active': lifeSubTab === 'dorm' }" @tap="goTab('dorm')">宿舍节能</view>
+            <view class="life-tab" :class="{ 'life-tab-active': lifeSubTab === 'study' }" @tap="goTab('study')">低碳学习</view>
           </view>
 
           <!-- 功能网格 -->
-          <view class="life-grid">
+          <view v-if="lifeSubTab === 'home'" class="life-grid">
             <view class="life-card">
               <text class="iconfont icon-gift life-card-icon indigo"></text>
               <text class="life-card-name">旧物捐赠</text>
@@ -100,6 +100,172 @@
               <view class="wide-check"></view>
             </view>
           </view>
+
+          <!-- 宿舍节能内容 -->
+          <view v-else-if="lifeSubTab === 'dorm'" class="sub-content">
+            <!-- 周能耗趋势 -->
+            <view class="sub-card">
+              <text class="sub-card-title">宿舍周能耗趋势</text>
+              <view class="energy-chart">
+                <view class="energy-bar-wrap" v-for="(item, i) in energyData" :key="i">
+                  <view class="energy-bar" :style="{ height: item.h + 'rpx' }"></view>
+                  <text class="energy-bar-label">{{ item.d }}</text>
+                </view>
+              </view>
+            </view>
+            <!-- 即时打卡 -->
+            <text class="sub-section-title">即时打卡</text>
+            <view class="dorm-checkin-grid">
+              <view class="dorm-checkin-card">
+                <text class="iconfont icon-lightning dorm-checkin-icon yellow-icon"></text>
+                <text class="dorm-checkin-name">节约用电</text>
+                <text class="dorm-checkin-desc">做到随手关灯</text>
+                <button class="dorm-checkin-btn done-btn">打卡成功</button>
+              </view>
+              <view class="dorm-checkin-card">
+                <text class="iconfont icon-water dorm-checkin-icon blue-icon"></text>
+                <text class="dorm-checkin-name">节约用水</text>
+                <text class="dorm-checkin-desc">缩短淋浴时间</text>
+                <button class="dorm-checkin-btn todo-btn">去打卡</button>
+              </view>
+            </view>
+            <!-- 监控列表 -->
+            <view class="dorm-monitor-list">
+              <view class="dorm-monitor-item">
+                <text class="iconfont icon-temp dorm-monitor-icon emerald-icon"></text>
+                <text class="dorm-monitor-name">空调温控 (当前 26℃)</text>
+                <text class="iconfont icon-check-circle dorm-monitor-check emerald-icon"></text>
+              </view>
+              <view class="dorm-monitor-item">
+                <text class="iconfont icon-night dorm-monitor-icon indigo-icon"></text>
+                <text class="dorm-monitor-name">熄灯自律打卡</text>
+                <text class="dorm-monitor-hint">23:00 后开启</text>
+              </view>
+            </view>
+            <!-- 节能PK赛 -->
+            <view class="dorm-pk-card">
+              <text class="dorm-pk-title">节能寝室 PK 赛</text>
+              <view class="dorm-pk-row">
+                <view>
+                  <text class="dorm-pk-hint">本楼栋排名</text>
+                  <text class="dorm-pk-rank">No.12</text>
+                </view>
+                <button class="dorm-pk-btn">查看对比</button>
+              </view>
+            </view>
+            <!-- 节能小妙招 -->
+            <text class="sub-section-title">宿舍节能小妙招</text>
+            <view class="dorm-tips">
+              <view class="dorm-tip yellow-tip">
+                <view class="tip-num yellow-num"><text>1</text></view>
+                <text class="tip-text">拔掉不常用的电器插头，减少待机功耗。</text>
+              </view>
+              <view class="dorm-tip green-tip">
+                <view class="tip-num green-num"><text>2</text></view>
+                <text class="tip-text">利用宿舍阳台自然采光，减少白天开灯。</text>
+              </view>
+            </view>
+          </view>
+
+          <!-- 低碳学习内容 -->
+          <view v-else-if="lifeSubTab === 'study'" class="sub-content">
+            <!-- 无纸化成就 -->
+            <view class="study-achieve-card">
+              <text class="study-achieve-label">无纸化学习本学期省下</text>
+              <view class="study-achieve-row">
+                <text class="study-achieve-num">425</text>
+                <text class="study-achieve-unit">张 A4 纸</text>
+              </view>
+              <text class="study-achieve-sub">相当于保护了 0.05 棵成年树木 🌳</text>
+            </view>
+            <!-- 分类打卡 -->
+            <view class="study-grid">
+              <view class="study-card">
+                <view class="study-card-icon green-bg">
+                  <text class="iconfont icon-tablet"></text>
+                </view>
+                <text class="study-card-name">无纸化笔记</text>
+                <text class="study-card-desc">使用平板/电脑记录</text>
+              </view>
+              <view class="study-card">
+                <view class="study-card-icon blue-bg">
+                  <text class="iconfont icon-recycle"></text>
+                </view>
+                <text class="study-card-name">草稿纸回收</text>
+                <text class="study-card-desc">废旧纸张定点回收</text>
+              </view>
+              <view class="study-card">
+                <view class="study-card-icon purple-bg">
+                  <text class="iconfont icon-share"></text>
+                </view>
+                <text class="study-card-name">电子共享</text>
+                <text class="study-card-desc">云端传资料免打印</text>
+              </view>
+              <view class="study-card">
+                <view class="study-card-icon amber-bg">
+                  <text class="iconfont icon-book"></text>
+                </view>
+                <text class="study-card-name">二手教材</text>
+                <text class="study-card-desc">学长学姐课本转借</text>
+              </view>
+            </view>
+            <!-- 二手教材市场 -->
+            <view class="study-market-header">
+              <text class="sub-section-title" style="margin-bottom: 0;">二手教材市场</text>
+              <view class="study-market-tags">
+                <text class="market-tag-active">求购</text>
+                <text class="market-tag">转让</text>
+              </view>
+            </view>
+            <view class="study-book-list">
+              <view class="study-book-item">
+                <view class="study-book-cover">
+                  <text class="iconfont icon-book study-book-icon"></text>
+                </view>
+                <view class="study-book-info">
+                  <text class="study-book-title">《高等数学（下）》</text>
+                  <text class="study-book-meta">发布者：23级张同学 · 9成新</text>
+                  <view class="study-book-footer">
+                    <text class="study-book-price free">免费转借</text>
+                    <button class="study-book-btn">联系他</button>
+                  </view>
+                </view>
+              </view>
+              <view class="study-book-item">
+                <view class="study-book-cover">
+                  <text class="iconfont icon-book study-book-icon"></text>
+                </view>
+                <view class="study-book-info">
+                  <text class="study-book-title">《计算机组成原理》</text>
+                  <text class="study-book-meta">发布者：王学姐 · 含有精美笔记</text>
+                  <view class="study-book-footer">
+                    <text class="study-book-price points">50 碳汇分</text>
+                    <button class="study-book-btn">立即兑换</button>
+                  </view>
+                </view>
+              </view>
+            </view>
+            <!-- 共享资料 -->
+            <text class="sub-section-title">本周热门共享资料</text>
+            <view class="study-file-list">
+              <view class="study-file-item">
+                <text class="iconfont icon-pdf study-file-icon red-icon"></text>
+                <view class="study-file-info">
+                  <text class="study-file-name">大学物理复习大纲.pdf</text>
+                  <text class="study-file-meta">已省下 24 张纸 · 120人下载</text>
+                </view>
+                <text class="iconfont icon-download study-file-dl"></text>
+              </view>
+              <view class="study-file-item">
+                <text class="iconfont icon-doc study-file-icon blue-icon"></text>
+                <view class="study-file-info">
+                  <text class="study-file-name">思修期末复习题库.docx</text>
+                  <text class="study-file-meta">已省下 15 张纸 · 88人下载</text>
+                </view>
+                <text class="iconfont icon-download study-file-dl"></text>
+              </view>
+            </view>
+          </view>
         </view>
       </view>
 
@@ -131,7 +297,6 @@
                   <text class="iconfont icon-run"></text>
                 </view>
                 <text class="sport-name">户外跑步</text>
-                <text class="sport-desc">每公里产出 +5 积分</text>
               </view>
               <view class="sport-card orange-card">
                 <view class="sport-badge-wrap"><text class="sport-badge">专属审核</text></view>
@@ -139,14 +304,12 @@
                   <text class="iconfont icon-school"></text>
                 </view>
                 <text class="sport-name">体育课运动</text>
-                <text class="sport-desc">积分上浮 20%</text>
               </view>
               <view class="sport-card purple-card">
                 <view class="sport-icon purple-icon">
                   <text class="iconfont icon-dumbbell"></text>
                 </view>
                 <text class="sport-name">健身塑形</text>
-                <text class="sport-desc">瑜伽/跳绳/HIIT录入</text>
               </view>
             </view>
           </view>
@@ -267,13 +430,15 @@
             </view>
           </view>
 
+          <!-- 子功能页签 -->
           <view class="life-tabs">
-            <view class="life-tab life-tab-active">首页</view>
-            <view class="life-tab" @tap="goTab('dorm')">宿舍节能</view>
-            <view class="life-tab" @tap="goTab('study')">低碳学习</view>
+            <view class="life-tab" :class="{ 'life-tab-active': lifeSubTab === 'home' }" @tap="goTab('home')">首页</view>
+            <view class="life-tab" :class="{ 'life-tab-active': lifeSubTab === 'dorm' }" @tap="goTab('dorm')">宿舍节能</view>
+            <view class="life-tab" :class="{ 'life-tab-active': lifeSubTab === 'study' }" @tap="goTab('study')">低碳学习</view>
           </view>
 
-          <view class="life-grid">
+          <!-- 功能网格 -->
+          <view v-if="lifeSubTab === 'home'" class="life-grid">
             <view class="life-card">
               <text class="iconfont icon-gift life-card-icon indigo"></text>
               <text class="life-card-name">旧物捐赠</text>
@@ -299,6 +464,151 @@
               <button class="life-card-btn blue-btn-sm">上传</button>
             </view>
           </view>
+
+          <!-- 宿舍节能内容 -->
+          <view v-else-if="lifeSubTab === 'dorm'" class="sub-content">
+            <view class="sub-card">
+              <text class="sub-card-title">宿舍周能耗趋势</text>
+              <view class="energy-chart">
+                <view class="energy-bar-wrap" v-for="(item, i) in energyData" :key="i">
+                  <view class="energy-bar" :style="{ height: item.h + 'rpx' }"></view>
+                  <text class="energy-bar-label">{{ item.d }}</text>
+                </view>
+              </view>
+            </view>
+            <text class="sub-section-title">即时打卡</text>
+            <view class="dorm-checkin-grid">
+              <view class="dorm-checkin-card">
+                <text class="iconfont icon-lightning dorm-checkin-icon yellow-icon"></text>
+                <text class="dorm-checkin-name">节约用电</text>
+                <text class="dorm-checkin-desc">做到随手关灯</text>
+                <button class="dorm-checkin-btn done-btn">打卡成功</button>
+              </view>
+              <view class="dorm-checkin-card">
+                <text class="iconfont icon-water dorm-checkin-icon blue-icon"></text>
+                <text class="dorm-checkin-name">节约用水</text>
+                <text class="dorm-checkin-desc">缩短淋浴时间</text>
+                <button class="dorm-checkin-btn todo-btn">去打卡</button>
+              </view>
+            </view>
+            <view class="dorm-monitor-list">
+              <view class="dorm-monitor-item">
+                <text class="iconfont icon-temp dorm-monitor-icon emerald-icon"></text>
+                <text class="dorm-monitor-name">空调温控 (当前 26℃)</text>
+                <text class="iconfont icon-check-circle dorm-monitor-check emerald-icon"></text>
+              </view>
+              <view class="dorm-monitor-item">
+                <text class="iconfont icon-night dorm-monitor-icon indigo-icon"></text>
+                <text class="dorm-monitor-name">熄灯自律打卡</text>
+                <text class="dorm-monitor-hint">23:00 后开启</text>
+              </view>
+            </view>
+            <view class="dorm-pk-card">
+              <text class="dorm-pk-title">节能寝室 PK 赛</text>
+              <view class="dorm-pk-row">
+                <view>
+                  <text class="dorm-pk-hint">本楼栋排名</text>
+                  <text class="dorm-pk-rank">No.12</text>
+                </view>
+                <button class="dorm-pk-btn">查看对比</button>
+              </view>
+            </view>
+            <text class="sub-section-title">宿舍节能小妙招</text>
+            <view class="dorm-tips">
+              <view class="dorm-tip yellow-tip">
+                <view class="tip-num yellow-num"><text>1</text></view>
+                <text class="tip-text">拔掉不常用的电器插头，减少待机功耗。</text>
+              </view>
+              <view class="dorm-tip green-tip">
+                <view class="tip-num green-num"><text>2</text></view>
+                <text class="tip-text">利用宿舍阳台自然采光，减少白天开灯。</text>
+              </view>
+            </view>
+          </view>
+
+          <!-- 低碳学习内容 -->
+          <view v-else-if="lifeSubTab === 'study'" class="sub-content">
+            <view class="study-achieve-card">
+              <text class="study-achieve-label">无纸化学习本学期省下</text>
+              <view class="study-achieve-row">
+                <text class="study-achieve-num">425</text>
+                <text class="study-achieve-unit">张 A4 纸</text>
+              </view>
+              <text class="study-achieve-sub">相当于保护了 0.05 棵成年树木 🌳</text>
+            </view>
+            <view class="study-grid">
+              <view class="study-card">
+                <view class="study-card-icon green-bg"><text class="iconfont icon-tablet"></text></view>
+                <text class="study-card-name">无纸化笔记</text>
+                <text class="study-card-desc">使用平板/电脑记录</text>
+              </view>
+              <view class="study-card">
+                <view class="study-card-icon blue-bg"><text class="iconfont icon-recycle"></text></view>
+                <text class="study-card-name">草稿纸回收</text>
+                <text class="study-card-desc">废旧纸张定点回收</text>
+              </view>
+              <view class="study-card">
+                <view class="study-card-icon purple-bg"><text class="iconfont icon-share"></text></view>
+                <text class="study-card-name">电子共享</text>
+                <text class="study-card-desc">云端传资料免打印</text>
+              </view>
+              <view class="study-card">
+                <view class="study-card-icon amber-bg"><text class="iconfont icon-book"></text></view>
+                <text class="study-card-name">二手教材</text>
+                <text class="study-card-desc">学长学姐课本转借</text>
+              </view>
+            </view>
+            <view class="study-market-header">
+              <text class="sub-section-title" style="margin-bottom: 0;">二手教材市场</text>
+              <view class="study-market-tags">
+                <text class="market-tag-active">求购</text>
+                <text class="market-tag">转让</text>
+              </view>
+            </view>
+            <view class="study-book-list">
+              <view class="study-book-item">
+                <view class="study-book-cover"><text class="iconfont icon-book study-book-icon"></text></view>
+                <view class="study-book-info">
+                  <text class="study-book-title">《高等数学（下）》</text>
+                  <text class="study-book-meta">发布者：23级张同学 · 9成新</text>
+                  <view class="study-book-footer">
+                    <text class="study-book-price free">免费转借</text>
+                    <button class="study-book-btn">联系他</button>
+                  </view>
+                </view>
+              </view>
+              <view class="study-book-item">
+                <view class="study-book-cover"><text class="iconfont icon-book study-book-icon"></text></view>
+                <view class="study-book-info">
+                  <text class="study-book-title">《计算机组成原理》</text>
+                  <text class="study-book-meta">发布者：王学姐 · 含有精美笔记</text>
+                  <view class="study-book-footer">
+                    <text class="study-book-price points">50 碳汇分</text>
+                    <button class="study-book-btn">立即兑换</button>
+                  </view>
+                </view>
+              </view>
+            </view>
+            <text class="sub-section-title">本周热门共享资料</text>
+            <view class="study-file-list">
+              <view class="study-file-item">
+                <text class="iconfont icon-pdf study-file-icon red-icon"></text>
+                <view class="study-file-info">
+                  <text class="study-file-name">大学物理复习大纲.pdf</text>
+                  <text class="study-file-meta">已省下 24 张纸 · 120人下载</text>
+                </view>
+                <text class="iconfont icon-download study-file-dl"></text>
+              </view>
+              <view class="study-file-item">
+                <text class="iconfont icon-doc study-file-icon blue-icon"></text>
+                <view class="study-file-info">
+                  <text class="study-file-name">思修期末复习题库.docx</text>
+                  <text class="study-file-meta">已省下 15 张纸 · 88人下载</text>
+                </view>
+                <text class="iconfont icon-download study-file-dl"></text>
+              </view>
+            </view>
+          </view>
         </view>
       </view>
     </view>
@@ -306,7 +616,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, getCurrentPages } from 'vue'
 
 const currentTab = ref('index')
 const tabs = [
@@ -328,9 +638,15 @@ const switchModule = (tabId) => {
 
 const goBack = () => uni.switchTab({ url: '/pages/action/action' })
 
+const lifeSubTab = ref('home')
+
+const energyData = [
+  { d: 'M', h: 80 }, { d: 'T', h: 130 }, { d: 'W', h: 100 },
+  { d: 'T', h: 55 }, { d: 'F', h: 48 }, { d: 'S', h: 75 }, { d: 'S', h: 90 }
+]
+
 const goTab = (tab) => {
-  if (tab === 'dorm') uni.navigateTo({ url: '/pages/low-carbon/dorm-energy' })
-  if (tab === 'study') uni.navigateTo({ url: '/pages/low-carbon/low-carbon-study' })
+  lifeSubTab.value = tab
 }
 
 // 在页面加载时读取URL参数并切换到对应的标签
@@ -348,7 +664,6 @@ onMounted(() => {
   }
 })
 
-import { getCurrentPages } from 'vue'
 
 </script>
 
@@ -515,12 +830,13 @@ import { getCurrentPages } from 'vue'
 }
 
 .life-tab {
-  padding: 12rpx 24rpx;
-  background: #f3f4f6;
+  padding: 12rpx 28rpx;
   border-radius: 24rpx;
-  font-size: 24rpx;
+  font-size: 26rpx;
   color: #6b7280;
   white-space: nowrap;
+  background: #f3f4f6;
+  transition: all 0.2s;
 }
 
 .life-tab-active {
@@ -528,6 +844,334 @@ import { getCurrentPages } from 'vue'
   color: #fff;
   font-weight: 600;
 }
+
+/* 子内容区 */
+.sub-content {
+  padding-bottom: 40rpx;
+}
+
+.sub-card {
+  background: #fff;
+  border-radius: 24rpx;
+  padding: 28rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.05);
+}
+
+.sub-card-title {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #1f2937;
+  display: block;
+  margin-bottom: 20rpx;
+}
+
+.sub-section-title {
+  font-size: 28rpx;
+  font-weight: 700;
+  color: #1f2937;
+  display: block;
+  margin: 20rpx 0 16rpx;
+}
+
+/* 能耗图表 */
+.energy-chart {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  height: 140rpx;
+  gap: 8rpx;
+}
+
+.energy-bar-wrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6rpx;
+}
+
+.energy-bar {
+  width: 100%;
+  background: #facc15;
+  border-radius: 6rpx;
+  min-height: 10rpx;
+}
+
+.energy-bar-label {
+  font-size: 18rpx;
+  color: #9ca3af;
+}
+
+/* 宿舍打卡 */
+.dorm-checkin-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16rpx;
+  margin-bottom: 20rpx;
+}
+
+.dorm-checkin-card {
+  background: #fff;
+  border-radius: 24rpx;
+  padding: 24rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.05);
+}
+
+.dorm-checkin-icon {
+  font-size: 48rpx;
+  margin-bottom: 10rpx;
+}
+
+.dorm-checkin-name {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.dorm-checkin-desc {
+  font-size: 20rpx;
+  color: #9ca3af;
+  margin-top: 4rpx;
+  text-align: center;
+}
+
+.dorm-checkin-btn {
+  margin-top: 16rpx;
+  width: 100%;
+  border-radius: 16rpx;
+  font-size: 22rpx;
+  font-weight: 600;
+  padding: 12rpx 0;
+  border: none;
+}
+
+.done-btn { background: #facc15; color: #fff; }
+.todo-btn { background: #fff; color: #3b82f6; border: 2rpx solid #3b82f6 !important; }
+
+/* 监控列表 */
+.dorm-monitor-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+  margin-bottom: 20rpx;
+}
+
+.dorm-monitor-item {
+  background: #fff;
+  border-radius: 20rpx;
+  padding: 20rpx 24rpx;
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.05);
+}
+
+.dorm-monitor-icon { font-size: 36rpx; }
+.dorm-monitor-name { flex: 1; font-size: 26rpx; font-weight: 600; color: #1f2937; }
+.dorm-monitor-check { font-size: 32rpx; }
+.dorm-monitor-hint { font-size: 22rpx; color: #9ca3af; font-style: italic; }
+.emerald-icon { color: #10b981; }
+.indigo-icon { color: #6366f1; }
+
+/* PK赛 */
+.dorm-pk-card {
+  background: linear-gradient(135deg, #2563eb, #4f46e5);
+  border-radius: 24rpx;
+  padding: 28rpx;
+  color: #fff;
+  margin-bottom: 20rpx;
+}
+
+.dorm-pk-title { font-size: 26rpx; font-weight: 700; display: block; margin-bottom: 16rpx; }
+
+.dorm-pk-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.dorm-pk-hint { font-size: 20rpx; opacity: 0.7; display: block; }
+.dorm-pk-rank { font-size: 48rpx; font-weight: 900; font-style: italic; display: block; }
+
+.dorm-pk-btn {
+  background: rgba(255,255,255,0.2);
+  color: #fff;
+  border: none;
+  border-radius: 30rpx;
+  padding: 12rpx 24rpx;
+  font-size: 22rpx;
+}
+
+/* 节能小妙招 */
+.dorm-tips { display: flex; flex-direction: column; gap: 12rpx; }
+
+.dorm-tip {
+  border-radius: 16rpx;
+  padding: 16rpx 20rpx;
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.yellow-tip { background: #fefce8; }
+.green-tip { background: #f0fdf4; }
+
+.tip-num {
+  width: 40rpx;
+  height: 40rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22rpx;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.yellow-num { background: #fde68a; color: #92400e; }
+.green-num { background: #a7f3d0; color: #065f46; }
+
+.tip-text { font-size: 22rpx; color: #374151; flex: 1; }
+
+/* 低碳学习 */
+.study-achieve-card {
+  background: linear-gradient(135deg, #f97316, #fb923c);
+  border-radius: 24rpx;
+  padding: 32rpx;
+  color: #fff;
+  margin-bottom: 20rpx;
+}
+
+.study-achieve-label { font-size: 24rpx; display: block; margin-bottom: 12rpx; }
+
+.study-achieve-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8rpx;
+  margin-bottom: 12rpx;
+}
+
+.study-achieve-num { font-size: 72rpx; font-weight: 900; line-height: 1; }
+.study-achieve-unit { font-size: 26rpx; }
+.study-achieve-sub { font-size: 20rpx; opacity: 0.8; display: block; }
+
+.study-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16rpx;
+  margin-bottom: 20rpx;
+}
+
+.study-card {
+  background: #fff;
+  border-radius: 20rpx;
+  padding: 24rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.05);
+}
+
+.study-card-icon {
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32rpx;
+  color: #fff;
+  margin-bottom: 4rpx;
+}
+
+.green-bg { background: #d1fae5; color: #059669 !important; }
+.blue-bg { background: #dbeafe; color: #2563eb !important; }
+.purple-bg { background: #ede9fe; color: #7c3aed !important; }
+.amber-bg { background: #fef3c7; color: #d97706 !important; }
+
+.study-card-icon text { color: inherit; }
+
+.study-card-name { font-size: 24rpx; font-weight: 700; color: #1f2937; }
+.study-card-desc { font-size: 18rpx; color: #9ca3af; text-align: center; }
+
+.study-market-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 20rpx 0 16rpx;
+}
+
+.study-market-tags { display: flex; gap: 8rpx; }
+.market-tag-active { background: #10b981; color: #fff; font-size: 20rpx; padding: 6rpx 16rpx; border-radius: 20rpx; }
+.market-tag { background: #f3f4f6; color: #9ca3af; font-size: 20rpx; padding: 6rpx 16rpx; border-radius: 20rpx; }
+
+.study-book-list { display: flex; flex-direction: column; gap: 16rpx; margin-bottom: 20rpx; }
+
+.study-book-item {
+  background: #f9fafb;
+  border-radius: 20rpx;
+  padding: 20rpx;
+  display: flex;
+  gap: 20rpx;
+}
+
+.study-book-cover {
+  width: 100rpx;
+  height: 120rpx;
+  background: #e5e7eb;
+  border-radius: 12rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.study-book-icon { font-size: 40rpx; color: #9ca3af; }
+
+.study-book-info { flex: 1; display: flex; flex-direction: column; justify-content: space-between; }
+.study-book-title { font-size: 26rpx; font-weight: 700; color: #1f2937; }
+.study-book-meta { font-size: 20rpx; color: #9ca3af; }
+
+.study-book-footer { display: flex; justify-content: space-between; align-items: center; }
+.study-book-price { font-size: 26rpx; font-weight: 700; }
+.study-book-price.free { color: #10b981; }
+.study-book-price.points { color: #f97316; }
+
+.study-book-btn {
+  background: #1f2937;
+  color: #fff;
+  border: none;
+  border-radius: 30rpx;
+  padding: 10rpx 20rpx;
+  font-size: 20rpx;
+}
+
+.study-file-list { display: flex; flex-direction: column; gap: 12rpx; }
+
+.study-file-item {
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 20rpx;
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.04);
+}
+
+.study-file-icon { font-size: 40rpx; }
+.red-icon { color: #ef4444; }
+.blue-icon { color: #3b82f6; }
+
+.study-file-info { flex: 1; }
+.study-file-name { font-size: 24rpx; font-weight: 600; color: #1f2937; display: block; }
+.study-file-meta { font-size: 20rpx; color: #9ca3af; display: block; margin-top: 4rpx; }
+.study-file-dl { font-size: 36rpx; color: #d1d5db; }
 
 /* 生活网格 */
 .life-grid {
