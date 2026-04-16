@@ -39,11 +39,9 @@
           </view>
           <view v-if="joinedClassExpanded" class="sub-menu">
             <view class="menu-item sub-item" @click.stop="navigateTo('/pages/class-list/class-list?type=major')">
-              <text class="menu-icon">📘</text>
               <text class="menu-label">专业班级</text>
             </view>
             <view class="menu-item sub-item" @click.stop="navigateTo('/pages/class-list/class-list?type=course')">
-              <text class="menu-icon">📗</text>
               <text class="menu-label">课程班级</text>
             </view>
           </view>
@@ -58,11 +56,9 @@
           </view>
           <view v-if="checkinGroupExpanded" class="sub-menu">
             <view class="menu-item sub-item" @click.stop="navigateTo('/pages/checkin-group/checkin-group?status=joined')">
-              <text class="menu-icon">✅</text>
               <text class="menu-label">已加入</text>
             </view>
             <view class="menu-item sub-item" @click.stop="navigateTo('/pages/checkin-group/checkin-group?status=pending')">
-              <text class="menu-icon">❌</text>
               <text class="menu-label">未通过</text>
             </view>
           </view>
