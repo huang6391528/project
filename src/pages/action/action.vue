@@ -130,6 +130,16 @@
             </view>
             <text class="sync-value">8,432<span class="sync-unit">/10000</span></text>
             <text class="sync-desc">今日步数已同步 · 产出碳汇 +0.84 kg</text>
+            <view class="sync-badges">
+              <view class="sync-badge">
+                <text class="badge-label">碳资产</text>
+                <text class="badge-value">2,840</text>
+              </view>
+              <view class="sync-badge">
+                <text class="badge-label">减排</text>
+                <text class="badge-value">125.4 kg</text>
+              </view>
+            </view>
           </view>
           <view class="sync-icon-wrap">
             <text class="iconfont icon-footprint"></text>
@@ -284,7 +294,7 @@
       <view v-if="activeTab === 'diet'" class="tab-content">
         <!-- 连续光盘打卡卡片 -->
         <view class="diet-streak-card">
-          <view class="streak-content">
+          <view class="streak-inner">
             <view class="streak-left">
               <text class="streak-label">连续光盘打卡</text>
               <text class="streak-value">12 天</text>
@@ -292,7 +302,7 @@
                 <text class="streak-badge-text">连续打卡奖励积分：+50</text>
               </view>
             </view>
-            <view class="streak-icon-wrap">
+            <view class="streak-icon-bg">
               <text class="iconfont icon-bowl"></text>
             </view>
           </view>
@@ -885,6 +895,35 @@ const canteenMarkers = [{
   color: #9ca3af;
 }
 
+/* Pill Badges */
+.sync-badges {
+  display: flex;
+  gap: 12rpx;
+  margin-top: 16rpx;
+}
+
+.sync-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: rgba(16, 185, 129, 0.1);
+  padding: 8rpx 16rpx;
+  border-radius: 50rpx;
+}
+
+.badge-label {
+  font-size: 20rpx;
+  color: #059669;
+  font-weight: 400;
+}
+
+.badge-value {
+  font-size: 22rpx;
+  color: #047857;
+  font-weight: 700;
+  margin-top: 2rpx;
+}
+
 .sync-icon-wrap {
   width: 112rpx;
   height: 112rpx;
@@ -995,7 +1034,7 @@ const canteenMarkers = [{
   margin: 0 30rpx 24rpx;
 }
 
-.streak-content {
+.streak-inner {
   position: relative;
   z-index: 1;
   display: flex;
@@ -1033,17 +1072,14 @@ const canteenMarkers = [{
   font-weight: 600;
 }
 
-.streak-icon-wrap {
-  width: 96rpx;
-  height: 96rpx;
-  background: rgba(255, 255, 255, 0.15);
-  border-radius: 50%;
+.streak-icon-bg {
+  opacity: 0.2;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.streak-icon-wrap .iconfont {
+.streak-icon-bg .iconfont {
   font-size: 56rpx;
   color: #fff;
 }
