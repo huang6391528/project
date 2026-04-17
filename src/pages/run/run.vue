@@ -218,9 +218,9 @@
         </view>
       </view>
 
-      <!-- 双列布局：日历 + 成就 -->
+      <!-- 上下布局：日历 + 成就 -->
       <view class="content-wrapper">
-        <view class="two-column">
+        <view class="morning-column">
           <view class="section-card calendar-card">
             <view class="card-header">
               <text class="card-title">运动轨迹日历</text>
@@ -2313,7 +2313,7 @@ onMounted(() => {
   flex-shrink: 0;
 }
 
-.morning-btn-area {}
+/* 已移除空规则 .morning-btn-area */
 
 .morning-btn {
   width: 100%;
@@ -2858,11 +2858,6 @@ onMounted(() => {
   flex: 1;
   overflow: hidden;
 }
-  font-weight: bold;
-  text-transform: uppercase;
-  display: block;
-  margin-bottom: 4rpx;
-}
 
 .profile-pb-value {
   font-size: 96rpx;
@@ -2883,7 +2878,7 @@ onMounted(() => {
   justify-content: space-between;
 }
 
-.profile-stat {}
+/* 已移除空规则 .profile-stat */
 
 .profile-stat-label {
   font-size: 18rpx;
