@@ -251,7 +251,7 @@
                 :class="getDayState(day).cls"
                 @tap="onDayTap(day)"
               >
-                <text class="day-num">{{ day }}</text>
+                <text class="day-num" :class="{ 'day-num-bold': isPastDay(day) }">{{ day }}</text>
                 <!-- 晨跑标识：浅绿实心矩形 -->
                 <view
                   v-if="getDayBadges(day).includes('morning')"
@@ -435,7 +435,7 @@
                 :class="getDayCellClassMorning(day)"
                 @tap="onDayTapMorning(day)"
               >
-                <text class="day-num">{{ day }}</text>
+                <text class="day-num" :class="{ 'day-num-bold': isMorningPastDay(day) }">{{ day }}</text>
                 <!-- 晨跑标识：左上角深绿小方块 -->
                 <view v-if="getDayBadges(day).includes('morning')" class="morning-day-rect"></view>
               </view>
@@ -630,7 +630,7 @@
                 :style="getMarathonDayCellStyle(day)"
                 @tap="onMarathonDayTap(day)"
               >
-                <text class="day-num">{{ day }}</text>
+                <text class="day-num" :class="{ 'day-num-bold': isMarathonPastDay(day) }">{{ day }}</text>
                 <!-- 马拉松训练标识：紫色圆圈 -->
                 <view v-if="getMarathonDayBadges(day).includes('marathon')" class="marathon-ring-badge"></view>
               </view>
@@ -639,7 +639,7 @@
             <!-- 图例 -->
             <view class="calendar-legend">
               <view class="legend-item">
-                <view class="legend-dot purple-ring"></view>
+                <view class="marathon-legend-dot purple-ring"></view>
                 <text class="legend-text">马拉松训练</text>
               </view>
             </view>
@@ -823,9 +823,9 @@ function endRun() {
 // 模块二：真实可翻页日历
 // ==========================================
 
-const TODAY_YEAR = 2026
-const TODAY_MONTH = 4
-const TODAY_DAY = 8
+const TODAY_YEAR = new Date().getFullYear()
+const TODAY_MONTH = new Date().getMonth() + 1
+const TODAY_DAY = new Date().getDate()
 
 const calYear = ref(TODAY_YEAR)
 const calMonth = ref(TODAY_MONTH)
@@ -843,7 +843,7 @@ const runRecords = ref({
     2: ['morning', 'marathon'],
     3: ['free', 'morning', 'marathon'],
     7: 'marathon',
-    8: 'marathon'
+    8: []
   },
   '2026-3': { 
     2: 'morning', 5: 'free', 12: 'free', 18: 'marathon', 25: 'marathon', 28: 'morning' 
@@ -904,24 +904,29 @@ const TYPE_PRIORITY = ['free', 'morning', 'marathon']
 function getDayState(day) {
   const status = getDayStatus(day)
   const future = isFutureDay(day)
-  const today  = isToday(day)
 
   if (future) return DAY_STYLES.future
-  if (today)  return DAY_STYLES.today
   if (!status) return DAY_STYLES.empty
   return DAY_STYLES.checked
 }
 
-// 单元格样式：任意打卡类型（free/morning/marathon）都用深绿发光框，今日无光晕
+// 单元格样式：任意打卡类型（free/morning/marathon）都用深绿发光框
 function getDayCellStyle(day) {
   const badges = getDayBadges(day)
   const future = isFutureDay(day)
-  const today  = isToday(day)
 
   if (future) return ''
-  if (today) return 'border: 4rpx solid #065f46; color: #065f46;'
   if (badges.length > 0) return 'border: 4rpx solid #065f46; color: #065f46; box-shadow: 0 0 16rpx rgba(5, 150, 105, 0.7), 0 0 32rpx rgba(5, 150, 105, 0.4);'
   return ''
+}
+
+// 自由跑：今天之前未打卡，数字加粗
+function isPastDay(day) {
+  if (calYear.value > TODAY_YEAR) return false
+  if (calYear.value < TODAY_YEAR) return true
+  if (calMonth.value < TODAY_MONTH) return true
+  if (calMonth.value > TODAY_MONTH) return false
+  return day < TODAY_DAY
 }
 
 // 返回当天打卡类型数组（用于渲染多个徽章）
@@ -958,10 +963,6 @@ function isFutureDay(day) {
   return false
 }
 
-function isToday(day) {
-  return calYear.value === TODAY_YEAR && calMonth.value === TODAY_MONTH && day === TODAY_DAY
-}
-
 function onDayTap(day) {
   if (isFutureDay(day)) {
     uni.showToast({ title: '还未到这一天哦', icon: 'none' })
@@ -993,15 +994,11 @@ function onDayTapMorning(day) {
 function getDayCellStyleMorning(day) {
   const status = getDayStatus(day)
   const future = isFutureDay(day)
-  const today = isToday(day)
   if (future) return ''
   const types = Array.isArray(status) ? status : (status ? [status] : [])
   const hasMorning = types.includes('morning') || types.includes('free')
   if (hasMorning) {
     return 'background-color: #dcfce7; color: #16a34a; border: 2rpx solid #86efac;'
-  }
-  if (today) {
-    return 'background-color: #f97316; color: #fff; border: none;'
   }
   return ''
 }
@@ -1010,12 +1007,19 @@ function getDayCellStyleMorning(day) {
 function getDayCellClassMorning(day) {
   const status = getDayStatus(day)
   const future = isFutureDay(day)
-  const today = isToday(day)
   if (future) return 'future'
-  if (today) return 'today-morning'
   const types = Array.isArray(status) ? status : (status ? [status] : [])
   if (types.includes('morning')) return 'morning-day-cell'
   return ''
+}
+
+// 晨跑：今天之前未打卡，数字加粗
+function isMorningPastDay(day) {
+  if (calYear.value > TODAY_YEAR) return false
+  if (calYear.value < TODAY_YEAR) return true
+  if (calMonth.value < TODAY_MONTH) return true
+  if (calMonth.value > TODAY_MONTH) return false
+  return day < TODAY_DAY
 }
 
 // 月份切换
@@ -1186,24 +1190,21 @@ const marathonPrevMonthPadding = computed(() => marathonFirstDayWeekday.value - 
 
 // 马拉松日历状态设计
 const MARATHON_DAY_STYLES = {
-  empty:   { cls: 'empty',   bg: '', hasDot: false },
-  future:  { cls: 'future',  bg: '', hasDot: false },
-  today:   { cls: 'today',   bg: '', hasDot: false },
-  marathon:{ cls: 'marathon',bg: '', hasDot: true },
+  empty:   { cls: 'empty',    bg: '', hasDot: false },
+  future:  { cls: 'future',   bg: '', hasDot: false },
+  marathon:{ cls: 'marathon', bg: '', hasDot: true },
 }
 
 function getMarathonDayState(day) {
   const status = getMarathonDayStatus(day)
   const future = isMarathonFutureDay(day)
-  const today  = isMarathonToday(day)
 
   if (future) return MARATHON_DAY_STYLES.future
-  if (today)  return MARATHON_DAY_STYLES.today
   if (!status) return MARATHON_DAY_STYLES.empty
-  
+
   const types = Array.isArray(status) ? status : [status]
   if (types.includes('marathon')) return MARATHON_DAY_STYLES.marathon
-  
+
   return MARATHON_DAY_STYLES.empty
 }
 
@@ -1218,9 +1219,17 @@ function getMarathonDayCellStyle(day) {
   const state = getMarathonDayState(day)
   if (state.cls === 'empty') return ''
   if (state.cls === 'future') return ''
-  if (state.cls === 'today')  return 'border: 2rpx solid #a855f7; color: #a855f7;'
   if (state.cls === 'marathon') return 'background-color: #a855f7; color: #fff; border-radius: 50%;'
   return state.bg
+}
+
+// 马拉松：今天之前未打卡，数字加粗
+function isMarathonPastDay(day) {
+  if (marathonCalYear.value > TODAY_YEAR) return false
+  if (marathonCalYear.value < TODAY_YEAR) return true
+  if (marathonCalMonth.value < TODAY_MONTH) return true
+  if (marathonCalMonth.value > TODAY_MONTH) return false
+  return day < TODAY_DAY
 }
 
 
@@ -1246,17 +1255,13 @@ function isMarathonFutureDay(day) {
   return false
 }
 
-function isMarathonToday(day) {
-  return marathonCalYear.value === TODAY_YEAR && marathonCalMonth.value === TODAY_MONTH && day === TODAY_DAY
-}
-
 function onMarathonDayTap(day) {
   if (isMarathonFutureDay(day)) {
     uni.showToast({ title: '还未到这一天哦', icon: 'none' })
     return
   }
   const state = getMarathonDayState(day)
-  if (state !== MARATHON_DAY_STYLES.empty && state !== MARATHON_DAY_STYLES.future && state !== MARATHON_DAY_STYLES.today) {
+  if (state !== MARATHON_DAY_STYLES.empty && state !== MARATHON_DAY_STYLES.future) {
     uni.showToast({ title: '已完成马拉松训练', icon: 'none' })
   }
 }
@@ -1983,6 +1988,10 @@ onMounted(() => {
   z-index: 1;
 }
 
+.day-num-bold {
+  font-weight: bold;
+}
+
 .day-cell.empty {
   color: #e5e7eb;
 }
@@ -1993,15 +2002,6 @@ onMounted(() => {
 
 /* 已打卡 - 深绿色发光边框，文字为深绿，无背景 */
 .day-cell.checked {
-  background-color: transparent;
-  color: #065f46;
-  border: 4rpx solid #065f46;
-  box-shadow: 0 0 16rpx rgba(5, 150, 105, 0.7), 0 0 32rpx rgba(5, 150, 105, 0.4);
-}
-
-/* 今日 - 深绿边框，无光晕 */
-/* 今日 - 深绿边框，带荧光光晕 */
-.day-cell.today {
   background-color: transparent;
   color: #065f46;
   border: 4rpx solid #065f46;
@@ -2040,13 +2040,6 @@ onMounted(() => {
 .day-cell.morning-day-cell .day-num {
   color: #16a34a;
   font-weight: bold;
-}
-.day-cell.today-morning {
-  background-color: #f97316;
-  border: none;
-}
-.day-cell.today-morning .day-num {
-  color: #fff;
 }
 
 .day-dot {
