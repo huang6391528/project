@@ -149,6 +149,24 @@
 .icon-watch:before { content: "⌚"; }
 /* 铅笔图标 */
 .icon-pencil:before { content: "✏️"; }
+/* 旗帜图标 */
+.icon-flag:before { content: "🏁"; }
+/* 位置图标 */
+.icon-location:before { content: "📍"; }
+/* 闪电/电击图标 */
+.icon-zap:before { content: "⚡"; }
+/* 地图钉图标 */
+.icon-map-pin:before { content: "📌"; }
+/* 风图标 */
+.icon-wind:before { content: "💨"; }
+/* 加圆图标 */
+.icon-plus-circle:before { content: "⊕"; }
+/* 上箭头图标 */
+.icon-chevron-up:before { content: "⌃"; }
+/* 闪电图标（另一个名字） */
+.icon-lightning:before { content: "⚡"; }
+/* 太阳图标 */
+.icon-sun:before { content: "☀️"; }
 /* 毕业帽图标 */
 .icon-graduation:before { content: "🎓"; }
 /* 列表图标 */

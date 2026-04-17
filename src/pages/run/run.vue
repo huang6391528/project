@@ -325,35 +325,51 @@
             <text class="morning-weather-value">晴 18°C · 优 AQI 32</text>
           </view>
         </view>
+        <!-- 收起遮罩层 -->
+        <view v-if="isMorningCardExpanded" class="morning-modal-backdrop" @tap="collapseMorningCard"></view>
+        
         <!-- 跑步控制面板 -->
-        <view class="morning-control-card">
-          <view class="morning-stats-row">
-            <view class="morning-stat">
-              <text class="morning-stat-label">本次距离</text>
-              <text class="morning-stat-value">{{ currentDistance || '0.00' }} <text class="morning-stat-unit">km</text></text>
-            </view>
-            <view class="morning-stat-divider"></view>
-            <view class="morning-stat">
-              <text class="morning-stat-label">实时配速</text>
-              <text class="morning-stat-value">{{ currentPace || "05'00\"" }}</text>
-            </view>
-            <view class="morning-stat-divider"></view>
-            <view class="morning-stat">
-              <text class="morning-stat-label">累计用时</text>
-              <text class="morning-stat-value">{{ displayDuration || '00:00' }}</text>
-            </view>
+        <view class="morning-floating-card" :class="{ 'is-expanded': isMorningCardExpanded, 'is-running': isRunning }">
+          <!-- 折叠状态：简化按钮 -->
+          <view v-if="!isMorningCardExpanded" class="morning-card-collapsed-simple" @tap="toggleMorningCard">
+            <text class="morning-btn-icon-simple iconfont icon-map-pin"></text>
+            <text class="morning-btn-text-simple">{{ isRunning ? '晨跑进行中' : '确认晨跑打卡' }}</text>
+            <text class="morning-chevron iconfont icon-chevron-down"></text>
           </view>
-          <view class="morning-btn-area">
-            <view class="morning-btn" @tap="toggleRun">
-              <text class="iconfont icon-map-pin morning-btn-icon"></text>
-              <text class="morning-btn-text">{{ isRunning ? '晨跑进行中' : '确认晨跑打卡' }}</text>
+          
+          <!-- 展开状态：简化三行数据 + 按钮 -->
+          <view v-if="isMorningCardExpanded" class="morning-card-expanded-full" @tap.stop>
+            <!-- 统计数据一行 -->
+            <view class="expanded-stats-row">
+              <view class="exp-stat-row-item">
+                <text class="exp-label-row">本次距离</text>
+                <text class="exp-value-row">{{ currentDistance || '0.00' }} <text class="exp-unit-row">km</text></text>
+              </view>
+              <view class="exp-divider-row"></view>
+              <view class="exp-stat-row-item">
+                <text class="exp-label-row">实时配速</text>
+                <text class="exp-value-row">{{ currentPace || "05'00\"" }}</text>
+              </view>
+              <view class="exp-divider-row"></view>
+              <view class="exp-stat-row-item">
+                <text class="exp-label-row">累计用时</text>
+                <text class="exp-value-row">{{ displayDuration || '00:00:00' }}</text>
+              </view>
+            </view>
+            
+            <!-- 操作按钮区 -->
+            <view class="action-area-morning-simple">
+              <view class="action-btn-morning-simple main-btn-morning-simple orange-btn" :class="{ running: isRunning }" @tap.stop="toggleRun">
+                <text class="iconfont" :class="isRunning ? 'icon-pause' : 'icon-play'"></text>
+                <text class="btn-text-simple">{{ isRunning ? '暂停' : '开始' }}</text>
+              </view>
             </view>
           </view>
         </view>
       </view>
 
       <!-- 本阶段晨跑目标 -->
-      <view class="morning-goal-section">
+      <view class="morning-goal-section" :style="{ marginTop: isMorningCardExpanded ? '280rpx' : '0rpx' }">
         <view class="morning-goal-card">
           <view class="morning-goal-header">
             <text class="morning-goal-title">本阶段晨跑目标</text>
@@ -402,9 +418,9 @@
         </view>
       </view>
 
-      <!-- 双列布局：日历 + 历史 -->
+      <!-- 上下布局：日历 + 历史 -->
       <view class="content-wrapper">
-        <view class="two-column">
+        <view class="morning-column">
           <view class="section-card calendar-card">
             <view class="card-header">
               <text class="card-title">晨跑打卡</text>
@@ -646,51 +662,86 @@
           </view>
 
           <view class="marathon-profile-card marathon-profile-card-col">
-            <!-- 标题行 + 等级徽章 -->
-            <view class="profile-header profile-header-spread">
-              <view class="profile-header-left">
-                <text class="iconfont icon-lightning profile-lightning"></text>
-                <text class="profile-title">我的马拉松档案</text>
+            <!-- 标题 + 徽章 -->
+            <view class="pro-header-premium">
+              <view class="pro-header-top">
+                <text class="iconfont icon-lightning pro-title-icon"></text>
+                <text class="pro-title-premium">马拉松档案</text>
               </view>
-              <view class="profile-level-badge">
-                <text class="profile-level-badge-text">精英跑者</text>
-              </view>
-            </view>
-            <!-- PB 主展示 -->
-            <view class="profile-pb-hero">
-              <text class="profile-pb-hero-label">个人最佳 PB</text>
-              <text class="profile-pb-hero-value">03:45:12</text>
-              <text class="profile-pb-hero-sub">全程马拉松 · 2025 贵阳马拉松</text>
-            </view>
-            <!-- 四格统计 -->
-            <view class="profile-stats-grid">
-              <view class="profile-stat-cell">
-                <text class="profile-stat-cell-value">05</text>
-                <text class="profile-stat-cell-label">总参赛次数</text>
-              </view>
-              <view class="profile-stat-cell">
-                <text class="profile-stat-cell-value">210.97</text>
-                <text class="profile-stat-cell-label">完赛里程 KM</text>
-              </view>
-              <view class="profile-stat-cell">
-                <text class="profile-stat-cell-value profile-stat-orange">05'22''</text>
-                <text class="profile-stat-cell-label">平均配速</text>
-              </view>
-              <view class="profile-stat-cell profile-stat-cell-last">
-                <text class="profile-stat-cell-value profile-stat-green">1,240</text>
-                <text class="profile-stat-cell-label">低碳积分</text>
+              <view class="pro-badge-group">
+                <view class="pro-level-badge">
+                  <text class="pro-badge-icon iconfont icon-star"></text>
+                  <text class="pro-badge-text">精英跑者</text>
+                </view>
               </view>
             </view>
-            <!-- 等级进度条 -->
-            <view class="profile-level-progress">
-              <view class="profile-level-row">
-                <text class="profile-level-cur">精英跑者</text>
-                <text class="profile-level-next">传奇跑者</text>
+
+            <!-- PB 英雄区 - 仪表盘风格 -->
+            <view class="pro-pb-section">
+              <view class="pro-pb-background">
+                <!-- 背景装饰 -->
+                <view class="pro-pb-glow"></view>
+                <!-- PB 内容 -->
+                <view class="pro-pb-content">
+                  <text class="pro-pb-label">个人最佳 PB</text>
+                  <text class="pro-pb-value-huge">03:45:12</text>
+                  <view class="pro-pb-meta">
+                    <text class="pro-pb-distance">42.195 KM</text>
+                    <text class="pro-pb-separator">·</text>
+                    <text class="pro-pb-event">2025 贵阳马拉松</text>
+                  </view>
+                </view>
               </view>
-              <view class="profile-level-bar-bg">
-                <view class="profile-level-bar-fill" style="width: 68%;"></view>
+            </view>
+
+            <!-- 数据仪表板 - 4 个精心设计的卡片 -->
+            <view class="pro-stats-dashboard">
+              <!-- 1. 总参赛次数 -->
+              <view class="pro-stat-card pro-stat-races">
+                <view class="pro-stat-icon-bg races-gradient">
+                  <text class="iconfont icon-flag pro-stat-icon"></text>
+                </view>
+                <text class="pro-stat-value">05</text>
+                <text class="pro-stat-label">总参赛次数</text>
               </view>
-              <text class="profile-level-hint">再完赛 2 次即可晋升传奇跑者</text>
+              <!-- 2. 完赛里程 -->
+              <view class="pro-stat-card pro-stat-distance">
+                <view class="pro-stat-icon-bg distance-gradient">
+                  <text class="iconfont icon-location pro-stat-icon"></text>
+                </view>
+                <text class="pro-stat-value">210.97</text>
+                <text class="pro-stat-label">完赛里程 <text class="pro-stat-unit">KM</text></text>
+              </view>
+              <!-- 3. 平均配速 -->
+              <view class="pro-stat-card pro-stat-pace">
+                <view class="pro-stat-icon-bg pace-gradient">
+                  <text class="iconfont icon-zap pro-stat-icon"></text>
+                </view>
+                <text class="pro-stat-value pace-value">05'22''</text>
+                <text class="pro-stat-label">平均配速</text>
+              </view>
+              <!-- 4. 低碳积分 -->
+              <view class="pro-stat-card pro-stat-carbon">
+                <view class="pro-stat-icon-bg carbon-gradient">
+                  <text class="iconfont icon-leaf pro-stat-icon"></text>
+                </view>
+                <text class="pro-stat-value carbon-value">1,240</text>
+                <text class="pro-stat-label">低碳积分</text>
+              </view>
+            </view>
+
+            <!-- 等级晋升进度 - 精致版 -->
+            <view class="pro-achievement-section">
+              <view class="pro-level-header">
+                <text class="pro-level-current">精英跑者</text>
+                <text class="pro-level-arrow">→</text>
+                <text class="pro-level-next">传奇跑者</text>
+              </view>
+              <view class="pro-progress-track">
+                <view class="pro-progress-fill" style="width: 68%;"></view>
+                <view class="pro-progress-indicator" style="left: 68%;"></view>
+              </view>
+              <text class="pro-level-hint">再完赛 2 次即可晋升传奇跑者</text>
             </view>
           </view>
         </view>
@@ -767,6 +818,7 @@ const routePolyline = ref([
 // 模块一：运动卡片状态
 // ==========================================
 const isCardExpanded = ref(false)
+const isMorningCardExpanded = ref(false)
 const isRunning = ref(false)
 
 const currentDistance = ref('')
@@ -784,6 +836,14 @@ function toggleCard() {
 
 function collapseCard() {
   isCardExpanded.value = false
+}
+
+function toggleMorningCard() {
+  isMorningCardExpanded.value = !isMorningCardExpanded.value
+}
+
+function collapseMorningCard() {
+  isMorningCardExpanded.value = false
 }
 
 function toggleRun() {
@@ -1410,12 +1470,14 @@ onMounted(() => {
   width: 100%;
   height: 320px;
   background-color: #f1f5f9;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .map-bg {
   width: 100%;
   height: 100%;
+  overflow: hidden;
+  border-radius: 0;
 }
 
 .route-svg {
@@ -2152,7 +2214,8 @@ onMounted(() => {
 /* 晨跑 Tab 样式                                  */
 /* ============================================= */
 .map-morning {
-  height: 480px;
+  height: 320px;
+  position: relative;
 }
 
 .morning-weather-card {
@@ -2285,6 +2348,8 @@ onMounted(() => {
 /* 晨跑目标 */
 .morning-goal-section {
   padding: 20rpx 30rpx 0;
+  margin-top: 0;
+  transition: margin-top 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .morning-goal-card {
@@ -2293,6 +2358,7 @@ onMounted(() => {
   padding: 28rpx;
   box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.05);
   border: 2rpx solid #f3f4f6;
+  margin-bottom: 20rpx;
 }
 
 .morning-goal-header {
@@ -2788,45 +2854,10 @@ onMounted(() => {
   padding: 28rpx 30rpx 0;
 }
 
-.marathon-profile-card {
-  background: #1e293b;
-  border-radius: 32rpx;
-  padding: 32rpx;
-  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.15);
-}
-
 .marathon-profile-card-col {
   flex: 1;
   overflow: hidden;
 }
-
-.profile-header {
-  display: flex;
-  align-items: center;
-  gap: 10rpx;
-  margin-bottom: 24rpx;
-}
-
-.profile-lightning {
-  font-size: 32rpx;
-  color: #fbbf24;
-}
-
-.profile-title {
-  font-size: 28rpx;
-  font-weight: bold;
-  color: #fff;
-}
-
-.profile-main {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 24rpx;
-}
-
-.profile-pb-label {
-  font-size: 16rpx;
-  color: #64748b;
   font-weight: bold;
   text-transform: uppercase;
   display: block;
@@ -3402,7 +3433,7 @@ onMounted(() => {
 
 /* 双列布局 */
 .content-wrapper {
-  padding: 0 30rpx;
+  padding: 0;
 }
 
 .two-column {
@@ -3624,151 +3655,612 @@ onMounted(() => {
 }
 
 /* ============================================= */
-/* 马拉松档案 — 重排版样式                        */
+/* 优化版马拉松档案 — 高级UI/UX设计              */
+/* 风格参考：Nike Run Club + Apple Fitness      */
 /* ============================================= */
-.profile-header-spread {
+
+/* 卡片容器 - 深色高级背景 */
+.marathon-profile-card {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+  border-radius: 40rpx;
+  padding: 40rpx;
+  box-shadow: 
+    0 20rpx 60rpx rgba(0, 0, 0, 0.40),
+    inset 0 1rpx 0 rgba(255, 255, 255, 0.05);
+  position: relative;
+  overflow: hidden;
+}
+
+.marathon-profile-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -20%;
+  width: 600rpx;
+  height: 600rpx;
+  background: radial-gradient(circle, rgba(249, 115, 22, 0.08) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+/* 标题区域 - 顶部标题+徽章 */
+.pro-header-premium {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 24rpx;
+  margin-bottom: 32rpx;
+  position: relative;
+  z-index: 2;
 }
 
-.profile-header-left {
+.pro-header-top {
   display: flex;
   align-items: center;
-  gap: 10rpx;
+  gap: 12rpx;
 }
 
-.profile-level-badge {
-  background: linear-gradient(135deg, #fb923c, #f97316);
-  border-radius: 20rpx;
-  padding: 6rpx 20rpx;
+.pro-title-icon {
+  font-size: 36rpx;
+  background: linear-gradient(135deg, #f97316, #fbbf24);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
-.profile-level-badge-text {
+.pro-title-premium {
+  font-size: 32rpx;
+  font-weight: 900;
+  color: #fff;
+  letter-spacing: -0.5rpx;
+}
+
+.pro-badge-group {
+  display: flex;
+  gap: 12rpx;
+}
+
+.pro-level-badge {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  background: linear-gradient(135deg, #f97316 0%, #fb923c 100%);
+  border-radius: 24rpx;
+  padding: 8rpx 20rpx;
+  box-shadow: 0 8rpx 20rpx rgba(249, 115, 22, 0.25);
+  animation: badgePulse 3s ease-in-out infinite;
+}
+
+@keyframes badgePulse {
+  0%, 100% {
+    box-shadow: 0 8rpx 20rpx rgba(249, 115, 22, 0.25);
+  }
+  50% {
+    box-shadow: 0 12rpx 32rpx rgba(249, 115, 22, 0.35);
+  }
+}
+
+.pro-badge-icon {
   font-size: 20rpx;
+  color: #fff;
+}
+
+.pro-badge-text {
+  font-size: 18rpx;
   font-weight: bold;
   color: #fff;
 }
 
-/* PB 英雄区 */
-.profile-pb-hero {
+/* PB 英雄区 - 仪表盘设计 */
+.pro-pb-section {
+  margin-bottom: 40rpx;
+  position: relative;
+  z-index: 2;
+}
+
+.pro-pb-background {
+  position: relative;
+  background: linear-gradient(135deg, rgba(249, 115, 22, 0.12) 0%, rgba(251, 146, 60, 0.08) 100%);
+  border-radius: 32rpx;
+  padding: 40rpx 32rpx;
+  border: 1px solid rgba(249, 115, 22, 0.20);
+  overflow: hidden;
+}
+
+.pro-pb-glow {
+  position: absolute;
+  top: -30rpx;
+  right: -30rpx;
+  width: 400rpx;
+  height: 400rpx;
+  background: radial-gradient(circle, rgba(249, 115, 22, 0.15) 0%, transparent 70%);
+  border-radius: 50%;
+  filter: blur(40rpx);
+  pointer-events: none;
+}
+
+.pro-pb-content {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 24rpx 0 28rpx;
-  border-bottom: 2rpx solid rgba(255,255,255,0.10);
-  margin-bottom: 24rpx;
+  position: relative;
+  z-index: 1;
 }
 
-.profile-pb-hero-label {
+.pro-pb-label {
   font-size: 18rpx;
-  color: #64748b;
-  font-weight: bold;
+  color: rgba(255, 255, 255, 0.65);
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 2rpx;
-  margin-bottom: 8rpx;
+  margin-bottom: 12rpx;
 }
 
-.profile-pb-hero-value {
-  font-size: 80rpx;
+.pro-pb-value-huge {
+  font-size: 120rpx;
   font-weight: 900;
   color: #fff;
-  letter-spacing: -2rpx;
+  letter-spacing: -3rpx;
   line-height: 1;
-  margin-bottom: 8rpx;
+  margin-bottom: 16rpx;
+  background: linear-gradient(180deg, #fff 0%, #e2e8f0 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
-.profile-pb-hero-sub {
+.pro-pb-meta {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.pro-pb-distance {
+  font-size: 20rpx;
+  color: #f97316;
+  font-weight: 600;
+}
+
+.pro-pb-separator {
+  font-size: 20rpx;
+  color: rgba(255, 255, 255, 0.40);
+}
+
+.pro-pb-event {
   font-size: 20rpx;
   color: #94a3b8;
 }
 
-/* 四格统计 */
-.profile-stats-grid {
+/* 数据仪表板 - 4个卡片布局 */
+.pro-stats-dashboard {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 0;
-  margin-bottom: 24rpx;
-  border: 2rpx solid rgba(255,255,255,0.08);
-  border-radius: 16rpx;
-  overflow: hidden;
+  gap: 16rpx;
+  margin-bottom: 40rpx;
+  position: relative;
+  z-index: 2;
 }
 
-.profile-stat-cell {
+.pro-stat-card {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 20rpx 8rpx;
-  border-right: 2rpx solid rgba(255,255,255,0.08);
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 24rpx;
+  padding: 24rpx 16rpx;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10rpx);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.profile-stat-cell-last {
-  border-right: none;
+.pro-stat-card:active {
+  transform: translateY(-4rpx);
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.12);
 }
 
-.profile-stat-cell-value {
+.pro-stat-icon-bg {
+  width: 60rpx;
+  height: 60rpx;
+  border-radius: 16rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12rpx;
+  font-size: 0;
+}
+
+.pro-stat-icon {
+  font-size: 32rpx;
+  color: #fff;
+}
+
+/* 各数据卡片的渐变背景 */
+.races-gradient {
+  background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+}
+
+.distance-gradient {
+  background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+}
+
+.pace-gradient {
+  background: linear-gradient(135deg, #f97316 0%, #c2410c 100%);
+}
+
+.carbon-gradient {
+  background: linear-gradient(135deg, #10b981 0%, #047857 100%);
+}
+
+.pro-stat-value {
   font-size: 32rpx;
   font-weight: 900;
   color: #fff;
   line-height: 1;
-  margin-bottom: 6rpx;
+  margin-bottom: 8rpx;
+  letter-spacing: -0.5rpx;
 }
 
-.profile-stat-orange {
-  color: #fb923c;
+.pro-stat-value.pace-value {
+  color: #f97316;
 }
 
-.profile-stat-green {
-  color: #34d399;
+.pro-stat-value.carbon-value {
+  color: #10b981;
 }
 
-.profile-stat-cell-label {
+.pro-stat-label {
+  font-size: 14rpx;
+  color: #94a3b8;
+  text-align: center;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.pro-stat-unit {
+  font-size: 12rpx;
+  color: #64748b;
+}
+
+/* 等级晋升区 - 进度仪表 */
+.pro-achievement-section {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 28rpx;
+  padding: 28rpx;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  position: relative;
+  z-index: 2;
+}
+
+.pro-level-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18rpx;
+  gap: 8rpx;
+}
+
+.pro-level-current {
+  font-size: 22rpx;
+  font-weight: bold;
+  color: #f97316;
+  letter-spacing: -0.5rpx;
+}
+
+.pro-level-arrow {
+  font-size: 20rpx;
+  color: #64748b;
+  flex: 1;
+  text-align: center;
+}
+
+.pro-level-next {
+  font-size: 22rpx;
+  font-weight: 600;
+  color: #94a3b8;
+  letter-spacing: -0.5rpx;
+}
+
+.pro-progress-track {
+  position: relative;
+  height: 16rpx;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 12rpx;
+  overflow: hidden;
+  margin-bottom: 16rpx;
+  box-shadow: inset 0 2rpx 4rpx rgba(0, 0, 0, 0.20);
+}
+
+.pro-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #f97316 0%, #fbbf24 100%);
+  border-radius: 12rpx;
+  animation: progressFill 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 0 16rpx rgba(249, 115, 22, 0.40);
+}
+
+@keyframes progressFill {
+  from {
+    width: 0 !important;
+  }
+}
+
+.pro-progress-indicator {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 24rpx;
+  height: 24rpx;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 0 4rpx 12rpx rgba(249, 115, 22, 0.30);
+  border: 3rpx solid #f97316;
+  animation: indicatorPulse 2s ease-in-out infinite;
+}
+
+@keyframes indicatorPulse {
+  0%, 100% {
+    box-shadow: 0 4rpx 12rpx rgba(249, 115, 22, 0.30);
+  }
+  50% {
+    box-shadow: 0 8rpx 24rpx rgba(249, 115, 22, 0.50);
+  }
+}
+
+.pro-level-hint {
   font-size: 16rpx;
   color: #64748b;
   text-align: center;
+  font-weight: 500;
+  line-height: 1.5;
 }
 
-/* 等级进度条 */
-.profile-level-progress {
-  padding-top: 20rpx;
-  border-top: 2rpx solid rgba(255,255,255,0.10);
+/* ============================================= */
+/* 晨跑浮动卡片 — 橙色主题                        */
+/* ============================================= */
+
+/* 背景遮罩层 - 点击收起 */
+.morning-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9;
+  background: rgba(0, 0, 0, 0.35);
+  animation: fadeInBackdrop 0.3s ease forwards;
+  backdrop-filter: blur(2rpx);
 }
 
-.profile-level-row {
+@keyframes fadeInBackdrop {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.morning-floating-card {
+  position: relative;
+  z-index: 10;
+  margin: -40rpx 30rpx 150rpx;
+  border-radius: 40rpx;
+  overflow: visible;
+  /* 渐变橙色背景 */
+  background: linear-gradient(135deg, #f97316 0%, #f25f1c 50%, #d97706 100%);
+  box-shadow: 0 12rpx 40rpx rgba(249, 115, 22, 0.35), 0 4rpx 16rpx rgba(249, 115, 22, 0.20);
+  touch-action: manipulation;
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.morning-floating-card.is-expanded {
+  box-shadow: 0 20rpx 60rpx rgba(249, 115, 22, 0.45), 0 8rpx 24rpx rgba(249, 115, 22, 0.25);
+}
+
+.morning-floating-card.is-running {
+  background: linear-gradient(135deg, #f25f1c 0%, #d97706 50%, #b45309 100%);
+  box-shadow: 0 20rpx 60rpx rgba(249, 115, 22, 0.55), 0 8rpx 24rpx rgba(249, 115, 22, 0.30);
+}
+
+/* 折叠状态：简化按钮 */
+.morning-card-collapsed-simple {
+  padding: 32rpx 40rpx;
   display: flex;
-  justify-content: space-between;
-  margin-bottom: 10rpx;
-}
-
-.profile-level-cur {
-  font-size: 20rpx;
-  font-weight: bold;
-  color: #fb923c;
-}
-
-.profile-level-next {
-  font-size: 20rpx;
-  color: #94a3b8;
-}
-
-.profile-level-bar-bg {
-  height: 12rpx;
-  background: rgba(255,255,255,0.12);
-  border-radius: 8rpx;
+  align-items: center;
+  justify-content: center;
+  gap: 16rpx;
+  min-height: 100rpx;
+  border-radius: 40rpx;
   overflow: hidden;
-  margin-bottom: 10rpx;
+  animation: collapseMorningCard 0.35s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
-.profile-level-bar-fill {
-  height: 100%;
-  background: linear-gradient(90deg, #fb923c, #fbbf24);
-  border-radius: 8rpx;
+@keyframes collapseMorningCard {
+  from {
+    opacity: 0;
+    transform: translateY(10rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.profile-level-hint {
-  font-size: 18rpx;
-  color: #64748b;
+.morning-btn-icon-simple {
+  font-size: 36rpx;
+  color: #fff;
+}
+
+.morning-btn-text-simple {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #fff;
+  flex: 1;
   text-align: center;
+}
+
+.morning-chevron {
+  font-size: 28rpx;
+  color: rgba(255, 255, 255, 0.70);
+  animation: breatheDownMorning 2s ease-in-out infinite;
+}
+
+@keyframes breatheDownMorning {
+  0%, 100% {
+    opacity: 0.40;
+    transform: translateY(0);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(6rpx);
+  }
+}
+
+/* 展开状态：简化三行数据 */
+.morning-card-expanded-full {
+  padding: 28rpx 40rpx 32rpx;
+  position: relative;
+  animation: expandMorningCard 0.35s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes expandMorningCard {
+  from {
+    opacity: 0;
+    transform: translateY(-10rpx);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 一行三个数据 */
+.expanded-stats-row {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin-bottom: 28rpx;
+}
+
+.exp-stat-row-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8rpx;
+  flex: 1;
+}
+
+.exp-label-row {
+  font-size: 20rpx;
+  color: rgba(255, 255, 255, 0.75);
+  font-weight: 500;
+}
+
+.exp-value-row {
+  font-size: 40rpx;
+  font-weight: 900;
+  color: #ffffff;
+  letter-spacing: -1rpx;
+  line-height: 1;
+}
+
+.exp-unit-row {
+  font-size: 20rpx;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.80);
+  margin-left: 2rpx;
+}
+
+.exp-divider-row {
+  width: 2rpx;
+  height: 60rpx;
+  background: rgba(255, 255, 255, 0.30);
+  flex-shrink: 0;
+}
+
+/* 简化操作按钮区 */
+.action-area-morning-simple {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16rpx;
+}
+
+.action-btn-morning-simple {
+  border-radius: 24rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10rpx;
+  padding: 16rpx 32rpx;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.action-btn-morning-simple:active {
+  transform: scale(0.95);
+}
+
+.main-btn-morning-simple {
+  width: auto;
+  height: auto;
+  background: rgba(255, 255, 255, 0.97);
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.20),
+              0 0 40rpx rgba(255, 255, 255, 0.25);
+}
+
+.main-btn-morning-simple .iconfont {
+  font-size: 36rpx;
+  color: #f97316;
+}
+
+.btn-text-simple {
+  font-size: 24rpx;
+  font-weight: bold;
+  color: #f97316;
+}
+
+/* 晨跑上下布局 */
+.morning-column {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+  padding: 20rpx 30rpx;
+}
+
+.morning-column .section-card {
+  background: #fff;
+  border-radius: 24rpx;
+  padding: 28rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.05);
+}
+
+/* 改进晨跑历史卡片样式 */
+.morning-history-card {
+  padding: 28rpx !important;
+}
+
+.morning-history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.history-item {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  padding: 16rpx;
+  background: #f9fafb;
+  border-radius: 16rpx;
+  transition: all 0.2s ease;
+}
+
+.history-item:active {
+  transform: scale(0.98);
+  background: #f3f4f6;
+}
+
+.history-item-faded {
+  opacity: 0.6;
 }
 </style>
