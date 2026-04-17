@@ -120,22 +120,17 @@
                 <text class="iconfont icon-lightning dorm-checkin-icon yellow-icon"></text>
                 <text class="dorm-checkin-name">节约用电</text>
                 <text class="dorm-checkin-desc">做到随手关灯</text>
-                <button class="dorm-checkin-btn done-btn">打卡成功</button>
+                <button class="dorm-checkin-btn">打卡</button>
               </view>
               <view class="dorm-checkin-card">
                 <text class="iconfont icon-water dorm-checkin-icon blue-icon"></text>
                 <text class="dorm-checkin-name">节约用水</text>
                 <text class="dorm-checkin-desc">缩短淋浴时间</text>
-                <button class="dorm-checkin-btn todo-btn">去打卡</button>
+                <button class="dorm-checkin-btn">打卡</button>
               </view>
             </view>
             <!-- 监控列表 -->
             <view class="dorm-monitor-list">
-              <view class="dorm-monitor-item">
-                <text class="iconfont icon-temp dorm-monitor-icon emerald-icon"></text>
-                <text class="dorm-monitor-name">空调温控 (当前 26℃)</text>
-                <text class="iconfont icon-check-circle dorm-monitor-check emerald-icon"></text>
-              </view>
               <view class="dorm-monitor-item">
                 <text class="iconfont icon-night dorm-monitor-icon indigo-icon"></text>
                 <text class="dorm-monitor-name">熄灯自律打卡</text>
@@ -482,21 +477,16 @@
                 <text class="iconfont icon-lightning dorm-checkin-icon yellow-icon"></text>
                 <text class="dorm-checkin-name">节约用电</text>
                 <text class="dorm-checkin-desc">做到随手关灯</text>
-                <button class="dorm-checkin-btn done-btn">打卡成功</button>
+                <button class="dorm-checkin-btn">打卡</button>
               </view>
               <view class="dorm-checkin-card">
                 <text class="iconfont icon-water dorm-checkin-icon blue-icon"></text>
                 <text class="dorm-checkin-name">节约用水</text>
                 <text class="dorm-checkin-desc">缩短淋浴时间</text>
-                <button class="dorm-checkin-btn todo-btn">去打卡</button>
+                <button class="dorm-checkin-btn">打卡</button>
               </view>
             </view>
             <view class="dorm-monitor-list">
-              <view class="dorm-monitor-item">
-                <text class="iconfont icon-temp dorm-monitor-icon emerald-icon"></text>
-                <text class="dorm-monitor-name">空调温控 (当前 26℃)</text>
-                <text class="iconfont icon-check-circle dorm-monitor-check emerald-icon"></text>
-              </view>
               <view class="dorm-monitor-item">
                 <text class="iconfont icon-night dorm-monitor-icon indigo-icon"></text>
                 <text class="dorm-monitor-name">熄灯自律打卡</text>
@@ -945,13 +935,12 @@ onMounted(() => {
   width: 100%;
   border-radius: 16rpx;
   font-size: 22rpx;
-  font-weight: 600;
+  font-weight: 700;
   padding: 12rpx 0;
   border: none;
+  background: #facc15;
+  color: #fff;
 }
-
-.done-btn { background: #facc15; color: #fff; }
-.todo-btn { background: #fff; color: #3b82f6; border: 2rpx solid #3b82f6 !important; }
 
 /* 监控列表 */
 .dorm-monitor-list {

@@ -249,21 +249,33 @@
                 :key="'cur-' + day"
                 class="day-cell"
                 :class="getDayState(day).cls"
-                :style="getDayCellStyle(day)"
                 @tap="onDayTap(day)"
               >
                 <text class="day-num">{{ day }}</text>
-                <!-- 马拉松训练的标识显示在左下角 -->
+                <!-- 晨跑标识：浅绿实心矩形 -->
+                <view
+                  v-if="getDayBadges(day).includes('morning')"
+                  class="morning-day-rect"
+                ></view>
+                <!-- 马拉松标识：右上角橙色圆点 -->
                 <view
                   v-if="getDayBadges(day).includes('marathon')"
-                  class="marathon-ring-badge"
+                  class="day-dot marathon-badge"
                 ></view>
               </view>
             </view>
             <view class="calendar-legend">
               <view class="legend-item">
-                <view class="legend-dot purple-ring"></view>
-                <text class="legend-text">马拉松训练</text>
+                <view class="legend-dot green"></view>
+                <text class="legend-text">自由跑</text>
+              </view>
+              <view class="legend-item">
+                <view class="legend-dot morning-legend"></view>
+                <text class="legend-text">晨跑</text>
+              </view>
+              <view class="legend-item">
+                <view class="legend-dot orange"></view>
+                <text class="legend-text">马拉松</text>
               </view>
             </view>
           </view>
@@ -420,10 +432,12 @@
                 v-for="day in daysInMonth"
                 :key="'cur-' + day"
                 class="day-cell"
-                :style="getDayCellStyleMorning(day)"
+                :class="getDayCellClassMorning(day)"
                 @tap="onDayTapMorning(day)"
               >
                 <text class="day-num">{{ day }}</text>
+                <!-- 晨跑标识：左上角深绿小方块 -->
+                <view v-if="getDayBadges(day).includes('morning')" class="morning-day-rect"></view>
               </view>
             </view>
             <view class="calendar-legend">
@@ -617,7 +631,8 @@
                 @tap="onMarathonDayTap(day)"
               >
                 <text class="day-num">{{ day }}</text>
-                <!-- 马拉松训练标识：紫色圆环 -->
+                <!-- 马拉松训练标识：紫色圆圈 -->
+                <view v-if="getMarathonDayBadges(day).includes('marathon')" class="marathon-ring-badge"></view>
               </view>
             </view>
             
@@ -825,10 +840,10 @@ const pickerDate = computed(() => `${calYear.value}-${String(calMonth.value).pad
 const runRecords = ref({
   '2026-4': {
     1: ['free', 'morning'],
-    2: 'morning',
+    2: ['morning', 'marathon'],
     3: ['free', 'morning', 'marathon'],
     7: 'marathon',
-    8: ['free', 'marathon']
+    8: 'marathon'
   },
   '2026-3': { 
     2: 'morning', 5: 'free', 12: 'free', 18: 'marathon', 25: 'marathon', 28: 'morning' 
@@ -875,19 +890,17 @@ const prevMonthPadding = computed(() => firstDayWeekday.value - 1)
 // ==========================================
 // 状态设计（统一、清晰、可扩展）
 // ==========================================
+// 打卡统一样式：全部用深绿色发光边框，无其他标识
 const DAY_STYLES = {
-  empty:   { cls: 'empty',   bg: '',                        badge: false },
-  future:  { cls: 'future',  bg: '',                        badge: false },
-  today:   { cls: 'today',   bg: '',                        badge: false },
-  morning: { cls: 'morning', bg: 'background-color:#d1fae5;', badge: false }, // 纯浅绿矩形
-  free:    { cls: 'free',    bg: 'background-color:#d1fae5;', badge: false }, // 浅绿+深绿框
-  marathon:{ cls: 'marathon',bg: '',                        badge: true  }, // 无背景+橙点
+  empty:   { cls: 'empty',   bg: '' },
+  future:  { cls: 'future',  bg: '' },
+  today:   { cls: 'today',   bg: '' },
+  checked: { cls: 'checked', bg: '' },
 }
 
-// 多打卡优先级：自由跑 > 晨跑 > 马拉松
+// 任意打卡类型均标记为 checked（深绿发光框）
 const TYPE_PRIORITY = ['free', 'morning', 'marathon']
 
-// 单一状态入口：给定一个或多个打卡类型，返回最优最终状态
 function getDayState(day) {
   const status = getDayStatus(day)
   const future = isFutureDay(day)
@@ -896,19 +909,19 @@ function getDayState(day) {
   if (future) return DAY_STYLES.future
   if (today)  return DAY_STYLES.today
   if (!status) return DAY_STYLES.empty
-  // 有打卡时，背景/边框样式取优先级最高的那个
-  const types = Array.isArray(status) ? status : [status]
-  const top = TYPE_PRIORITY.find(t => types.includes(t)) || 'morning'
-  return DAY_STYLES[top]
+  return DAY_STYLES.checked
 }
 
-// 单元格背景/边框样式（只取最高优先级的背景）
+// 单元格样式：任意打卡类型（free/morning/marathon）都用深绿发光框，今日无光晕
 function getDayCellStyle(day) {
-  const state = getDayState(day)
-  if (state.cls === 'empty') return ''
-  if (state.cls === 'future') return ''
-  if (state.cls === 'today')  return 'border: 4rpx solid #065f46;'
-  return state.bg
+  const badges = getDayBadges(day)
+  const future = isFutureDay(day)
+  const today  = isToday(day)
+
+  if (future) return ''
+  if (today) return 'border: 4rpx solid #065f46; color: #065f46;'
+  if (badges.length > 0) return 'border: 4rpx solid #065f46; color: #065f46; box-shadow: 0 0 16rpx rgba(5, 150, 105, 0.7), 0 0 32rpx rgba(5, 150, 105, 0.4);'
+  return ''
 }
 
 // 返回当天打卡类型数组（用于渲染多个徽章）
@@ -955,11 +968,8 @@ function onDayTap(day) {
     return
   }
   const state = getDayState(day)
-  if (state !== DAY_STYLES.empty && state !== DAY_STYLES.future && state !== DAY_STYLES.today) {
-    const typeText = { morning: '晨跑', free: '自由跑', marathon: '马拉松训练' }
-    const types = Array.isArray(getDayStatus(day)) ? getDayStatus(day) : [getDayStatus(day)]
-    const label = types.map(t => typeText[t]).join('、') || '打卡'
-    uni.showToast({ title: `已完成${label}`, icon: 'none' })
+  if (state.cls === 'checked') {
+    uni.showToast({ title: '已完成打卡', icon: 'none' })
   }
 }
 
@@ -996,20 +1006,15 @@ function getDayCellStyleMorning(day) {
   return ''
 }
 
-// 马拉松日历格子样式
-function getDayCellStyleMarathon(day) {
+// 晨跑计划日历格子 class
+function getDayCellClassMorning(day) {
   const status = getDayStatus(day)
   const future = isFutureDay(day)
   const today = isToday(day)
-  if (future || status == null) return ''
-  const types = Array.isArray(status) ? status : [status]
-  if (types.includes('marathon')) {
-    return 'background-color: #ede9fe; border: 2rpx solid #c4b5fd; color: #7c3aed;'
-  }
-  if (types.includes('free')) {
-    return 'background-color: #ede9fe; border: 2rpx solid #c4b5fd; color: #7c3aed;'
-  }
-  if (today) return 'background-color: #f97316; color: #fff; border: none;'
+  if (future) return 'future'
+  if (today) return 'today-morning'
+  const types = Array.isArray(status) ? status : (status ? [status] : [])
+  if (types.includes('morning')) return 'morning-day-cell'
   return ''
 }
 
@@ -1200,6 +1205,13 @@ function getMarathonDayState(day) {
   if (types.includes('marathon')) return MARATHON_DAY_STYLES.marathon
   
   return MARATHON_DAY_STYLES.empty
+}
+
+function getMarathonDayBadges(day) {
+  const status = getMarathonDayStatus(day)
+  if (!status) return []
+  const types = Array.isArray(status) ? status : [status]
+  return types
 }
 
 function getMarathonDayCellStyle(day) {
@@ -1956,6 +1968,7 @@ onMounted(() => {
   position: relative;
   font-weight: 700;
   transition: transform 0.15s ease;
+  overflow: hidden;
 }
 
 .day-cell:active {
@@ -1966,6 +1979,8 @@ onMounted(() => {
   font-size: 24rpx;
   color: inherit;
   line-height: 1;
+  position: relative;
+  z-index: 1;
 }
 
 .day-cell.empty {
@@ -1976,32 +1991,62 @@ onMounted(() => {
   color: #e5e7eb;
 }
 
-/* 自由跑 - 深绿色矩形边框 + 荧光光晕 */
-.day-cell.free {
+/* 已打卡 - 深绿色发光边框，文字为深绿，无背景 */
+.day-cell.checked {
   background-color: transparent;
   color: #065f46;
   border: 4rpx solid #065f46;
   box-shadow: 0 0 16rpx rgba(5, 150, 105, 0.7), 0 0 32rpx rgba(5, 150, 105, 0.4);
 }
 
-/* 晨跑 - 浅绿色全矩形 */
-.day-cell.morning {
-  background-color: #d1fae5;
-  color: #059669;
-  box-shadow: 0 4rpx 12rpx rgba(16, 185, 129, 0.15);
-}
-
-/* 马拉松 - 右上角橙色点，无背景 */
-.day-cell.marathon {
-  box-shadow: none;
-  position: relative;
-}
-
+/* 今日 - 深绿边框，无光晕 */
+/* 今日 - 深绿边框，带荧光光晕 */
 .day-cell.today {
   background-color: transparent;
   color: #065f46;
   border: 4rpx solid #065f46;
   box-shadow: 0 0 16rpx rgba(5, 150, 105, 0.7), 0 0 32rpx rgba(5, 150, 105, 0.4);
+}
+
+/* 校园跑打卡标识：左下角荧光绿小圆点 */
+.green-check-dot {
+  width: 12rpx;
+  height: 12rpx;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 8rpx rgba(16, 185, 129, 0.8), 0 0 16rpx rgba(16, 185, 129, 0.5);
+  position: absolute;
+  bottom: 8rpx;
+  left: 8rpx;
+}
+
+/* 晨跑标识：浅绿实心矩形，填满整个格子（含边框） */  
+.morning-day-rect {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #d1fae5;
+  border-radius: 16rpx;
+  z-index: 0;
+}
+
+/* 晨跑tab格子背景样式 */
+.day-cell.morning-day-cell {
+  background-color: #dcfce7;
+  border: 2rpx solid #86efac;
+}
+.day-cell.morning-day-cell .day-num {
+  color: #16a34a;
+  font-weight: bold;
+}
+.day-cell.today-morning {
+  background-color: #f97316;
+  border: none;
+}
+.day-cell.today-morning .day-num {
+  color: #fff;
 }
 
 .day-dot {
@@ -2069,32 +2114,25 @@ onMounted(() => {
   flex-shrink: 0;
 }
 
-/* 自由跑 - 深绿边框 + 荧光光晕 */
+/* 自由跑/已打卡 - 深绿发光边框 */
 .legend-dot.green {
   background-color: transparent;
   border: 3rpx solid #065f46;
-  box-shadow: 0 0 16rpx rgba(5, 150, 105, 0.7), 0 0 32rpx rgba(5, 150, 105, 0.4);
+  border-radius: 6rpx;
+  box-shadow: 0 0 12rpx rgba(5, 150, 105, 0.7), 0 0 24rpx rgba(5, 150, 105, 0.4);
 }
 
-/* 晨跑 - 浅绿全矩形 */
-.legend-dot.dark-green {
-  background-color: #d1fae5;
-  border: none;
+.legend-dot.morning-legend {
+  background: #D0F9E4;
+  border: 2rpx solid #D0F9E4;
+  border-radius: 4rpx;
 }
 
-/* 马拉松-橙色圆点（保留备用） */
 .legend-dot.orange {
   background-color: #f97316;
   border-radius: 50%;
-  border: 2rpx solid rgba(255,255,255,0.6);
-  box-shadow: 0 2rpx 6rpx rgba(249, 115, 22, 0.40);
-}
-
-/* 马拉松训练-紫色实心圆 */
-.legend-dot.purple-ring {
-  background-color: #a855f7;
-  border-radius: 50%;
-  box-shadow: 0 2rpx 6rpx rgba(168, 85, 247, 0.40);
+  width: 16rpx;
+  height: 16rpx;
 }
 
 .legend-dot.future {
@@ -2997,28 +3035,7 @@ onMounted(() => {
   font-weight: bold;
 }
 
-/* 马拉松打卡标志：紫色矩形 */
-.marathon-day-dot {
-  width: 24rpx;
-  height: 8rpx;
-  border-radius: 4rpx;
-  background: #a855f7;
-  border: 2rpx solid #c084fc;
-  position: absolute;
-  bottom: 8rpx;
-}
 
-/* 马拉松训练标识：紫色实心圆圈 */
-.marathon-ring-badge {
-  width: 28rpx;
-  height: 28rpx;
-  border-radius: 50%;
-  background: #a855f7;
-  position: absolute;
-  bottom: 6rpx;
-  left: 6rpx;
-  box-shadow: 0 2rpx 6rpx rgba(168, 85, 247, 0.40);
-}
 
 /* 图例 */
 .marathon-calendar-legend {
@@ -3315,7 +3332,21 @@ onMounted(() => {
   font-size: 18rpx;
   color: #9ca3af;
 }
+.legend-item {
+  display: flex;
+  align-items: center;
+}
 
+.legend-dot {
+  width: 16rpx;
+  height: 16rpx;
+  border-radius: 4rpx; /* 圆角方块，如果想圆点改50% */
+  margin-right: 10rpx;
+}
+
+.dark-green {
+  background-color:#DCFCE7; /* 和日历一致的绿色 */
+}
 .campus-chart-area {
   height: 160rpx;
   position: relative;

@@ -5,41 +5,20 @@
       <view class="sport-back-btn" @tap="goBack">
         <text class="iconfont icon-chevron-left"></text>
       </view>
+      <text class="lc-logo">饮食<text class="lc-logo-accent">低碳</text></text>
+      <text class="lc-date-orange-tag">今日已打卡 2 次</text>
     </view>
 
     <view class="page-content">
-      <!-- 连续打卡卡片 -->
-      <view class="diet-streak-card">
-        <view class="streak-content">
-          <text class="streak-label">连续光盘打卡</text>
-          <text class="streak-days">12 天</text>
-          <text class="streak-reward">光盘打卡奖励积分：+50</text>
-        </view>
-        <view class="streak-icon">
-          <text class="iconfont icon-plate"></text>
-        </view>
-      </view>
-
-      <!-- 食堂定位（放大 + 地图） -->
-      <view class="diet-map-card">
-        <map
-          class="diet-map"
-          :latitude="26.4509"
-          :longitude="106.6579"
-          :markers="canteenMarkers"
-          scale="16"
-          :show-location="true"
-        ></map>
-        <view class="diet-map-overlay">
-          <view class="diet-map-pin">
-            <text class="iconfont icon-location pin-icon"></text>
+      <!-- 饮食低碳卡片（与其他页面一致） -->
+      <view class="lc-asset-card diet-asset">
+        <view class="asset-inner">
+          <view class="asset-left">
+            <text class="asset-label">饮食低碳等级</text>
+            <text class="asset-value">LV.3</text>
           </view>
-          <view class="diet-map-info">
-            <text class="diet-map-name">第一学生食堂</text>
-            <text class="diet-map-hint">请确保您在食堂范围内打卡</text>
-          </view>
-          <button class="diet-map-btn">一键签到</button>
         </view>
+        <view class="diet-rank-tag">连续光盘 12 天 · 累计减碳 4.2kg</view>
       </view>
 
       <!-- 饮食打卡 -->
@@ -56,10 +35,10 @@
               </view>
               <view class="diet-info">
                 <text class="diet-name">光盘行动</text>
-                <text class="diet-desc">AI拍照识别识别空盘情况</text>
+                <text class="diet-desc">AI拍照识别空盘情况</text>
               </view>
             </view>
-            <button class="diet-btn">AI拍摄</button>
+            <view class="action-btn-orange">打卡</view>
           </view>
           <!-- 低碳素食 -->
           <view class="diet-item">
@@ -72,7 +51,7 @@
                 <text class="diet-desc">选择全素餐/本地时令餐</text>
               </view>
             </view>
-            <view class="diet-check"></view>
+            <view class="action-btn-orange">打卡</view>
           </view>
           <!-- 减外卖减塑 -->
           <view class="diet-item">
@@ -85,9 +64,7 @@
                 <text class="diet-desc">今日未点外卖、拒绝一次性餐盒</text>
               </view>
             </view>
-            <view class="diet-check-done">
-              <text class="iconfont icon-check"></text>
-            </view>
+            <view class="action-btn-green">打卡</view>
           </view>
           <!-- 自带餐具 -->
           <view class="diet-item">
@@ -100,7 +77,7 @@
                 <text class="diet-desc">自带碗筷及杯子用餐打卡</text>
               </view>
             </view>
-            <button class="diet-btn-gray">已领</button>
+            <view class="action-btn-orange">打卡</view>
           </view>
           <!-- 节水惜食 -->
           <view class="diet-item">
@@ -113,25 +90,24 @@
                 <text class="diet-desc">节约用水、无浪费零食打卡</text>
               </view>
             </view>
-            <button class="diet-btn-blue">记录</button>
+            <view class="action-btn-blue">打卡</view>
           </view>
         </view>
 
-        <!-- 连续光盘打卡（每日小任务样式） -->
-        <view class="diet-chain-task">
-          <view class="chain-left">
-            <text class="iconfont icon-meal chain-icon"></text>
-            <view class="chain-info">
-              <text class="chain-title">连续光盘打卡</text>
-              <view class="chain-progress">
-                <view class="chain-bar">
-                  <view class="chain-fill" style="width: 75%"></view>
-                </view>
-                <text class="chain-days">12 / 30 天</text>
+        <!-- 连续光盘打卡（与其他卡片风格一致） -->
+        <view class="diet-streak-card">
+          <view class="streak-inner">
+            <view class="streak-left">
+              <text class="streak-label">连续光盘打卡</text>
+              <text class="streak-value">12 天</text>
+              <view class="streak-badge">
+                <text class="streak-badge-text">连续打卡奖励积分：+50</text>
               </view>
             </view>
+            <view class="streak-icon-bg">
+              <text class="iconfont icon-bowl"></text>
+            </view>
           </view>
-          <view class="chain-badge">进行中</view>
         </view>
       </view>
     </view>
@@ -282,7 +258,7 @@ const canteenMarkers = [{
   overflow: hidden;
   box-shadow: 0 8rpx 24rpx rgba(0,0,0,0.1);
   margin-bottom: 24rpx;
-}*/
+}
 
 .diet-asset { background: linear-gradient(135deg, #f97316 0%, #fb923c 100%); }
 
@@ -291,7 +267,7 @@ const canteenMarkers = [{
   z-index: 1;
 }
 
-.asset-left { display: flex; flex-direction: column; }
+.asset-left { display: flex; flex-direction: column; gap: 8rpx; }
 
 .asset-label {
   font-size: 20rpx;
@@ -305,6 +281,14 @@ const canteenMarkers = [{
   line-height: 1;
 }
 
+.asset-value-sm {
+  font-size: 60rpx;
+  font-weight: 900;
+  margin-top: 4rpx;
+  line-height: 1;
+  color: #fff;
+}
+
 .diet-reward-tag {
   display: inline-block;
   margin-top: 16rpx;
@@ -312,6 +296,75 @@ const canteenMarkers = [{
   padding: 6rpx 16rpx;
   border-radius: 16rpx;
   font-size: 20rpx;
+  color: #fff;
+}
+
+/* 碳资产卡片（激活） */
+.lc-asset-card {
+  border-radius: 32rpx;
+  padding: 40rpx;
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 8rpx 24rpx rgba(0,0,0,0.1);
+  margin-bottom: 24rpx;
+  margin-top: 24rpx;
+  min-height: 160rpx;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.diet-asset { background: linear-gradient(135deg, #f97316 0%, #fb923c 100%); }
+
+.diet-rank-tag {
+  display: inline-block;
+  margin-top: 24rpx;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 6rpx 16rpx;
+  border-radius: 16rpx;
+  font-size: 20rpx;
+  position: relative;
+  z-index: 1;
+  align-self: flex-start;
+}
+
+.asset-inner {
+  position: relative;
+  z-index: 1;
+}
+
+.asset-left { display: flex; flex-direction: column; gap: 8rpx; }
+
+.asset-label {
+  font-size: 20rpx;
+  opacity: 0.7;
+}
+
+.asset-value {
+  font-size: 60rpx;
+  font-weight: 900;
+  margin-top: 4rpx;
+  line-height: 1;
+}
+
+.asset-value-sm {
+  font-size: 60rpx;
+  font-weight: 900;
+  margin-top: 4rpx;
+  line-height: 1;
+  color: #fff;
+}
+
+.diet-reward-tag {
+  display: inline-block;
+  margin-top: 16rpx;
+  background: rgba(255,255,255,0.2);
+  padding: 6rpx 16rpx;
+  border-radius: 16rpx;
+  font-size: 20rpx;
+  color: #fff;
 }
 
 /* 食堂核验 */
@@ -456,6 +509,60 @@ const canteenMarkers = [{
   flex-shrink: 0;
 }
 
+.diet-btn-green {
+  background: #10b981;
+  color: #fff;
+  font-size: 20rpx;
+  font-weight: bold;
+  padding: 12rpx 24rpx;
+  border-radius: 16rpx;
+  border: none;
+  flex-shrink: 0;
+  box-shadow: 0 4rpx 12rpx rgba(16, 185, 129, 0.3);
+}
+
+.action-btn-orange {
+  background: #f97316;
+  color: #fff;
+  font-size: 20rpx;
+  font-weight: bold;
+  padding: 12rpx 24rpx;
+  border-radius: 16rpx;
+  border: none;
+  flex-shrink: 0;
+  box-shadow: 0 4rpx 12rpx rgba(249, 115, 22, 0.3);
+  display: inline-block;
+  text-align: center;
+}
+
+.action-btn-green {
+  background: #10b981;
+  color: #fff;
+  font-size: 20rpx;
+  font-weight: bold;
+  padding: 12rpx 24rpx;
+  border-radius: 16rpx;
+  border: none;
+  flex-shrink: 0;
+  box-shadow: 0 4rpx 12rpx rgba(16, 185, 129, 0.3);
+  display: inline-block;
+  text-align: center;
+}
+
+.action-btn-blue {
+  background: #3b82f6;
+  color: #fff;
+  font-size: 20rpx;
+  font-weight: bold;
+  padding: 12rpx 24rpx;
+  border-radius: 16rpx;
+  border: none;
+  flex-shrink: 0;
+  box-shadow: 0 4rpx 12rpx rgba(59, 130, 246, 0.3);
+  display: inline-block;
+  text-align: center;
+}
+
 .diet-check {
   width: 48rpx;
   height: 48rpx;
@@ -536,48 +643,66 @@ const canteenMarkers = [{
 }
 
 
-/* 连续打卡卡片 */
+/* 连续打卡卡片（与 action.vue Diet Tab 一致） */
 .diet-streak-card {
   background: linear-gradient(135deg, #f97316 0%, #fb923c 100%);
-  border-radius: 24rpx;
-  padding: 32rpx;
-  margin-bottom: 24rpx;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  border-radius: 32rpx;
+  padding: 40rpx;
   color: #fff;
+  position: relative;
+  overflow: hidden;
   box-shadow: 0 8rpx 24rpx rgba(249, 115, 22, 0.3);
+  margin: 0 0 24rpx;
 }
 
-.streak-content {
-  flex: 1;
+.streak-inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.streak-left {
+  display: flex;
+  flex-direction: column;
 }
 
 .streak-label {
-  display: block;
   font-size: 20rpx;
-  opacity: 0.9;
-  margin-bottom: 8rpx;
+  opacity: 0.8;
 }
 
-.streak-days {
-  display: block;
-  font-size: 56rpx;
+.streak-value {
+  font-size: 60rpx;
   font-weight: 900;
-  margin-bottom: 8rpx;
+  margin-top: 4rpx;
   line-height: 1;
 }
 
-.streak-reward {
-  display: block;
-  font-size: 20rpx;
-  opacity: 0.85;
+.streak-badge {
+  display: inline-block;
+  margin-top: 16rpx;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 8rpx 16rpx;
+  border-radius: 16rpx;
+  font-size: 18rpx;
+  color: #fff;
 }
 
-.streak-icon {
-  font-size: 80rpx;
+.streak-badge-text {
+  font-weight: 600;
+}
+
+.streak-icon-bg {
   opacity: 0.2;
-  flex-shrink: 0;
-  margin-left: 16rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.streak-icon-bg .iconfont {
+  font-size: 56rpx;
+  color: #fff;
 }
 </style>

@@ -74,7 +74,7 @@
           <text class="menu-icon">📝</text>
           <text class="menu-label">我的动态</text>
         </view>
-        <view class="menu-item direct-item" @click="navigateTo('/pages/low-carbon-circle/low-carbon-circle')">
+        <view class="menu-item direct-item" @click="navigateTo('/pages/low-carbon/low-carbon-circle')">
           <text class="menu-icon">🌿</text>
           <text class="menu-label">低碳圈</text>
         </view>

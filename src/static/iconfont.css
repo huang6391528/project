@@ -55,6 +55,14 @@
 .icon-fire:before { content: "🔥"; }
 /* 勾选图标 */
 .icon-check-circle:before { content: "✅"; }
+/* 简短勾选图标 - 覆盖 iconfont */
+.icon-check {
+  font-family: sans-serif !important;
+}
+.icon-check:before {
+  content: "✓" !important;
+  font-family: sans-serif !important;
+}
 /* 灯泡图标 */
 .icon-lightbulb:before { content: "💡"; }
 /* 天气图标 */

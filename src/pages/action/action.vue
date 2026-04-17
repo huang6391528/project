@@ -352,7 +352,9 @@
                   <text class="diet-desc">选择全素餐/本地时令餐</text>
                 </view>
               </view>
-              <view class="diet-check"></view>
+              <view class="diet-check-done">
+                <text class="check-mark">✓</text>
+              </view>
             </view>
             <view class="diet-item">
               <view class="diet-left">
@@ -365,7 +367,7 @@
                 </view>
               </view>
               <view class="diet-check-done">
-                <text class="iconfont icon-check"></text>
+                <text class="check-mark">✓</text>
               </view>
             </view>
             <view class="diet-item">
@@ -523,25 +525,18 @@
               <text class="iconfont icon-lightbulb dorm-quick-icon yellow"></text>
               <text class="dorm-quick-name">节约用电</text>
               <text class="dorm-quick-desc">做到随手关灯</text>
-              <button class="dorm-quick-btn done-btn">打卡成功</button>
+              <button class="dorm-quick-btn">打卡</button>
             </view>
             <view class="dorm-quick-card">
               <text class="iconfont icon-water dorm-quick-icon blue"></text>
               <text class="dorm-quick-name">节约用水</text>
               <text class="dorm-quick-desc">缩短淋浴时间</text>
-              <button class="dorm-quick-btn outline-btn">去打卡</button>
+              <button class="dorm-quick-btn">打卡</button>
             </view>
           </view>
 
           <!-- 3. 监控列表 -->
           <view class="dorm-monitor-list">
-            <view class="dorm-monitor-item">
-              <view class="dorm-monitor-left">
-                <text class="iconfont icon-ac dorm-monitor-icon emerald"></text>
-                <text class="dorm-monitor-name">空调温控 (当前 26℃)</text>
-              </view>
-              <text class="iconfont icon-check-circle dorm-monitor-check emerald"></text>
-            </view>
             <view class="dorm-monitor-item">
               <view class="dorm-monitor-left">
                 <text class="iconfont icon-night dorm-monitor-icon indigo"></text>
@@ -1438,6 +1433,12 @@ const canteenMarkers = [{
   color: #fff;
 }
 
+.check-mark {
+  font-size: 28rpx;
+  color: #fff;
+  font-weight: bold;
+}
+
 /* Travel Styles */
 .lc-asset-card {
   border-radius: 32rpx;
@@ -2105,10 +2106,7 @@ const canteenMarkers = [{
 .dorm-quick-btn {
   width: 100%; padding: 12rpx; border-radius: 16rpx;
   font-size: 18rpx; font-weight: 700; margin-top: 8rpx;
-}
-.dorm-quick-btn.done-btn { background: #fbbf24; color: #fff; border: none; }
-.dorm-quick-btn.outline-btn {
-  background: transparent; color: #60a5fa; border: 2rpx solid #60a5fa;
+  background: #fbbf24; color: #fff; border: none;
 }
 
 .dorm-monitor-list {
