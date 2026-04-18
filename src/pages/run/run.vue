@@ -601,9 +601,9 @@
         </view>
       </view>
 
-      <!-- 双列布局：日历 + 档案 -->
+      <!-- 上下布局：日历 + 档案 -->
       <view class="content-wrapper">
-        <view class="two-column">
+        <view class="morning-column">
           <view class="section-card calendar-card">
             <view class="card-header">
               <text class="card-title">训练轨迹</text>
