@@ -8,7 +8,7 @@
       <!-- 用户资料区 -->
       <view class="sidebar-profile">
         <view class="sidebar-profile-main">
-          <image class="sidebar-avatar" src="/static/tabbar/profile.jpg" mode="aspectFill"></image>
+          <image class="sidebar-avatar" src="@/static/tabbar/profile_photo.jpg" mode="aspectFill"></image>
           <view class="sidebar-profile-info">
             <text class="sidebar-name">陈同学</text>
             <text class="sidebar-meta">经济学院</text>
@@ -119,10 +119,10 @@
     <!-- 个人卡片 -->
     <view class="personal-card">
       <view class="user-info">
-        <image class="avatar" src="/static/tabbar/profile.jpg" mode="aspectFill"></image>
+        <image class="avatar" src="@/static/tabbar/profile_photo.jpg" mode="aspectFill"></image>
         <view class="user-detail">
           <text class="user-name">陈同学</text>
-          <text class="user-school">复旦大学 · 经济学院</text>
+          <text class="user-school">贵州大学 · 经济学院</text>
           <view class="carbon-points">
             <text class="carbon-points-num">2,480</text>
             <text class="carbon-points-unit">碳积分</text>

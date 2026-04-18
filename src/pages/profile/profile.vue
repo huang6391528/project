@@ -9,7 +9,7 @@
       <view class="profile-main">
         <!-- 左侧：头像 -->
         <view class="avatar-wrapper">
-          <image class="avatar" src="/static/tabbar/profile.jpg" mode="aspectFill"></image>
+          <image class="avatar" src="@/static/tabbar/profile_photo.jpg" mode="aspectFill"></image>
           <view class="avatar-badge">
             <text class="iconfont icon-star"></text>
           </view>
@@ -18,7 +18,7 @@
         <!-- 中间：姓名 + 学校 + 标签 -->
         <view class="profile-detail">
           <text class="profile-name">陈同学</text>
-          <text class="profile-school">复旦大学 · 经济学院</text>
+          <text class="profile-school">贵州大学 · 经济学院</text>
           <view class="profile-badge">
             <text class="badge-text">环保大使</text>
           </view>
