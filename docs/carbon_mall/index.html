@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>碳积分商城 - 限时抢购</title>
+<script src="https://modao.cc/agent-py/static/source/js/tailwindcss.3.4.3.js"></script>
+<script src="https://modao.cc/agent-py/static/source/js/iconify-icon.min.1.0.7.js"></script>
+<style>
+        ::-webkit-scrollbar { display: none; }
+        .safe-area-bottom { padding-bottom: env(safe-area-inset-bottom); }
+        @keyframes pulse-soft {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        .animate-pulse-soft { animation: pulse-soft 2s infinite; }
+    </style>
+</head>
+<body class="bg-gray-50 flex justify-center items-center min-h-screen">
+<!-- APP Container -->
+<div class="w-[375px] h-[812px] bg-white rounded-[40px] shadow-2xl overflow-hidden border-[8px] border-gray-900 relative flex flex-col">
+<!-- Status Bar -->
+<div class="px-8 pt-4 pb-2 flex justify-between items-center text-xs font-bold">
+<span>09:41</span>
+<div class="flex gap-1">
+<iconify-icon icon="mdi:signal" width="14"></iconify-icon>
+<iconify-icon icon="mdi:wifi" width="14"></iconify-icon>
+<iconify-icon icon="mdi:battery" width="14"></iconify-icon>
+</div>
+</div>
+<!-- Header: Carbon Credits (Fixed) -->
+<div class="px-5 py-3 flex justify-between items-center bg-white z-10">
+<div class="flex items-center gap-2 bg-emerald-50 px-4 py-2 rounded-full border border-emerald-100">
+<iconify-icon class="text-emerald-500" icon="mdi:leaf" width="20"></iconify-icon>
+<span class="text-emerald-700 font-bold">1,280</span>
+<span class="text-[10px] text-emerald-600 bg-emerald-100 px-1 rounded">可用积分</span>
+</div>
+<a class="text-gray-400 text-sm flex items-center gap-1" href="#">
+                积分规则 <iconify-icon icon="mdi:chevron-right"></iconify-icon>
+</a>
+</div>
+<!-- Scrollable Content -->
+<div class="flex-1 overflow-y-auto pb-24">
+<!-- Hero Banner -->
+<div class="px-5 mt-2">
+<div class="relative h-32 rounded-2xl overflow-hidden">
+<img alt="Flash Sale Banner" class="w-full h-full object-cover" src="https://modao.cc/agent-py/media/generated_images/2026-04-18/766b6334841a449091c89d0075c2fd6e.jpg"/>
+<div class="absolute inset-0 bg-gradient-to-r from-black/50 to-transparent p-4 flex flex-col justify-center">
+<span class="text-white text-xs font-medium opacity-80">2026年4月特别企划</span>
+<h2 class="text-white text-xl font-bold">春季环保兑换季</h2>
+</div>
+</div>
+</div>
+<!-- Countdown Module -->
+<div class="px-5 mt-6">
+<div class="bg-orange-50 border border-orange-100 rounded-xl p-4 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<iconify-icon class="text-orange-500" icon="mdi:clock-fast" width="24"></iconify-icon>
+<span class="font-bold text-orange-900">限时秒杀</span>
+</div>
+<div class="flex items-center gap-1">
+<span class="text-xs text-orange-700 mr-1">距结束</span>
+<div class="bg-orange-500 text-white text-xs font-mono px-1.5 py-1 rounded">02</div>
+<span class="text-orange-500 font-bold">:</span>
+<div class="bg-orange-500 text-white text-xs font-mono px-1.5 py-1 rounded">45</div>
+<span class="text-orange-500 font-bold">:</span>
+<div class="bg-orange-500 text-white text-xs font-mono px-1.5 py-1 rounded">18</div>
+</div>
+</div>
+</div>
+<!-- Horizontal Sliding Products -->
+<div class="mt-6">
+<div class="px-5 mb-3 flex justify-between items-center">
+<h3 class="font-bold text-gray-800">火爆抢购中</h3>
+<span class="text-xs text-gray-400">滑动查看更多</span>
+</div>
+<div class="flex overflow-x-auto gap-4 px-5 pb-4">
+<!-- Item 1 -->
+<div class="min-w-[160px] bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+<div class="relative h-28 bg-gray-50">
+<img alt="Canteen Voucher" class="w-full h-full object-cover" src="https://modao.cc/agent-py/media/generated_images/2026-04-18/2c76498322c947e29dc317cf8418ccfc.jpg"/>
+<span class="absolute top-2 left-2 bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded-full">限量50份</span>
+</div>
+<div class="p-3">
+<h4 class="text-sm font-bold text-gray-800 truncate">食堂5元全场抵用券</h4>
+<div class="mt-2 flex items-center justify-between">
+<div class="flex items-center gap-0.5 text-emerald-600 font-bold">
+<span class="text-lg">100</span>
+<span class="text-[10px] mt-1">积分</span>
+</div>
+<button class="bg-emerald-500 text-white text-xs px-3 py-1.5 rounded-lg font-medium" onclick="openModal('食堂5元全场抵用券', 100)">抢兑</button>
+</div>
+</div>
+</div>
+<!-- Item 2 -->
+<div class="min-w-[160px] bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+<div class="relative h-28 bg-gray-50">
+<img alt="Coffee Voucher" class="w-full h-full object-cover" src="https://modao.cc/agent-py/media/generated_images/2026-04-18/a5f990fdc25e4ace92bfa20845beefff.jpg"/>
+<span class="absolute top-2 left-2 bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded-full">限量100份</span>
+</div>
+<div class="p-3">
+<h4 class="text-sm font-bold text-gray-800 truncate">图书馆咖啡屋单品券</h4>
+<div class="mt-2 flex items-center justify-between">
+<div class="flex items-center gap-0.5 text-emerald-600 font-bold">
+<span class="text-lg">250</span>
+<span class="text-[10px] mt-1">积分</span>
+</div>
+<button class="bg-emerald-500 text-white text-xs px-3 py-1.5 rounded-lg font-medium" onclick="openModal('图书馆咖啡屋单品券', 250)">抢兑</button>
+</div>
+</div>
+</div>
+<!-- Item 3 -->
+<div class="min-w-[160px] bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+<div class="relative h-28 bg-gray-50">
+<img alt="Network Voucher" class="w-full h-full object-cover" src="https://modao.cc/agent-py/media/generated_images/2026-04-18/4175e7c4bb0b466ab29dd7d348118202.jpg"/>
+<span class="absolute top-2 left-2 bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded-full">限量30份</span>
+</div>
+<div class="p-3">
+<h4 class="text-sm font-bold text-gray-800 truncate">校园网畅快包月卡</h4>
+<div class="mt-2 flex items-center justify-between">
+<div class="flex items-center gap-0.5 text-emerald-600 font-bold">
+<span class="text-lg">500</span>
+<span class="text-[10px] mt-1">积分</span>
+</div>
+<button class="bg-emerald-500 text-white text-xs px-3 py-1.5 rounded-lg font-medium" onclick="openModal('校园网畅快包月卡', 500)">抢兑</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Recommended List -->
+<div class="px-5 mt-4">
+<h3 class="font-bold text-gray-800 mb-3">为你推荐</h3>
+<div class="space-y-3">
+<div class="flex items-center gap-3 bg-gray-50 p-3 rounded-xl border border-gray-100">
+<img class="w-16 h-16 rounded-lg object-cover" src="/agent-py/static/source/images/placeholder.svg"/>
+<div class="flex-1">
+<h4 class="text-sm font-bold">校内超市3元代金券</h4>
+<p class="text-[10px] text-gray-400 mt-1">有效期至 2026-05-30</p>
+<div class="flex justify-between items-center mt-2">
+<span class="text-emerald-600 font-bold text-sm">60 积分</span>
+<button class="bg-white border border-emerald-500 text-emerald-500 text-[10px] px-2 py-1 rounded" onclick="openModal('校内超市3元代金券', 60)">立即兑换</button>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-3 bg-gray-50 p-3 rounded-xl border border-gray-100">
+<img class="w-16 h-16 rounded-lg object-cover" src="/agent-py/static/source/images/placeholder.svg"/>
+<div class="flex-1">
+<h4 class="text-sm font-bold">体育馆羽毛球场租抵扣</h4>
+<p class="text-[10px] text-gray-400 mt-1">全时段通用，仅限本周</p>
+<div class="flex justify-between items-center mt-2">
+<span class="text-emerald-600 font-bold text-sm">300 积分</span>
+<button class="bg-white border border-emerald-500 text-emerald-500 text-[10px] px-2 py-1 rounded" onclick="openModal('体育馆羽毛球场租抵扣', 300)">立即兑换</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Confirm Modal -->
+<div class="hidden absolute inset-0 bg-black/60 z-50 flex items-center justify-center p-8" id="confirmModal">
+<div class="bg-white rounded-3xl w-full p-6 text-center shadow-2xl scale-in">
+<div class="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
+<iconify-icon class="text-emerald-500" icon="mdi:leaf" width="32"></iconify-icon>
+</div>
+<h3 class="font-bold text-gray-800 text-lg">兑换确认</h3>
+<p class="text-gray-500 text-sm mt-2">您将使用 <span class="text-emerald-600 font-bold" id="modalCredits">0</span> 积分兑换</p>
+<p class="text-gray-900 font-medium mt-1" id="modalItemName">商品名称</p>
+<div class="flex gap-3 mt-6">
+<button class="flex-1 py-3 bg-gray-100 text-gray-600 rounded-xl font-bold text-sm" onclick="closeModal()">我再想想</button>
+<button class="flex-1 py-3 bg-emerald-500 text-white rounded-xl font-bold text-sm" onclick="closeModal()">确认兑换</button>
+</div>
+</div>
+</div>
+<!-- Navigation Tab Bar -->
+<div class="absolute bottom-0 left-0 right-0 bg-white/80 backdrop-blur-md border-t border-gray-100 px-6 py-3 safe-area-bottom flex justify-between">
+<a class="flex flex-col items-center gap-1 text-emerald-500" href="index.html">
+<iconify-icon icon="mdi:flash" width="24"></iconify-icon>
+<span class="text-[10px] font-bold">限时抢购</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-gray-400" href="virtual.html">
+<iconify-icon icon="mdi:card-account-details-star" width="24"></iconify-icon>
+<span class="text-[10px]">虚拟权益</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-gray-400" href="campus.html">
+<iconify-icon icon="mdi:school" width="24"></iconify-icon>
+<span class="text-[10px]">校园服务</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-gray-400" href="goods.html">
+<iconify-icon icon="mdi:shopping" width="24"></iconify-icon>
+<span class="text-[10px]">环保好物</span>
+</a>
+</div>
+</div>
+<script>
+        function openModal(name, credits) {
+            document.getElementById('modalItemName').innerText = name;
+            document.getElementById('modalCredits').innerText = credits;
+            document.getElementById('confirmModal').classList.remove('hidden');
+        }
+        function closeModal() {
+            document.getElementById('confirmModal').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>

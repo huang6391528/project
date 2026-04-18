@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>碳积分商城 - 环保好物</title>
+<script src="https://modao.cc/agent-py/static/source/js/tailwindcss.3.4.3.js"></script>
+<script src="https://modao.cc/agent-py/static/source/js/iconify-icon.min.1.0.7.js"></script>
+<style>
+        ::-webkit-scrollbar { display: none; }
+        .safe-area-bottom { padding-bottom: env(safe-area-inset-bottom); }
+    </style>
+</head>
+<body class="bg-gray-50 flex justify-center items-center min-h-screen">
+<!-- APP Container -->
+<div class="w-[375px] h-[812px] bg-white rounded-[40px] shadow-2xl overflow-hidden border-[8px] border-gray-900 relative flex flex-col">
+<!-- Status Bar -->
+<div class="px-8 pt-4 pb-2 flex justify-between items-center text-xs font-bold">
+<span>09:41</span>
+<div class="flex gap-1">
+<iconify-icon icon="mdi:signal" width="14"></iconify-icon>
+<iconify-icon icon="mdi:wifi" width="14"></iconify-icon>
+<iconify-icon icon="mdi:battery" width="14"></iconify-icon>
+</div>
+</div>
+<!-- Header: Carbon Credits (Fixed) -->
+<div class="px-5 py-3 flex justify-between items-center bg-white z-10">
+<div class="flex items-center gap-2 bg-emerald-50 px-4 py-2 rounded-full border border-emerald-100">
+<iconify-icon class="text-emerald-500" icon="mdi:leaf" width="20"></iconify-icon>
+<span class="text-emerald-700 font-bold">1,280</span>
+<span class="text-[10px] text-emerald-600 bg-emerald-100 px-1 rounded">可用积分</span>
+</div>
+<a class="text-gray-400 text-sm flex items-center gap-1" href="#">
+                积分规则 <iconify-icon icon="mdi:chevron-right"></iconify-icon>
+</a>
+</div>
+<!-- Scrollable Content -->
+<div class="flex-1 overflow-y-auto pb-24">
+<!-- Hero Banner -->
+<div class="px-5 mt-2">
+<div class="relative h-40 rounded-3xl overflow-hidden shadow-md">
+<img alt="Eco Goods Banner" class="w-full h-full object-cover" src="https://modao.cc/agent-py/media/generated_images/2026-04-18/206c25109e6a4d61ab018c54f765d716.jpg"/>
+<div class="absolute inset-0 bg-emerald-900/40 p-5 flex flex-col justify-end">
+<h2 class="text-white text-xl font-bold">把绿色带回家</h2>
+<p class="text-white/80 text-[10px] mt-1">每一件商品都记录着您的减碳贡献</p>
+</div>
+</div>
+</div>
+<!-- Goods Grid -->
+<div class="px-5 mt-6 grid grid-cols-2 gap-x-4 gap-y-6">
+<!-- Good 1 -->
+<div class="flex flex-col">
+<div class="relative aspect-square bg-gray-100 rounded-2xl overflow-hidden mb-2">
+<img class="w-full h-full object-cover" src="/agent-py/static/source/images/placeholder.svg"/>
+<span class="absolute top-2 right-2 bg-orange-500 text-white text-[8px] font-bold px-1.5 py-0.5 rounded shadow-sm">HOT</span>
+</div>
+<h4 class="text-xs font-bold text-gray-800 line-clamp-1">定制环保帆布包-自然款</h4>
+<p class="text-[9px] text-gray-400 mt-0.5">校内自提 | 100%有机棉</p>
+<div class="mt-2 flex items-center justify-between">
+<span class="text-emerald-600 font-bold text-sm">1800 积分</span>
+<button class="bg-gray-100 text-gray-600 p-1.5 rounded-lg flex items-center justify-center" onclick="openModal('定制环保帆布包-自然款', 1800)">
+<iconify-icon icon="mdi:plus" width="16"></iconify-icon>
+</button>
+</div>
+</div>
+<!-- Good 2 -->
+<div class="flex flex-col">
+<div class="relative aspect-square bg-gray-100 rounded-2xl overflow-hidden mb-2">
+<img class="w-full h-full object-cover" src="/agent-py/static/source/images/placeholder.svg"/>
+<span class="absolute top-2 right-2 bg-emerald-500 text-white text-[8px] font-bold px-1.5 py-0.5 rounded shadow-sm">低碳</span>
+</div>
+<h4 class="text-xs font-bold text-gray-800 line-clamp-1">可降解餐具三件套</h4>
+<p class="text-[9px] text-gray-400 mt-0.5">快递配送 | 麦秆材质</p>
+<div class="mt-2 flex items-center justify-between">
+<span class="text-emerald-600 font-bold text-sm">650 积分</span>
+<button class="bg-gray-100 text-gray-600 p-1.5 rounded-lg flex items-center justify-center" onclick="openModal('可降解餐具三件套', 650)">
+<iconify-icon icon="mdi:plus" width="16"></iconify-icon>
+</button>
+</div>
+</div>
+<!-- Good 3 -->
+<div class="flex flex-col">
+<div class="relative aspect-square bg-gray-100 rounded-2xl overflow-hidden mb-2">
+<img class="w-full h-full object-cover" src="/agent-py/static/source/images/placeholder.svg"/>
+</div>
+<h4 class="text-xs font-bold text-gray-800 line-clamp-1">再生纸A5笔记本</h4>
+<p class="text-[9px] text-gray-400 mt-0.5">校内自提 | 80张/本</p>
+<div class="mt-2 flex items-center justify-between">
+<span class="text-emerald-600 font-bold text-sm">300 积分</span>
+<button class="bg-gray-100 text-gray-600 p-1.5 rounded-lg flex items-center justify-center" onclick="openModal('再生纸A5笔记本', 300)">
+<iconify-icon icon="mdi:plus" width="16"></iconify-icon>
+</button>
+</div>
+</div>
+<!-- Good 4 -->
+<div class="flex flex-col">
+<div class="relative aspect-square bg-gray-100 rounded-2xl overflow-hidden mb-2">
+<img class="w-full h-full object-cover" src="/agent-py/static/source/images/placeholder.svg"/>
+<span class="absolute top-2 right-2 bg-red-500 text-white text-[8px] font-bold px-1.5 py-0.5 rounded shadow-sm">限时折扣</span>
+</div>
+<h4 class="text-xs font-bold text-gray-800 line-clamp-1">竹纤维可折叠水杯</h4>
+<p class="text-[9px] text-gray-400 mt-0.5">快递配送 | 350ml</p>
+<div class="mt-2 flex items-center justify-between">
+<div class="flex flex-col">
+<span class="text-emerald-600 font-bold text-sm">1200 积分</span>
+<span class="text-[8px] text-gray-400 line-through">1500 积分</span>
+</div>
+<button class="bg-gray-100 text-gray-600 p-1.5 rounded-lg flex items-center justify-center" onclick="openModal('竹纤维可折叠水杯', 1200)">
+<iconify-icon icon="mdi:plus" width="16"></iconify-icon>
+</button>
+</div>
+</div>
+</div>
+<!-- Eco Knowledge / Tips -->
+<div class="px-5 mt-10">
+<div class="bg-emerald-50 rounded-2xl p-5 border border-emerald-100">
+<div class="flex items-center gap-2 mb-3">
+<iconify-icon class="text-amber-500" icon="mdi:lightbulb-on" width="20"></iconify-icon>
+<h5 class="text-sm font-bold text-emerald-900">减碳小知识</h5>
+</div>
+<p class="text-[10px] text-emerald-800/80 leading-relaxed">
+                        兑换并使用一件环保帆布包，预计每年可减少使用约 150 个一次性塑料袋。您的每一次积分兑换，都在为地球减负。
+                    </p>
+<div class="mt-4 flex justify-end">
+<span class="text-[9px] font-bold text-emerald-600 flex items-center gap-1">如何获取更多积分？ <iconify-icon icon="mdi:arrow-right" width="10"></iconify-icon></span>
+</div>
+</div>
+</div>
+<div class="h-10"></div>
+</div>
+<!-- Confirm Modal -->
+<div class="hidden absolute inset-0 bg-black/60 z-50 flex items-center justify-center p-8" id="confirmModal">
+<div class="bg-white rounded-3xl w-full p-6 text-center shadow-2xl scale-in">
+<div class="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
+<iconify-icon class="text-emerald-500" icon="mdi:leaf" width="32"></iconify-icon>
+</div>
+<h3 class="font-bold text-gray-800 text-lg">兑换确认</h3>
+<p class="text-gray-500 text-sm mt-2">您将使用 <span class="text-emerald-600 font-bold" id="modalCredits">0</span> 积分兑换</p>
+<p class="text-gray-900 font-medium mt-1" id="modalItemName">商品名称</p>
+<div class="flex gap-3 mt-6">
+<button class="flex-1 py-3 bg-gray-100 text-gray-600 rounded-xl font-bold text-sm" onclick="closeModal()">我再想想</button>
+<button class="flex-1 py-3 bg-emerald-500 text-white rounded-xl font-bold text-sm" onclick="closeModal()">确认兑换</button>
+</div>
+</div>
+</div>
+<!-- Navigation Tab Bar -->
+<div class="absolute bottom-0 left-0 right-0 bg-white/80 backdrop-blur-md border-t border-gray-100 px-6 py-3 safe-area-bottom flex justify-between">
+<a class="flex flex-col items-center gap-1 text-gray-400" href="index.html">
+<iconify-icon icon="mdi:flash" width="24"></iconify-icon>
+<span class="text-[10px]">限时抢购</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-gray-400" href="virtual.html">
+<iconify-icon icon="mdi:card-account-details-star" width="24"></iconify-icon>
+<span class="text-[10px]">虚拟权益</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-gray-400" href="campus.html">
+<iconify-icon icon="mdi:school" width="24"></iconify-icon>
+<span class="text-[10px]">校园服务</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-emerald-500 font-bold" href="goods.html">
+<iconify-icon icon="mdi:shopping" width="24"></iconify-icon>
+<span class="text-[10px]">环保好物</span>
+</a>
+</div>
+</div>
+<script>
+        function openModal(name, credits) {
+            document.getElementById('modalItemName').innerText = name;
+            document.getElementById('modalCredits').innerText = credits;
+            document.getElementById('confirmModal').classList.remove('hidden');
+        }
+        function closeModal() {
+            document.getElementById('confirmModal').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>

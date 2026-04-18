@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>碳积分商城 - 校园服务</title>
+<script src="https://modao.cc/agent-py/static/source/js/tailwindcss.3.4.3.js"></script>
+<script src="https://modao.cc/agent-py/static/source/js/iconify-icon.min.1.0.7.js"></script>
+<style>
+        ::-webkit-scrollbar { display: none; }
+        .safe-area-bottom { padding-bottom: env(safe-area-inset-bottom); }
+    </style>
+</head>
+<body class="bg-gray-50 flex justify-center items-center min-h-screen">
+<!-- APP Container -->
+<div class="w-[375px] h-[812px] bg-white rounded-[40px] shadow-2xl overflow-hidden border-[8px] border-gray-900 relative flex flex-col">
+<!-- Status Bar -->
+<div class="px-8 pt-4 pb-2 flex justify-between items-center text-xs font-bold">
+<span>09:41</span>
+<div class="flex gap-1">
+<iconify-icon icon="mdi:signal" width="14"></iconify-icon>
+<iconify-icon icon="mdi:wifi" width="14"></iconify-icon>
+<iconify-icon icon="mdi:battery" width="14"></iconify-icon>
+</div>
+</div>
+<!-- Header: Carbon Credits (Fixed) -->
+<div class="px-5 py-3 flex justify-between items-center bg-white z-10 border-b border-gray-100">
+<div class="flex items-center gap-2 bg-emerald-50 px-4 py-2 rounded-full border border-emerald-100">
+<iconify-icon class="text-emerald-500" icon="mdi:leaf" width="20"></iconify-icon>
+<span class="text-emerald-700 font-bold">1,280</span>
+<span class="text-[10px] text-emerald-600 bg-emerald-100 px-1 rounded">可用积分</span>
+</div>
+<a class="text-gray-400 text-sm flex items-center gap-1" href="#">
+                积分规则 <iconify-icon icon="mdi:chevron-right"></iconify-icon>
+</a>
+</div>
+<!-- Scrollable Content -->
+<div class="flex-1 overflow-y-auto pb-24">
+<!-- Search / Filter -->
+<div class="px-5 mt-4">
+<div class="bg-gray-100 rounded-xl px-4 py-2.5 flex items-center gap-2">
+<iconify-icon class="text-gray-400" icon="mdi:magnify"></iconify-icon>
+<input class="bg-transparent border-none outline-none text-xs w-full text-gray-600" placeholder="搜索校内特权服务..." type="text"/>
+</div>
+</div>
+<!-- Service Sections -->
+<div class="px-5 mt-6">
+<h3 class="font-bold text-gray-800 mb-4 flex items-center gap-2">
+<iconify-icon class="text-emerald-500" icon="mdi:map-marker-radius"></iconify-icon>
+                    校内专属特权
+                </h3>
+<div class="space-y-4">
+<!-- Service 1 -->
+<div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden flex">
+<div class="w-24 bg-emerald-50 flex items-center justify-center p-4">
+<iconify-icon class="text-emerald-500" icon="mdi:printer-pos" width="40"></iconify-icon>
+</div>
+<div class="flex-1 p-3">
+<h4 class="text-sm font-bold text-gray-800">黑白打印3折券</h4>
+<div class="mt-1 flex items-center gap-1">
+<iconify-icon class="text-gray-400" icon="mdi:map-marker" width="10"></iconify-icon>
+<span class="text-[10px] text-gray-400">校内各大文印室</span>
+</div>
+<div class="mt-3 flex justify-between items-end">
+<div class="text-emerald-600 font-bold text-sm">50 积分</div>
+<button class="bg-emerald-500 text-white text-[10px] px-3 py-1.5 rounded-lg" onclick="openModal('黑白打印3折券', 50)">立即领用</button>
+</div>
+</div>
+</div>
+<!-- Service 2 -->
+<div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden flex">
+<div class="w-24 bg-blue-50 flex items-center justify-center p-4">
+<iconify-icon class="text-blue-500" icon="mdi:chair-school" width="40"></iconify-icon>
+</div>
+<div class="flex-1 p-3">
+<div class="flex justify-between">
+<h4 class="text-sm font-bold text-gray-800">图书馆座次优先权</h4>
+<span class="bg-blue-100 text-blue-600 text-[8px] px-1.5 py-0.5 rounded leading-none flex items-center">需核销</span>
+</div>
+<div class="mt-1 flex items-center gap-1">
+<iconify-icon class="text-gray-400" icon="mdi:information-outline" width="10"></iconify-icon>
+<span class="text-[10px] text-gray-400">考试周专用，限领1次</span>
+</div>
+<div class="mt-3 flex justify-between items-end">
+<div class="text-emerald-600 font-bold text-sm">300 积分</div>
+<button class="bg-emerald-500 text-white text-[10px] px-3 py-1.5 rounded-lg" onclick="openModal('图书馆座次优先权', 300)">立即领用</button>
+</div>
+</div>
+</div>
+<!-- Service 3 -->
+<div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden flex">
+<div class="w-24 bg-orange-50 flex items-center justify-center p-4">
+<iconify-icon class="text-orange-500" icon="mdi:ticket-confirmation" width="40"></iconify-icon>
+</div>
+<div class="flex-1 p-3">
+<h4 class="text-sm font-bold text-gray-800">校园歌手大赛决赛门票</h4>
+<div class="mt-1 flex items-center gap-1">
+<iconify-icon class="text-gray-400" icon="mdi:map-marker" width="10"></iconify-icon>
+<span class="text-[10px] text-gray-400">学校大礼堂</span>
+</div>
+<div class="mt-3 flex justify-between items-end">
+<div class="text-emerald-600 font-bold text-sm">1500 积分</div>
+<button class="bg-emerald-500 text-white text-[10px] px-3 py-1.5 rounded-lg" onclick="openModal('校园歌手大赛决赛门票', 1500)">立即领用</button>
+</div>
+</div>
+</div>
+<!-- Service 4 -->
+<div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden flex">
+<div class="w-24 bg-purple-50 flex items-center justify-center p-4">
+<iconify-icon class="text-purple-500" icon="mdi:dumbbell" width="40"></iconify-icon>
+</div>
+<div class="flex-1 p-3">
+<h4 class="text-sm font-bold text-gray-800">健身房单次体验券</h4>
+<div class="mt-1 flex items-center gap-1">
+<iconify-icon class="text-gray-400" icon="mdi:map-marker" width="10"></iconify-icon>
+<span class="text-[10px] text-gray-400">体育活动中心2楼</span>
+</div>
+<div class="mt-3 flex justify-between items-end">
+<div class="text-emerald-600 font-bold text-sm">450 积分</div>
+<button class="bg-emerald-500 text-white text-[10px] px-3 py-1.5 rounded-lg" onclick="openModal('健身房单次体验券', 450)">立即领用</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Promotion / Announcement -->
+<div class="px-5 mt-8">
+<div class="bg-gray-800 rounded-2xl p-4 text-white relative overflow-hidden">
+<iconify-icon class="absolute -right-4 -bottom-4 text-white/10" icon="mdi:shield-check" width="120"></iconify-icon>
+<h5 class="font-bold text-sm">如何核销服务？</h5>
+<p class="text-[10px] opacity-70 mt-2 leading-relaxed">兑换成功后，进入“我的-我的卡包”点击对应券码。出示给现场工作人员进行扫描核销。部分优先权益需提前24小时激活。</p>
+</div>
+</div>
+<div class="h-10"></div>
+</div>
+<!-- Confirm Modal -->
+<div class="hidden absolute inset-0 bg-black/60 z-50 flex items-center justify-center p-8" id="confirmModal">
+<div class="bg-white rounded-3xl w-full p-6 text-center shadow-2xl scale-in">
+<div class="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
+<iconify-icon class="text-emerald-500" icon="mdi:leaf" width="32"></iconify-icon>
+</div>
+<h3 class="font-bold text-gray-800 text-lg">兑换确认</h3>
+<p class="text-gray-500 text-sm mt-2">您将使用 <span class="text-emerald-600 font-bold" id="modalCredits">0</span> 积分兑换</p>
+<p class="text-gray-900 font-medium mt-1" id="modalItemName">商品名称</p>
+<div class="flex gap-3 mt-6">
+<button class="flex-1 py-3 bg-gray-100 text-gray-600 rounded-xl font-bold text-sm" onclick="closeModal()">我再想想</button>
+<button class="flex-1 py-3 bg-emerald-500 text-white rounded-xl font-bold text-sm" onclick="closeModal()">确认兑换</button>
+</div>
+</div>
+</div>
+<!-- Navigation Tab Bar -->
+<div class="absolute bottom-0 left-0 right-0 bg-white/80 backdrop-blur-md border-t border-gray-100 px-6 py-3 safe-area-bottom flex justify-between">
+<a class="flex flex-col items-center gap-1 text-gray-400" href="index.html">
+<iconify-icon icon="mdi:flash" width="24"></iconify-icon>
+<span class="text-[10px]">限时抢购</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-gray-400" href="virtual.html">
+<iconify-icon icon="mdi:card-account-details-star" width="24"></iconify-icon>
+<span class="text-[10px]">虚拟权益</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-emerald-500 font-bold" href="campus.html">
+<iconify-icon icon="mdi:school" width="24"></iconify-icon>
+<span class="text-[10px]">校园服务</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-gray-400" href="goods.html">
+<iconify-icon icon="mdi:shopping" width="24"></iconify-icon>
+<span class="text-[10px]">环保好物</span>
+</a>
+</div>
+</div>
+<script>
+        function openModal(name, credits) {
+            document.getElementById('modalItemName').innerText = name;
+            document.getElementById('modalCredits').innerText = credits;
+            document.getElementById('confirmModal').classList.remove('hidden');
+        }
+        function closeModal() {
+            document.getElementById('confirmModal').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>

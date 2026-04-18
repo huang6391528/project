@@ -197,6 +197,12 @@
 .icon-school:before { content: "🏫"; }
 /* 哑铃图标 */
 .icon-dumbbell:before { content: "🏋️"; }
+/* 打印图标 */
+.icon-printer:before { content: "🖨️"; }
+/* 椅子/座位图标 */
+.icon-chair:before { content: "🪑"; }
+/* 门票图标 */
+.icon-ticket:before { content: "🎫"; }
 /* 篮球图标 */
 .icon-basketball:before { content: "🏀"; }
 /* 游泳图标 */
