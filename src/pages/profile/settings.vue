@@ -1,15 +1,20 @@
 <template>
   <view class="page-settings">
-
-
-
+    <!-- 导航栏 -->
+    <view class="nav-header" :class="{ 'scrolled': isScrolled }">
+      <view class="nav-back" @tap="goBack">
+        <text class="back-icon">←</text>
+      </view>
+      <text class="nav-title">设置</text>
+      <view class="nav-placeholder"></view>
+    </view>
 
     <view class="content">
       <!-- 用户简要信息 -->
       <view class="user-card" @tap="goToProfile">
         <image 
           class="user-avatar" 
-          src="/static/tabbar/profile.jpg"
+          src="@/static/tabbar/profile_photo.jpg"
           mode="aspectFill"
         ></image>
         <view class="user-info">
@@ -93,9 +98,7 @@
       <view class="section-label">通用设置</view>
       <view class="settings-card">
         <view class="list-item" @tap="showToast('隐私设置')">
-          <view class="item-icon bg-gray">
-            <text class="icon-emoji">👁️</text>
-          </view>
+
           <view class="item-content">
             <text class="item-title">隐私设置</text>
             <text class="item-sub">管理授权与个性化推荐</text>
@@ -103,9 +106,6 @@
           <text class="arrow">›</text>
         </view>
         <view class="list-item" @tap="showToast('通知设置')">
-          <view class="item-icon bg-gray">
-            <text class="icon-emoji">🔔</text>
-          </view>
           <view class="item-content">
             <text class="item-title">通知设置</text>
             <text class="item-sub">活动通知、账户通知开关</text>
@@ -113,9 +113,6 @@
           <text class="arrow">›</text>
         </view>
         <view class="list-item" @tap="clearCache">
-          <view class="item-icon bg-gray">
-            <text class="icon-emoji">🧹</text>
-          </view>
           <view class="item-content">
             <text class="item-title">清除缓存</text>
             <text class="item-sub">{{ cacheText }}</text>
@@ -127,9 +124,6 @@
       <!-- 关于模块 -->
       <view class="settings-card">
         <view class="list-item" @tap="goToAbout">
-          <view class="item-icon bg-gray">
-            <text class="icon-emoji">ℹ️</text>
-          </view>
           <view class="item-content">
             <text class="item-title">关于平台</text>
             <text class="item-sub">介绍、协议及版本信息</text>
@@ -169,7 +163,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 
 // 缓存文本
 const cacheText = ref('已使用 128.5 MB')
@@ -181,12 +175,44 @@ const logoutModalVisible = ref(false)
 const toastVisible = ref(false)
 const toastMsg = ref('')
 
+// 滚动状态
+const isScrolled = ref(false)
+
+// 页面滚动监听（H5 使用原生事件，兼容 uni.onPageScroll）
+let scrollHandler = null
+let nativeHandler = null
+onMounted(() => {
+  nativeHandler = () => {
+    isScrolled.value = window.scrollY > 10
+  }
+  if (typeof uni.onPageScroll === 'function') {
+    scrollHandler = (res) => {
+      isScrolled.value = res.scrollTop > 10
+    }
+    uni.onPageScroll(scrollHandler)
+  } else {
+    window.addEventListener('scroll', nativeHandler, { passive: true })
+  }
+})
+
+onUnmounted(() => {
+  if (typeof uni.offPageScroll === 'function') {
+    uni.offPageScroll()
+  }
+  if (nativeHandler) {
+    window.removeEventListener('scroll', nativeHandler)
+  }
+})
+
 // 返回上一页
 function goBack() {
   uni.navigateBack()
 }
 
-
+// 跳转个人资料页面
+function goToProfile() {
+  uni.showToast({ title: '编辑资料开发中', icon: 'none' })
+}
 
 // 跳转安全页面
 function goToSecurity() {
@@ -250,29 +276,6 @@ function confirmLogout() {
   background-color: #f9fafb;
 }
 
-/* 状态栏 */
-.status-bar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20rpx 40rpx 10rpx;
-  background-color: #f9fafb;
-  position: sticky;
-  top: 0;
-  z-index: 20;
-}
-
-.time {
-  font-size: 28rpx;
-  font-weight: 700;
-  color: #1f2937;
-}
-
-.status-icons {
-  display: flex;
-  gap: 6rpx;
-}
-
 /* 导航栏 */
 .nav-header {
   display: flex;
@@ -281,9 +284,11 @@ function confirmLogout() {
   padding: 16rpx 24rpx;
   background-color: #f9fafb;
   border-bottom: 1rpx solid #f3f4f6;
-  position: sticky;
-  top: 80rpx;
-  z-index: 20;
+  transition: box-shadow 0.2s, background-color 0.2s;
+}
+
+.nav-header.scrolled {
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.08);
 }
 
 .nav-back {
@@ -416,7 +421,6 @@ function confirmLogout() {
 .item-icon.bg-purple { background-color: #f5f3ff; }
 .item-icon.bg-orange { background-color: #fff7ed; }
 .item-icon.bg-cyan { background-color: #ecfeff; }
-.item-icon.bg-gray { background-color: #f3f4f6; }
 
 .icon-emoji {
   font-size: 40rpx;

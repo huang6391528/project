@@ -76,12 +76,11 @@
 import { ref } from 'vue'
 import { onLoad, onUnload } from '@dcloudio/uni-app'
 import { STORAGE_LOGGED_IN } from '@/constants.js'
-
-let phone = ref('12345600000')
-let code = ref('123456')
-let countdown = ref(0)
-let timer = null
-let agreed = ref(false)
+const phone = ref('12345600000')
+const code = ref('123456')
+const countdown = ref(0)
+const timer = null
+const agreed = ref(false)
 
 onLoad(() => {
   if (uni.getStorageSync(STORAGE_LOGGED_IN)) {

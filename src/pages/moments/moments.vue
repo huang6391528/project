@@ -6,6 +6,7 @@
     <view class="empty-state">
       <text class="empty-icon">📝</text>
       <text class="empty-text">暂无动态</text>
+      <text class="empty-sub">快去发布你的第一条低碳动态吧</text>
     </view>
   </view>
 </template>
@@ -40,7 +41,13 @@
   margin-bottom: 24rpx;
 }
 .empty-text {
-  font-size: 28rpx;
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #666;
+  margin-bottom: 12rpx;
+}
+.empty-sub {
+  font-size: 24rpx;
   color: #999;
 }
 </style>

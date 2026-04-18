@@ -115,7 +115,6 @@
       <!-- 账号设置 -->
       <view class="menu-item" @tap="goToSettings">
         <view class="menu-left">
-          <text class="iconfont icon-settings menu-icon"></text>
           <text class="menu-text">账号设置</text>
         </view>
         <text class="iconfont icon-chevron-right menu-arrow"></text>
@@ -124,7 +123,6 @@
       <!-- 消息通知 -->
       <view class="menu-item" @tap="goToNotification">
         <view class="menu-left">
-          <text class="iconfont icon-message menu-icon"></text>
           <text class="menu-text">消息通知</text>
         </view>
         <text class="iconfont icon-chevron-right menu-arrow"></text>
@@ -133,7 +131,6 @@
       <!-- 帮助与反馈 -->
       <view class="menu-item" @tap="goToHelp">
         <view class="menu-left">
-          <text class="iconfont icon-help-circle menu-icon"></text>
           <text class="menu-text">帮助与反馈</text>
         </view>
         <text class="iconfont icon-chevron-right menu-arrow"></text>

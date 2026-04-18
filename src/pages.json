@@ -57,13 +57,13 @@
         "navigationStyle": "custom"
       }
     },
-	{
-	    "path": "pages/profile/about",
-	    "style": {
-	      "navigationBarTitleText": "关于平台",
-	      "navigationStyle": "custom"
-	    }
-	},
+    {
+      "path": "pages/profile/about",
+      "style": {
+        "navigationBarTitleText": "关于平台",
+        "navigationStyle": "custom"
+      }
+    },
     {
       "path": "pages/profile/notification",
       "style": {
@@ -78,20 +78,62 @@
         "navigationStyle": "custom"
       }
     },
-	{
-	    "path": "pages/profile/feedback",
-	    "style": {
-	      "navigationBarTitleText": "意见反馈",
-	      "navigationStyle": "custom"
-	    }
-	},
-	{
-	    "path": "pages/profile/records",
-	    "style": {
-	      "navigationBarTitleText": "反馈记录",
-	      "navigationStyle": "custom"
-	    }
-	}
+    {
+      "path": "pages/profile/feedback",
+      "style": {
+        "navigationBarTitleText": "意见反馈",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/profile/records",
+      "style": {
+        "navigationBarTitleText": "反馈记录",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/message/message",
+      "style": {
+        "navigationBarTitleText": "消息",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/friends/friends",
+      "style": {
+        "navigationBarTitleText": "关注好友",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/checkin-group/checkin-group",
+      "style": {
+        "navigationBarTitleText": "我的打卡团",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/class-list/class-list",
+      "style": {
+        "navigationBarTitleText": "班级列表",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/low-carbon-circle/index",
+      "style": {
+        "navigationBarTitleText": "低碳圈",
+        "navigationStyle": "custom"
+      }
+    },
+    {
+      "path": "pages/moments/moments",
+      "style": {
+        "navigationBarTitleText": "我的动态",
+        "navigationStyle": "custom"
+      }
+    }
   ],
   "globalStyle": {
     "navigationBarTextStyle": "black",

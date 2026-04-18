@@ -72,11 +72,21 @@
           <view class="card-close" @tap="collapseCard">
             <text class="close-icon iconfont icon-chevron-up"></text>
           </view>
-          <view class="expanded-grid">
-            <view class="exp-stat"><text class="exp-label">时长</text><text class="exp-value exp-large">{{ displayDuration || '00:00:00' }}</text></view>
-            <view class="exp-stat"><text class="exp-label">本次距离 (KM)</text><text class="exp-value exp-large">{{ currentDistance || '0.00' }}</text></view>
-            <view class="exp-stat"><text class="exp-label">配速</text><text class="exp-value">{{ currentPace || "--'--\"" }}</text></view>
-            <view class="exp-stat"><text class="exp-label">累计减排 (g)</text><text class="exp-value exp-emission">{{ displayEmission || '0' }}</text></view>
+          <view class="expanded-single-row">
+            <view class="row-stat">
+              <text class="row-label">时长</text>
+              <text class="row-value row-large">{{ displayDuration || '00:00:00' }}</text>
+            </view>
+            <view class="row-divider"></view>
+            <view class="row-stat">
+              <text class="row-label">配速</text>
+              <text class="row-value row-large">{{ currentPace || "--'--\"" }}</text>
+            </view>
+            <view class="row-divider"></view>
+            <view class="row-stat">
+              <text class="row-label">本次距离(KM)</text>
+              <text class="row-value row-large">{{ currentDistance || '0.00' }}</text>
+            </view>
           </view>
           <view class="action-area">
             <view class="action-btn side-btn" v-if="isRunning" @tap="endRun"><text class="iconfont icon-stop"></text></view>
@@ -411,7 +421,7 @@
               <text class="morning-goal-stat-value">39.41 KM</text>
             </view>
             <view class="morning-goal-stat">
-              <text class="morning-goal-stat-label">晨跑低碳积分</text>
+              <text class="morning-goal-stat-label">晨跑积分</text>
               <text class="morning-goal-stat-value green">+ 450 pts</text>
             </view>
           </view>
@@ -529,7 +539,7 @@
           </view>
         </view>
         <!-- 跑步控制面板 -->
-        <view class="marathon-control-card">
+        <view v-if="!isTraining" class="marathon-control-card">
           <view class="marathon-stat">
             <text class="marathon-stat-label">训练里程</text>
             <text class="marathon-stat-value">0.00 <text class="marathon-stat-unit">KM</text></text>
@@ -539,8 +549,37 @@
             <text class="marathon-stat-label">目标配速</text>
             <text class="marathon-stat-value">05'15''</text>
           </view>
-          <view class="marathon-start-btn" @tap="toggleRun">
-            <text class="marathon-start-text">{{ isRunning ? '结束训练' : '开始训练' }}</text>
+          <view class="marathon-start-btn" @tap="startTraining">
+            <text class="marathon-start-text">开始训练</text>
+          </view>
+        </view>
+
+        <!-- 运动中卡片：深色主题 -->
+        <view v-if="isTraining" class="marathon-training-card">
+          <view class="training-top-bar">
+            <view class="training-top-line"></view>
+            <text class="training-top-hint">运动中</text>
+          </view>
+          <view class="training-single-row">
+            <view class="training-stat">
+              <text class="training-label">时长</text>
+              <text class="training-value">{{ displayDuration || '00:00:00' }}</text>
+            </view>
+            <view class="training-divider"></view>
+            <view class="training-stat">
+              <text class="training-label">配速</text>
+              <text class="training-value">{{ currentPace || "--'--\"" }}</text>
+            </view>
+            <view class="training-divider"></view>
+            <view class="training-stat">
+              <text class="training-label">本次距离(KM)</text>
+              <text class="training-value">{{ currentDistance || '0.00' }}</text>
+            </view>
+          </view>
+          <view class="training-action-area">
+            <view class="training-btn" @tap="stopTraining">
+              <text class="iconfont icon-stop"></text>
+            </view>
           </view>
         </view>
       </view>
@@ -857,6 +896,7 @@ const routePolyline = ref([
 const isCardExpanded = ref(false)
 const isMorningCardExpanded = ref(false)
 const isRunning = ref(false)
+const isTraining = ref(false)
 
 const currentDistance = ref('')
 const currentPace = ref('')
@@ -914,6 +954,34 @@ function endRun() {
   clearInterval(timer)
   isRunning.value = false
   // 数据保留在卡片上
+}
+
+function startTraining() {
+  isTraining.value = true
+  isRunning.value = true
+  timer = setInterval(() => {
+    seconds++
+    if (seconds % 4 === 0) {
+      distance = parseFloat((distance + 0.01).toFixed(2))
+      currentDistance.value = distance.toFixed(2)
+      if (distance > 0) {
+        const paceSeconds = Math.round(seconds / distance)
+        const paceMin = Math.floor(paceSeconds / 60)
+        const paceSec = paceSeconds % 60
+        currentPace.value = `${paceMin}'${String(paceSec).padStart(2, '0')}"`
+      }
+    }
+    const h = Math.floor(seconds / 3600)
+    const m = Math.floor((seconds % 3600) / 60)
+    const s = seconds % 60
+    displayDuration.value = [h, m, s].map(v => String(v).padStart(2, '0')).join(':')
+  }, 1000)
+}
+
+function stopTraining() {
+  clearInterval(timer)
+  isTraining.value = false
+  isRunning.value = false
 }
 
 // ==========================================
@@ -1724,27 +1792,28 @@ onMounted(() => {
   transition: transform 0.3s ease;
 }
 
-.expanded-grid {
+.expanded-single-row {
   display: flex;
-  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16rpx 16rpx 0;
 }
 
-.exp-stat {
-  width: 50%;
+.row-stat {
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 32rpx;
 }
 
-.exp-label {
+.row-label {
   font-size: 22rpx;
   color: rgba(255, 255, 255, 0.72);
   margin-bottom: 8rpx;
   font-weight: 500;
 }
 
-.exp-value {
+.row-value {
   font-size: 44rpx;
   font-weight: 900;
   color: #ffffff;
@@ -1752,12 +1821,16 @@ onMounted(() => {
   line-height: 1;
 }
 
-.exp-large {
-  font-size: 60rpx;
+.row-large {
+  font-size: 52rpx;
 }
 
-.exp-emission {
-  color: #a7f3d0;
+.row-divider {
+  width: 2rpx;
+  height: 60rpx;
+  background: rgba(255, 255, 255, 0.25);
+  flex-shrink: 0;
+  margin: 0 8rpx;
 }
 
 /* 操作按钮区 */
@@ -2680,6 +2753,101 @@ onMounted(() => {
   font-size: 22rpx;
   font-weight: bold;
   color: #fff;
+}
+
+/* 马拉松运动中卡片：深色主题 */
+.marathon-training-card {
+  position: absolute;
+  bottom: 24rpx;
+  left: 24rpx;
+  right: 24rpx;
+  border-radius: 40rpx;
+  overflow: hidden;
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  box-shadow: 0 12rpx 40rpx rgba(15, 23, 42, 0.45), 0 4rpx 16rpx rgba(15, 23, 42, 0.25);
+  z-index: 5;
+}
+
+.training-top-bar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16rpx 0 8rpx;
+  gap: 6rpx;
+}
+
+.training-top-line {
+  width: 72rpx;
+  height: 8rpx;
+  background: rgba(255, 255, 255, 0.35);
+  border-radius: 8rpx;
+}
+
+.training-top-hint {
+  font-size: 20rpx;
+  color: rgba(255, 255, 255, 0.75);
+  font-weight: 600;
+  letter-spacing: 3rpx;
+}
+
+.training-single-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12rpx 24rpx 8rpx;
+}
+
+.training-stat {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.training-label {
+  font-size: 22rpx;
+  color: rgba(255, 255, 255, 0.65);
+  margin-bottom: 8rpx;
+  font-weight: 500;
+}
+
+.training-value {
+  font-size: 44rpx;
+  font-weight: 900;
+  color: #ffffff;
+  letter-spacing: -1rpx;
+  line-height: 1;
+}
+
+.training-divider {
+  width: 2rpx;
+  height: 60rpx;
+  background: rgba(255, 255, 255, 0.2);
+  flex-shrink: 0;
+}
+
+.training-action-area {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8rpx 0 24rpx;
+}
+
+.training-btn {
+  width: 96rpx;
+  height: 96rpx;
+  background: rgba(239, 68, 68, 0.15);
+  border: 3rpx solid rgba(239, 68, 68, 0.6);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.15s ease;
+}
+
+.training-btn .iconfont {
+  font-size: 44rpx;
+  color: #fca5a5;
 }
 
 /* 四个网格 */

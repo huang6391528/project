@@ -19,8 +19,6 @@ onHide(() => {
 </script>
 
 <style>
-@import url('./static/iconfont.css');
-
 page {
   background-color: #ffffff;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
@@ -55,9 +53,5 @@ page {
 
 @keyframes dash {
   to { stroke-dashoffset: 0; }
-}
-
-.action-card {
-  background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(255, 255, 255, 1) 100%);
 }
 </style>
