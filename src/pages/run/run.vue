@@ -226,9 +226,9 @@
               <text class="card-title">运动轨迹日历</text>
               <view class="calendar-controls">
                 <text class="iconfont icon-chevron-left" @tap="prevMonth"></text>
-                <picker mode="date" fields="month" :value="pickerDate" @change="onPickerChange">
+                <view class="picker-trigger-btn" @tap="openDatePicker('main')">
                   <text class="calendar-month">{{ calYear }}年{{ calMonth }}月</text>
-                </picker>
+                </view>
                 <text class="iconfont icon-chevron-right" @tap="nextMonth"></text>
               </view>
             </view>
@@ -426,9 +426,9 @@
               <text class="card-title">晨跑打卡</text>
               <view class="calendar-controls">
                 <text class="iconfont icon-chevron-left" @tap="prevMonth"></text>
-                <picker mode="date" fields="month" :value="pickerDate" @change="onPickerChange">
+                <view class="picker-trigger-btn" @tap="openDatePicker('morning')">
                   <text class="calendar-month">{{ calYear }}年{{ calMonth }}月</text>
-                </picker>
+                </view>
                 <text class="iconfont icon-chevron-right" @tap="nextMonth"></text>
               </view>
             </view>
@@ -609,9 +609,9 @@
               <text class="card-title">训练轨迹</text>
               <view class="calendar-controls">
                 <text class="iconfont icon-chevron-left" @tap="marathonPrevMonth"></text>
-                <picker mode="date" fields="month" :value="marathonPickerDate" @change="onMarathonPickerChange">
+                <view class="picker-trigger-btn" @tap="openDatePicker('marathon')">
                   <text class="calendar-month">{{ marathonCalYear }}年{{ marathonCalMonth }}月</text>
-                </picker>
+                </view>
                 <text class="iconfont icon-chevron-right" @tap="marathonNextMonth"></text>
               </view>
             </view>
@@ -745,6 +745,43 @@
             </view>
           </view>
         </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- ============================================= -->
+  <!-- 自定义底部日期选择弹窗（与移动端一致）           -->
+  <!-- ============================================= -->
+  <view class="date-picker-overlay" v-if="showDatePicker" @tap="closeDatePicker">
+    <view class="date-picker-panel" @tap.stop>
+      <!-- 顶部标题栏 -->
+      <view class="dp-header">
+        <view class="dp-cancel-btn" @tap="closeDatePicker">取消</view>
+        <text class="dp-title">选择年月</text>
+        <view class="dp-confirm-btn" @tap="confirmDatePicker">确定</view>
+      </view>
+      <!-- 年份选择 -->
+      <scroll-view class="dp-year-scroll" scroll-y :scroll-into-view="'year-' + dpScrollYearId">
+        <view class="dp-year-list">
+          <view
+            v-for="y in dpYearList"
+            :key="y"
+            class="dp-year-item"
+            :class="{ active: y === dpSelectedYear }"
+            :id="'year-' + y"
+            @tap="dpSelectedYear = y"
+          >{{ y }}</view>
+        </view>
+      </scroll-view>
+      <!-- 月份网格 -->
+      <view class="dp-month-grid">
+        <view
+          v-for="m in 12"
+          :key="m"
+          class="dp-month-cell"
+          :class="{ active: m === dpSelectedMonth && dpSelectedYear === (activePickerTarget === 'marathon' ? marathonCalYear : calYear) }"
+          @tap="dpSelectedMonth = m"
+        >{{ m }}月</view>
       </view>
     </view>
   </view>
@@ -890,11 +927,43 @@ const TODAY_DAY = new Date().getDate()
 const calYear = ref(TODAY_YEAR)
 const calMonth = ref(TODAY_MONTH)
 
-// picker 配置
-const pickerFields = 'month'
-const pickerStart = '2026-01'
-const pickerEnd = '2026-12'
-const pickerDate = computed(() => `${calYear.value}-${String(calMonth.value).padStart(2, '0')}`)
+// ==========================================
+// 自定义底部日期选择器
+// ==========================================
+const showDatePicker = ref(false)
+const activePickerTarget = ref('main') // 'main' | 'morning' | 'marathon'
+const dpYearList = Array.from({ length: 10 }, (_, i) => TODAY_YEAR - 5 + i)
+const dpScrollYearId = ref(String(TODAY_YEAR))
+const dpSelectedYear = ref(TODAY_YEAR)
+const dpSelectedMonth = ref(TODAY_MONTH)
+
+function openDatePicker(target) {
+  activePickerTarget.value = target
+  if (target === 'marathon') {
+    dpSelectedYear.value = marathonCalYear.value
+    dpSelectedMonth.value = marathonCalMonth.value
+  } else {
+    dpSelectedYear.value = calYear.value
+    dpSelectedMonth.value = calMonth.value
+  }
+  dpScrollYearId.value = String(dpSelectedYear.value)
+  showDatePicker.value = true
+}
+
+function closeDatePicker() {
+  showDatePicker.value = false
+}
+
+function confirmDatePicker() {
+  if (activePickerTarget.value === 'marathon') {
+    marathonCalYear.value = dpSelectedYear.value
+    marathonCalMonth.value = dpSelectedMonth.value
+  } else {
+    calYear.value = dpSelectedYear.value
+    calMonth.value = dpSelectedMonth.value
+  }
+  showDatePicker.value = false
+}
 
 // 打卡记录数据 - 扩展类型：morning(晨跑)/free(自由跑)/marathon(马拉松)
 const runRecords = ref({
@@ -1127,19 +1196,6 @@ function showMarathonMonthPicker() {
   })
 }
 
-// picker 选中后回调：解析 YYYY-MM，更新年月，标题自动联动
-function onPickerChange(e) {
-  const val = e.detail.value  // 'YYYY-MM'
-  if (!val) return
-  const [y, m] = val.split('-').map(Number)
-  calYear.value = y
-  calMonth.value = m
-}
-
-function onPickerCancel() {
-  // 用户取消，什么都不做
-}
-
 // ==========================================
 // 其他
 // ==========================================
@@ -1347,29 +1403,6 @@ function marathonNextMonth() {
   } else {
     marathonCalMonth.value++
   }
-}
-
-// 马拉松 picker
-function openMarathonMonthPicker() {
-  setTimeout(() => {
-    const picker = uni.createSelectorQuery().select('#marathon-month-picker-trigger')
-    const pickerNode = document.querySelector('#marathon-month-picker-trigger')
-    if (pickerNode && pickerNode.__pickerInstance) {
-      pickerNode.__pickerInstance.open()
-    }
-  }, 50)
-}
-
-function onMarathonPickerChange(e) {
-  const val = e.detail.value  // 'YYYY-MM'
-  if (!val) return
-  const [y, m] = val.split('-').map(Number)
-  marathonCalYear.value = y
-  marathonCalMonth.value = m
-}
-
-function onMarathonPickerCancel() {
-  // 用户取消，什么都不做
 }
 
 // 跑步数据图表（ECharts）
@@ -4257,5 +4290,150 @@ onMounted(() => {
 
 .history-item-faded {
   opacity: 0.6;
+}
+
+/* ============================================= */
+/* 自定义底部日期选择器（与移动端一致）            */
+/* ============================================= */
+
+/* picker 触发按钮 */
+.picker-trigger-btn {
+  cursor: pointer;
+  user-select: none;
+  padding: 6rpx 4rpx;
+  border-radius: 8rpx;
+  transition: background-color 0.2s;
+}
+
+.picker-trigger-btn:active {
+  background-color: rgba(16, 185, 129, 0.08);
+}
+
+/* 遮罩层 */
+.date-picker-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 9999;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  animation: fadeInOverlay 0.2s ease;
+}
+
+@keyframes fadeInOverlay {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* 日期选择面板 */
+.date-picker-panel {
+  width: 100%;
+  max-width: 750rpx;
+  background: #fff;
+  border-radius: 24rpx 24rpx 0 0;
+  padding-bottom: env(safe-area-inset-bottom);
+  animation: slideUpPanel 0.28s cubic-bezier(0.32, 0.72, 0, 1);
+  overflow: hidden;
+}
+
+@keyframes slideUpPanel {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+/* 顶部标题栏 */
+.dp-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 28rpx 32rpx 24rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.dp-cancel-btn {
+  font-size: 28rpx;
+  color: #9ca3af;
+  cursor: pointer;
+  padding: 8rpx 0;
+}
+
+.dp-title {
+  font-size: 30rpx;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.dp-confirm-btn {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #10b981;
+  cursor: pointer;
+  padding: 8rpx 0;
+}
+
+/* 年份滚动列表 */
+.dp-year-scroll {
+  height: 320rpx;
+  padding: 16rpx 0;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.dp-year-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+}
+
+.dp-year-item {
+  height: 64rpx;
+  line-height: 64rpx;
+  font-size: 26rpx;
+  color: #9ca3af;
+  cursor: pointer;
+  transition: color 0.2s, font-size 0.2s;
+  text-align: center;
+  padding: 0 48rpx;
+}
+
+.dp-year-item.active {
+  font-size: 34rpx;
+  font-weight: 700;
+  color: #10b981;
+}
+
+/* 月份网格 */
+.dp-month-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16rpx;
+  padding: 28rpx 32rpx 40rpx;
+}
+
+.dp-month-cell {
+  height: 80rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28rpx;
+  color: #374151;
+  background: #f5f5f5;
+  border-radius: 16rpx;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.dp-month-cell:active {
+  background: #e5e7eb;
+}
+
+.dp-month-cell.active {
+  background: #10b981;
+  color: #fff;
+  font-weight: 700;
 }
 </style>
