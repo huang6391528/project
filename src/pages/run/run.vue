@@ -578,6 +578,26 @@ function viewAllAchievements() {
   uni.showToast({ title: '成就详情开发中', icon: 'none' })
 }
 
+// ==========================================
+// Marathon Tab Data
+// ==========================================
+const marathonMenu = ref([
+  { name: '马拉松学院', icon: 'icon-graduation', bgClass: 'menu-blue' },
+  { name: '赛事活动', icon: 'icon-calendar', bgClass: 'menu-orange' },
+  { name: '我的马拉松', icon: 'icon-user', bgClass: 'menu-green' },
+  { name: '训练计划', icon: 'icon-list', bgClass: 'menu-indigo' },
+])
+
+const marathonEvents = ref([
+  { title: '2026 校园半程马拉松', sub: '报名中 · 04月25日 开启', hot: true, img: 'https://modao.cc/agent-py/media/generated_images/2026-04-10/3aff83eeb7bc4e4e89e1263d70ba099b.jpg' },
+  { title: '城市低碳公益跑', sub: '进行中 · 累计跑量赢好礼', hot: false, img: 'https://modao.cc/agent-py/media/generated_images/2026-04-10/c70df215739d494b8bb3fe1c2eb3d864.jpg' },
+])
+
+const marathonPlans = ref([
+  { name: 'LSD 耐力提升计划', cycle: '4周', level: '中等', icon: 'icon-hourglass', bgClass: 'plan-indigo' },
+  { name: '间歇跑速度训练', cycle: '2周', level: '困难', icon: 'icon-gauge', bgClass: 'plan-red' },
+])
+
 // Chart - kept on main page
 onMounted(() => {
   const instance = getCurrentInstance()
