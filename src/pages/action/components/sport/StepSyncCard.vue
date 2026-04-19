@@ -5,7 +5,7 @@
         <view class="sync-dot"></view>
         <text class="sync-label">STEP SYNC ACTIVE</text>
       </view>
-      <text class="sync-value">{{ steps.toLocaleString() }}<span class="sync-unit">/10000</span></text>
+      <text class="sync-value">{{ steps.toLocaleString() }}<text class="sync-unit">/10000</text></text>
       <text class="sync-desc">今日步数已同步 · 产出碳汇 +{{ carbonKg }} kg</text>
       <CarbonCircles :carbonAsset="carbonAsset" :emission="emission" />
     </view>

@@ -16,7 +16,7 @@
 </template>
 
 <script setup>
-const props = defineProps({
+defineProps({
   show: { type: Boolean, default: false },
   itemName: { type: String, default: '' },
   credits: { type: [String, Number], default: 0 },

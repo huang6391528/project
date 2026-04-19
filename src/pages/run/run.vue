@@ -351,7 +351,6 @@ const prevMonthPadding = computed(() => firstDayWeekday.value - 1)
 const DAY_STYLES = {
   empty:   { cls: 'empty',   bg: '' },
   future:  { cls: 'future',  bg: '' },
-  today:   { cls: 'today',   bg: '' },
   checked: { cls: 'checked', bg: '' },
 }
 
@@ -414,15 +413,6 @@ function onDayTapMorning(day) {
   uni.showToast({ title: '晨跑打卡成功', icon: 'success' })
 }
 
-function getDayCellClassMorning(day) {
-  const status = getDayStatus(day)
-  const future = isFutureDay(day)
-  if (future) return 'future'
-  const types = Array.isArray(status) ? status : (status ? [status] : [])
-  if (types.includes('morning')) return 'morning-day-cell'
-  return ''
-}
-
 function isMorningPastDay(day) {
   if (calYear.value > TODAY_YEAR) return false
   if (calYear.value < TODAY_YEAR) return true
@@ -465,42 +455,10 @@ onUnmounted(() => {
   if (timer) clearInterval(timer)
 })
 
-// ==========================================
-// Morning Tab Data
-// ==========================================
-const morningHistory = ref([
-  { date: '2026.04.09 晨跑', km: '5.20', time: '31:40', pace: "06'05''", faded: false, img: 'https://modao.cc/agent-py/media/generated_images/2026-04-10/d7294226572d438d8e8de2fe6568f8d1.jpg' },
-  { date: '2026.04.08 晨跑', km: '3.80', time: '22:15', pace: "05'51''", faded: false, img: 'https://modao.cc/agent-py/media/generated_images/2026-04-10/d7294226572d438d8e8de2fe6568f8d1.jpg' },
-  { date: '2026.04.07 晨跑', km: '4.50', time: '28:20', pace: "06'17''", faded: true, img: 'https://modao.cc/agent-py/media/generated_images/2026-04-10/d7294226572d438d8e8de2fe6568f8d1.jpg' },
-])
 
 // ==========================================
 // Marathon Tab Data
 // ==========================================
-const marathonMenu = ref([
-  { name: '马拉松学院', icon: 'icon-graduation', bgClass: 'menu-blue' },
-  { name: '赛事活动', icon: 'icon-calendar', bgClass: 'menu-orange' },
-  { name: '我的马拉松', icon: 'icon-user', bgClass: 'menu-green' },
-  { name: '训练计划', icon: 'icon-list', bgClass: 'menu-indigo' },
-])
-
-const marathonEvents = ref([
-  { title: '2026 校园半程马拉松', sub: '报名中 · 04月25日 开启', hot: true, img: 'https://modao.cc/agent-py/media/generated_images/2026-04-10/3aff83eeb7bc4e4e89e1263d70ba099b.jpg' },
-  { title: '城市低碳公益跑', sub: '进行中 · 累计跑量赢好礼', hot: false, img: 'https://modao.cc/agent-py/media/generated_images/2026-04-10/c70df215739d494b8bb3fe1c2eb3d864.jpg' },
-])
-
-const marathonPlans = ref([
-  { name: 'LSD 耐力提升计划', cycle: '4周', level: '中等', icon: 'icon-hourglass', bgClass: 'plan-indigo' },
-  { name: '间歇跑速度训练', cycle: '2周', level: '困难', icon: 'icon-gauge', bgClass: 'plan-red' },
-])
-
-const achievements = ref([
-  { name: '早起鸟', icon: 'icon-medal', iconClass: 'ach-orange', locked: false },
-  { name: '低碳达人', icon: 'icon-tree', iconClass: 'ach-green', locked: false },
-  { name: '极速跑者', icon: 'icon-lightning', iconClass: 'ach-blue', locked: false },
-  { name: '100KM 达成', icon: 'icon-target', iconClass: 'ach-gray', locked: true },
-  { name: '马拉松之星', icon: 'icon-star', iconClass: 'ach-gray', locked: true },
-])
 
 // ==========================================
 // Marathon Calendar

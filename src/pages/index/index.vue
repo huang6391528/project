@@ -92,6 +92,7 @@ import InviteModal from './components/InviteModal.vue'
 const sidebarShow = ref(false)
 const showInviteModal = ref(false)
 const scanMenuShow = ref(false)
+const inviteCodeInput = ref('')
 
 const toggleSidebar = () => {
   sidebarShow.value = !sidebarShow.value

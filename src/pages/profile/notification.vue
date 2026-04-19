@@ -88,7 +88,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onUnmounted } from 'vue'
 
 // Toast
 const toastVisible = ref(false)
@@ -96,6 +96,7 @@ const toastMsg = ref('')
 
 // 清空确认弹窗
 const clearModalVisible = ref(false)
+let toastTimer = null
 
 // 是否展开全部消息
 const isExpanded = ref(false)
@@ -276,10 +277,14 @@ function clearAllMessages() {
 function showToast(msg) {
   toastMsg.value = msg
   toastVisible.value = true
-  setTimeout(() => {
+  toastTimer = setTimeout(() => {
     toastVisible.value = false
   }, 2000)
 }
+
+onUnmounted(() => {
+  if (toastTimer) clearTimeout(toastTimer)
+})
 </script>
 
 <style scoped>

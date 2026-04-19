@@ -32,7 +32,7 @@ defineProps({
   position: relative;
   overflow: hidden;
   box-shadow: 0 8rpx 24rpx rgba(249, 115, 22, 0.3);
-  margin: 0 30rpx 24rpx;
+  margin-bottom: 24rpx;
 }
 
 .streak-inner {

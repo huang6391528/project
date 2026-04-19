@@ -16,7 +16,7 @@
 </template>
 
 <script setup>
-const props = defineProps({
+defineProps({
   schoolLat: { type: Number, required: true },
   schoolLng: { type: Number, required: true },
   markers: { type: Array, required: true },

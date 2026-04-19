@@ -196,8 +196,8 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
-  if (typeof uni.offPageScroll === 'function') {
-    uni.offPageScroll()
+  if (scrollHandler && typeof uni.offPageScroll === 'function') {
+    uni.offPageScroll(scrollHandler)
   }
   if (nativeHandler) {
     window.removeEventListener('scroll', nativeHandler)

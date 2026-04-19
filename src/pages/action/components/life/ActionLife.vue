@@ -20,7 +20,6 @@
 import { ref } from 'vue'
 import LifeAssetCard from './components/LifeAssetCard.vue'
 import LifeSubTabs from './components/LifeSubTabs.vue'
-import AiVerifyCard from './components/AiVerifyCard.vue'
 import LifeSubHome from './components/home/LifeSubHome.vue'
 import EnergyChart from './components/dorm/EnergyChart.vue'
 import LifeSubDorm from './components/dorm/LifeSubDorm.vue'
