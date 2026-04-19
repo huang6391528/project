@@ -278,6 +278,7 @@ const props = defineProps({
   calMonth: Number,
   daysInMonth: Number,
   prevMonthPadding: Number,
+  runRecords: Object,
   routePolyline: Array,
   markers: Array,
   schoolLat: Number,
@@ -1159,36 +1160,39 @@ function getDayCellStyle(day) {
 }
 
 .achievement-icon {
-  width: 64rpx;
-  height: 64rpx;
+  width: 96rpx;
+  height: 96rpx;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
+  background: linear-gradient(135deg, #fef3c7, #fde68a);
 }
 
 .achievement-icon .iconfont {
-  font-size: 32rpx;
+  font-size: 40rpx;
   color: #f59e0b;
 }
 
-.ach-orange { background: #ffedd5; }
-.ach-orange .iconfont { color: #f97316; }
-.ach-green { background: #dcfce7; }
-.ach-green .iconfont { color: #22c55e; }
-.ach-blue { background: #dbeafe; }
-.ach-blue .iconfont { color: #3b82f6; }
-.ach-gray { background: #f3f4f6; opacity: 0.5; }
-.ach-gray .iconfont { color: #9ca3af; }
+.achievement-icon.ach-orange { background: linear-gradient(135deg, #fef3c7, #fde68a); }
+.achievement-icon.ach-orange .iconfont { color: #f97316; }
+.achievement-icon.ach-green { background: linear-gradient(135deg, #d1fae5, #a7f3d0); }
+.achievement-icon.ach-green .iconfont { color: #10b981; }
+.achievement-icon.ach-blue { background: linear-gradient(135deg, #dbeafe, #bfdbfe); }
+.achievement-icon.ach-blue .iconfont { color: #3b82f6; }
+.achievement-icon.ach-gray { background: #f3f4f6; }
+.achievement-icon.ach-gray .iconfont { color: #9ca3af; }
 
 .achievement-name {
   font-size: 18rpx;
+  font-weight: bold;
   color: #374151;
   text-align: center;
 }
 
 .achievement-locked .achievement-icon {
   background: #f3f4f6;
+  opacity: 0.5;
 }
 
 .achievement-locked .achievement-icon .iconfont {
