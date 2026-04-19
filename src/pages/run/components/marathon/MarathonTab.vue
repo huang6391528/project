@@ -1,18 +1,13 @@
 <template>
   <view>
     <!-- Map Area -->
-    <view class="map-container map-marathon">
-      <map
-        id="runMap"
-        class="map-bg"
-        :latitude="schoolLat"
-        :longitude="schoolLng"
-        :scale="16"
-        :markers="markers"
-        :polyline="routePolyline"
-        :show-location="true"
-        :enable-satellite="false"
-      ></map>
+    <RunMap
+      :schoolLat="schoolLat"
+      :schoolLng="schoolLng"
+      :markers="markers"
+      :routePolyline="routePolyline"
+      height="480px"
+    >
       <view class="marathon-climate-card">
         <view class="climate-left">
           <text class="iconfont icon-wind climate-icon"></text>
@@ -26,7 +21,7 @@
           <text class="climate-intensity">适宜 LSD</text>
         </view>
       </view>
-      <view class="marathon-control-card">
+      <view class="marathon-control-card" v-if="!isRunning">
         <view class="marathon-stat">
           <text class="marathon-stat-label">训练里程</text>
           <text class="marathon-stat-value">0.00 <text class="marathon-stat-unit">KM</text></text>
@@ -40,7 +35,36 @@
           <text class="marathon-start-text">{{ isRunning ? '结束训练' : '开始训练' }}</text>
         </view>
       </view>
-    </view>
+
+      <!-- 运动中卡片：深色主题 -->
+      <view v-if="isRunning" class="marathon-training-card">
+        <view class="training-top-bar">
+          <view class="training-top-line"></view>
+          <text class="training-top-hint">运动中</text>
+        </view>
+        <view class="training-single-row">
+          <view class="training-stat">
+            <text class="training-label">时长</text>
+            <text class="training-value">{{ displayDuration || '00:00:00' }}</text>
+          </view>
+          <view class="training-divider"></view>
+          <view class="training-stat">
+            <text class="training-label">配速</text>
+            <text class="training-value">{{ currentPace || "--'--\"" }}</text>
+          </view>
+          <view class="training-divider"></view>
+          <view class="training-stat">
+            <text class="training-label">本次距离(KM)</text>
+            <text class="training-value">{{ currentDistance || '0.00' }}</text>
+          </view>
+        </view>
+        <view class="training-action-area">
+          <view class="training-btn" @tap="emit('toggleRun')">
+            <text class="iconfont icon-stop"></text>
+          </view>
+        </view>
+      </view>
+    </RunMap>
 
     <!-- Grid Menu -->
     <view class="marathon-grid-section">
@@ -69,11 +93,13 @@
             <image class="event-card-real-img" :src="item.img" mode="aspectFill"></image>
           </view>
           <view class="event-card-info">
-            <text class="event-card-title">{{ item.title }}</text>
+            <view class="event-card-title-row">
+              <text class="event-card-title">{{ item.title }}</text>
+              <view class="event-hot-tag" v-if="item.hot">
+                <text class="event-hot-text">热门</text>
+              </view>
+            </view>
             <text class="event-card-sub">{{ item.sub }}</text>
-          </view>
-          <view class="event-hot-tag" v-if="item.hot">
-            <text class="event-hot-text">热门</text>
           </view>
         </view>
       </view>
@@ -130,19 +156,19 @@
               @tap="emit('dayTapMarathon', day)"
             >
               <text class="day-num" :class="{ 'day-num-bold': isMarathonPastDay(day) }">{{ day }}</text>
-              <view v-if="getMarathonDayBadges(day).includes('marathon')" class="marathon-ring-badge"></view>
             </view>
           </view>
           <view class="calendar-legend">
             <view class="legend-item">
               <view class="marathon-legend-dot purple-ring"></view>
-              <text class="legend-text">马拉松训练</text>
+              <text class="marathon-legend-text">马拉松训练</text>
             </view>
           </view>
         </view>
 
         <!-- Profile Card -->
         <view class="marathon-profile-card marathon-profile-card-col">
+          <!-- Header -->
           <view class="pro-header-premium">
             <view class="pro-header-top">
               <text class="iconfont icon-lightning pro-title-icon"></text>
@@ -156,6 +182,7 @@
             </view>
           </view>
 
+          <!-- PB Section -->
           <view class="pro-pb-section">
             <view class="pro-pb-background">
               <view class="pro-pb-glow"></view>
@@ -171,6 +198,7 @@
             </view>
           </view>
 
+          <!-- Stats Dashboard -->
           <view class="pro-stats-dashboard">
             <view class="pro-stat-card pro-stat-races">
               <view class="pro-stat-icon-bg races-gradient">
@@ -202,6 +230,7 @@
             </view>
           </view>
 
+          <!-- Achievement Section -->
           <view class="pro-achievement-section">
             <view class="pro-level-header">
               <text class="pro-level-current">精英跑者</text>
@@ -221,8 +250,13 @@
 </template>
 
 <script setup>
+import RunMap from '../RunMap.vue'
+
 const props = defineProps({
   isRunning: Boolean,
+  currentDistance: String,
+  currentPace: String,
+  displayDuration: String,
   marathonCalYear: Number,
   marathonCalMonth: Number,
   marathonDaysInMonth: Number,
@@ -231,22 +265,16 @@ const props = defineProps({
   marathonMenu: Array,
   marathonEvents: Array,
   marathonPlans: Array,
+  routePolyline: Array,
+  markers: Array,
+  schoolLat: Number,
+  schoolLng: Number,
 })
 
 const emit = defineEmits([
   'toggleRun',
   'prevMonth', 'nextMonth', 'openDatePicker', 'dayTapMarathon'
 ])
-
-const schoolLat = 26.4451
-const schoolLng = 106.6589
-
-const markers = [
-  { id: 1, latitude: 26.4398, longitude: 106.6632, title: '体育馆A', iconPath: '/static/marker.png', width: 30, height: 30, callout: { content: '体育馆A', color: '#ffffff', fontSize: 12, borderRadius: 4, padding: 6, display: 'ALWAYS', bgColor: '#10b981' } },
-  { id: 2, latitude: 26.4518, longitude: 106.6594, title: '体育馆B', iconPath: '/static/marker.png', width: 30, height: 30, callout: { content: '体育馆B', color: '#ffffff', fontSize: 12, borderRadius: 4, padding: 6, display: 'ALWAYS', bgColor: '#10b981' } }
-]
-
-const routePolyline = [{ points: [], color: '#f97316', width: 6, dottedLine: false, arrowLine: false }]
 
 const TODAY_YEAR = new Date().getFullYear()
 const TODAY_MONTH = new Date().getMonth() + 1
@@ -268,13 +296,6 @@ function getMarathonDayState(day) {
   return MARATHON_DAY_STYLES.empty
 }
 
-function getMarathonDayBadges(day) {
-  const status = getMarathonDayStatus(day)
-  if (!status) return []
-  const types = Array.isArray(status) ? status : [status]
-  return types
-}
-
 function getMarathonDayCellStyle(day) {
   const state = getMarathonDayState(day)
   if (state.cls === 'empty') return ''
@@ -289,6 +310,13 @@ function getMarathonDayStatus(day) {
   if (!val) return null
   if (Array.isArray(val)) return val
   return val
+}
+
+function getMarathonDayBadges(day) {
+  const status = getMarathonDayStatus(day)
+  if (!status) return []
+  const types = Array.isArray(status) ? status : [status]
+  return types
 }
 
 function isMarathonFutureDay(day) {
@@ -315,22 +343,6 @@ function getMarathonPrevMonthDay(n) {
 </script>
 
 <style scoped>
-/* Map */
-.map-container {
-  position: relative;
-  width: 100%;
-  height: 480px;
-  background-color: #f1f5f9;
-  overflow: visible;
-}
-
-.map-bg {
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  border-radius: 0;
-}
-
 .marathon-climate-card {
   position: absolute;
   top: 24rpx;
@@ -561,6 +573,13 @@ function getMarathonPrevMonthDay(n) {
   display: block;
 }
 
+.event-card-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4rpx;
+}
+
 .event-card-sub {
   font-size: 18rpx;
   color: rgba(255, 255, 255, 0.6);
@@ -573,6 +592,7 @@ function getMarathonPrevMonthDay(n) {
   background: #f97316;
   border-radius: 20rpx;
   padding: 4rpx 12rpx;
+  display: inline-block;
 }
 
 .event-hot-text {
@@ -616,6 +636,7 @@ function getMarathonPrevMonthDay(n) {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
 }
 
 .plan-indigo { background: #e0e7ff; }
@@ -644,6 +665,100 @@ function getMarathonPrevMonthDay(n) {
   color: #6366f1;
 }
 
+/* 马拉松运动中卡片：深色主题 */
+.marathon-training-card {
+  position: absolute;
+  bottom: 24rpx;
+  left: 24rpx;
+  right: 24rpx;
+  border-radius: 40rpx;
+  overflow: hidden;
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  box-shadow: 0 12rpx 40rpx rgba(15, 23, 42, 0.45), 0 4rpx 16rpx rgba(15, 23, 42, 0.25);
+  z-index: 5;
+}
+
+.training-top-bar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16rpx 0 8rpx;
+  gap: 6rpx;
+}
+
+.training-top-line {
+  width: 72rpx;
+  height: 8rpx;
+  background: rgba(255, 255, 255, 0.35);
+  border-radius: 8rpx;
+}
+
+.training-top-hint {
+  font-size: 20rpx;
+  color: rgba(255, 255, 255, 0.75);
+  font-weight: 600;
+  letter-spacing: 3rpx;
+}
+
+.training-single-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12rpx 24rpx 8rpx;
+}
+
+.training-stat {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.training-label {
+  font-size: 22rpx;
+  color: rgba(255, 255, 255, 0.65);
+  margin-bottom: 8rpx;
+  font-weight: 500;
+}
+
+.training-value {
+  font-size: 44rpx;
+  font-weight: 900;
+  color: #ffffff;
+  letter-spacing: -1rpx;
+  line-height: 1;
+}
+
+.training-divider {
+  width: 2rpx;
+  height: 60rpx;
+  background: rgba(255, 255, 255, 0.2);
+  flex-shrink: 0;
+}
+
+.training-action-area {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8rpx 0 24rpx;
+}
+
+.training-btn {
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: 50%;
+  background: rgba(239, 68, 68, 0.90);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8rpx 24rpx rgba(239, 68, 68, 0.30);
+}
+
+.training-btn .iconfont {
+  font-size: 40rpx;
+  color: #fff;
+}
+
 /* Calendar + Profile Layout */
 .content-wrapper {
   padding: 0;
@@ -656,7 +771,7 @@ function getMarathonPrevMonthDay(n) {
   padding: 20rpx 30rpx 40rpx;
 }
 
-.section-card {
+.morning-column .section-card {
   background: #fff;
   border-radius: 24rpx;
   padding: 28rpx;
@@ -725,7 +840,7 @@ function getMarathonPrevMonthDay(n) {
   position: relative;
   font-weight: 700;
   transition: transform 0.15s ease;
-  overflow: visible;
+  overflow: hidden;
 }
 
 .day-cell:active { transform: scale(0.90); }
@@ -743,19 +858,7 @@ function getMarathonPrevMonthDay(n) {
 .day-cell.empty { color: #e5e7eb; }
 .day-cell.future { color: #e5e7eb; }
 
-.marathon-ring-badge {
-  position: absolute;
-  bottom: -4rpx;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 14rpx;
-  height: 14rpx;
-  border-radius: 50%;
-  background: #a855f7;
-  border: 3rpx solid #fff;
-  box-shadow: 0 0 8rpx rgba(168, 85, 247, 0.6);
-  z-index: 2;
-}
+/* Delete: marathon-cell styles removed per plan */
 
 .calendar-legend {
   display: flex;
@@ -807,6 +910,18 @@ function getMarathonPrevMonthDay(n) {
   box-shadow: 0 20rpx 60rpx rgba(0, 0, 0, 0.40), inset 0 1rpx 0 rgba(255, 255, 255, 0.05);
   position: relative;
   overflow: hidden;
+}
+
+.marathon-profile-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -20%;
+  width: 600rpx;
+  height: 600rpx;
+  background: radial-gradient(circle, rgba(249, 115, 22, 0.08) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
 }
 
 .pro-header-premium {
@@ -868,7 +983,6 @@ function getMarathonPrevMonthDay(n) {
   color: #fff;
 }
 
-/* PB Section */
 .pro-pb-section {
   margin-bottom: 40rpx;
   position: relative;
@@ -916,14 +1030,15 @@ function getMarathonPrevMonthDay(n) {
 .pro-pb-value-huge {
   font-size: 120rpx;
   font-weight: 900;
-  color: #fff;
-  letter-spacing: -3rpx;
-  line-height: 1;
-  margin-bottom: 16rpx;
   background: linear-gradient(180deg, #fff 0%, #e2e8f0 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  line-height: 1;
+  letter-spacing: -3rpx;
+  position: relative;
+  z-index: 1;
+  text-align: center;
 }
 
 .pro-pb-meta {
@@ -948,7 +1063,6 @@ function getMarathonPrevMonthDay(n) {
   color: #94a3b8;
 }
 
-/* Stats Dashboard */
 .pro-stats-dashboard {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -984,9 +1098,13 @@ function getMarathonPrevMonthDay(n) {
   align-items: center;
   justify-content: center;
   margin-bottom: 12rpx;
+  font-size: 0;
 }
 
-.pro-stat-icon { font-size: 32rpx; color: #fff; }
+.pro-stat-icon {
+  font-size: 32rpx;
+  color: #fff;
+}
 
 .races-gradient { background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%); }
 .distance-gradient { background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%); }
@@ -1006,16 +1124,13 @@ function getMarathonPrevMonthDay(n) {
 .pro-stat-value.carbon-value { color: #10b981; }
 
 .pro-stat-label {
-  font-size: 14rpx;
-  color: #94a3b8;
+  font-size: 16rpx;
+  color: #64748b;
   text-align: center;
-  font-weight: 500;
-  line-height: 1.4;
 }
 
 .pro-stat-unit { font-size: 12rpx; color: #64748b; }
 
-/* Level Progress */
 .pro-achievement-section {
   background: rgba(255, 255, 255, 0.03);
   border-radius: 28rpx;
@@ -1096,9 +1211,9 @@ function getMarathonPrevMonthDay(n) {
 
 .pro-level-hint {
   font-size: 16rpx;
-  color: #64748b;
+  color: rgba(255, 255, 255, 0.50);
   text-align: center;
-  font-weight: 500;
-  line-height: 1.5;
+  font-weight: 600;
+  line-height: 1.6;
 }
 </style>

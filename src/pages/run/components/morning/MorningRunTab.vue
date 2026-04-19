@@ -1,18 +1,12 @@
 <template>
   <view>
     <!-- Map Area -->
-    <view class="map-container map-morning">
-      <map
-        id="runMap"
-        class="map-bg"
-        :latitude="schoolLat"
-        :longitude="schoolLng"
-        :scale="16"
-        :markers="markers"
-        :polyline="routePolyline"
-        :show-location="true"
-        :enable-satellite="false"
-      ></map>
+    <RunMap
+      :schoolLat="schoolLat"
+      :schoolLng="schoolLng"
+      :markers="markers"
+      :routePolyline="routePolyline"
+    >
       <view class="morning-weather-card">
         <view class="morning-weather-left">
           <text class="iconfont icon-sun morning-weather-icon"></text>
@@ -57,7 +51,7 @@
           </view>
         </view>
       </view>
-    </view>
+    </RunMap>
 
     <!-- Morning Goal -->
     <view class="morning-goal-section" :style="{ marginTop: isMorningCardExpanded ? '280rpx' : '0rpx' }">
@@ -68,8 +62,32 @@
         </view>
         <view class="morning-goal-bar-bg">
           <view class="morning-segments">
-            <view class="segment active" v-for="i in 18" :key="'a' + i" style="width: 3.85%"></view>
-            <view class="segment" v-for="i in 8" :key="'i' + i" style="width: 3.85%"></view>
+            <view class="segment active" style="width: 3.85%"></view>
+            <view class="segment active" style="width: 3.85%"></view>
+            <view class="segment active" style="width: 3.85%"></view>
+            <view class="segment active" style="width: 3.85%"></view>
+            <view class="segment active" style="width: 3.85%"></view>
+            <view class="segment active" style="width: 3.85%"></view>
+            <view class="segment active" style="width: 3.85%"></view>
+            <view class="segment active" style="width: 3.85%"></view>
+            <view class="segment active" style="width: 3.85%"></view>
+            <view class="segment active" style="width: 3.85%"></view>
+            <view class="segment active" style="width: 3.85%"></view>
+            <view class="segment active" style="width: 3.85%"></view>
+            <view class="segment active" style="width: 3.85%"></view>
+            <view class="segment active" style="width: 3.85%"></view>
+            <view class="segment active" style="width: 3.85%"></view>
+            <view class="segment active" style="width: 3.85%"></view>
+            <view class="segment active" style="width: 3.85%"></view>
+            <view class="segment active" style="width: 3.85%"></view>
+            <view class="segment" style="width: 3.85%"></view>
+            <view class="segment" style="width: 3.85%"></view>
+            <view class="segment" style="width: 3.85%"></view>
+            <view class="segment" style="width: 3.85%"></view>
+            <view class="segment" style="width: 3.85%"></view>
+            <view class="segment" style="width: 3.85%"></view>
+            <view class="segment" style="width: 3.85%"></view>
+            <view class="segment inactive" style="width: 3.85%"></view>
           </view>
         </view>
         <view class="morning-goal-stats">
@@ -78,7 +96,7 @@
             <text class="morning-goal-stat-value">39.41 KM</text>
           </view>
           <view class="morning-goal-stat">
-            <text class="morning-goal-stat-label">晨跑低碳积分</text>
+            <text class="morning-goal-stat-label">晨跑积分</text>
             <text class="morning-goal-stat-value green">+ 450 pts</text>
           </view>
         </view>
@@ -158,6 +176,9 @@
 </template>
 
 <script setup>
+import { ref } from 'vue'
+import RunMap from '../RunMap.vue'
+
 const props = defineProps({
   isMorningCardExpanded: Boolean,
   isRunning: Boolean,
@@ -169,7 +190,10 @@ const props = defineProps({
   daysInMonth: Number,
   prevMonthPadding: Number,
   runRecords: Object,
-  morningHistory: Array,
+  routePolyline: Array,
+  markers: Array,
+  schoolLat: Number,
+  schoolLng: Number,
 })
 
 const emit = defineEmits([
@@ -177,15 +201,11 @@ const emit = defineEmits([
   'prevMonth', 'nextMonth', 'openDatePicker', 'dayTapMorning'
 ])
 
-const schoolLat = 26.4451
-const schoolLng = 106.6589
-
-const markers = [
-  { id: 1, latitude: 26.4398, longitude: 106.6632, title: '体育馆A', iconPath: '/static/marker.png', width: 30, height: 30, callout: { content: '体育馆A', color: '#ffffff', fontSize: 12, borderRadius: 4, padding: 6, display: 'ALWAYS', bgColor: '#10b981' } },
-  { id: 2, latitude: 26.4518, longitude: 106.6594, title: '体育馆B', iconPath: '/static/marker.png', width: 30, height: 30, callout: { content: '体育馆B', color: '#ffffff', fontSize: 12, borderRadius: 4, padding: 6, display: 'ALWAYS', bgColor: '#10b981' } }
-]
-
-const routePolyline = [{ points: [], color: '#10b981', width: 6, dottedLine: false, arrowLine: false }]
+const morningHistory = ref([
+  { date: '2026.04.09 晨跑', km: '5.20', time: '31:40', pace: "06'05''", faded: false, img: 'https://modao.cc/agent-py/media/generated_images/2026-04-10/d7294226572d438d8e8de2fe6568f8d1.jpg' },
+  { date: '2026.04.08 晨跑', km: '3.80', time: '22:15', pace: "05'51''", faded: false, img: 'https://modao.cc/agent-py/media/generated_images/2026-04-10/d7294226572d438d8e8de2fe6568f8d1.jpg' },
+  { date: '2026.04.07 晨跑', km: '4.50', time: '28:20', pace: "06'17''", faded: true, img: 'https://modao.cc/agent-py/media/generated_images/2026-04-10/d7294226572d438d8e8de2fe6568f8d1.jpg' },
+])
 
 const TODAY_YEAR = new Date().getFullYear()
 const TODAY_MONTH = new Date().getMonth() + 1
@@ -250,22 +270,6 @@ function getPrevMonthDay(n) {
 </script>
 
 <style scoped>
-/* Map */
-.map-container {
-  position: relative;
-  width: 100%;
-  height: 320px;
-  background-color: #f1f5f9;
-  overflow: visible;
-}
-
-.map-bg {
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  border-radius: 0;
-}
-
 .morning-weather-card {
   position: absolute;
   top: 24rpx;
@@ -498,7 +502,7 @@ function getPrevMonthDay(n) {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20rpx;
+  margin-bottom: 16rpx;
 }
 
 .morning-goal-title {
@@ -508,28 +512,30 @@ function getPrevMonthDay(n) {
 }
 
 .morning-goal-count {
-  font-size: 28rpx;
-  font-weight: 600;
+  font-size: 24rpx;
+  font-weight: bold;
   color: #f97316;
 }
 
 .morning-goal-bar-bg {
+  height: 16rpx;
   background: #f3f4f6;
-  border-radius: 16rpx;
-  padding: 8rpx;
+  border-radius: 10rpx;
+  overflow: hidden;
   margin-bottom: 20rpx;
 }
 
 .morning-segments {
+  height: 100%;
+  border-radius: 10rpx;
   display: flex;
-  gap: 4rpx;
-  flex-wrap: wrap;
+  gap: 1rpx;
+  overflow: hidden;
 }
 
 .segment {
-  height: 24rpx;
-  border-radius: 6rpx;
-  background: #e5e7eb;
+  height: 100%;
+  flex-shrink: 0;
   transition: background 0.3s ease;
 }
 
@@ -543,28 +549,31 @@ function getPrevMonthDay(n) {
 
 .morning-goal-stats {
   display: flex;
-  justify-content: space-between;
+  gap: 16rpx;
 }
 
 .morning-goal-stat {
-  display: flex;
-  flex-direction: column;
-  gap: 6rpx;
+  flex: 1;
+  background: #f9fafb;
+  border-radius: 16rpx;
+  padding: 16rpx;
 }
 
 .morning-goal-stat-label {
-  font-size: 20rpx;
+  font-size: 18rpx;
   color: #9ca3af;
+  display: block;
+  margin-bottom: 4rpx;
 }
 
 .morning-goal-stat-value {
-  font-size: 32rpx;
+  font-size: 28rpx;
   font-weight: bold;
   color: #374151;
 }
 
 .morning-goal-stat-value.green {
-  color: #10b981;
+  color: #22c55e;
 }
 
 /* Calendar + History Layout */
@@ -711,9 +720,7 @@ function getPrevMonthDay(n) {
 }
 
 .legend-dot.dark-green {
-  background: #dcfce7;
-  border: 2rpx solid #86efac;
-  border-radius: 4rpx;
+  background-color: #DCFCE7;
 }
 
 .legend-text {

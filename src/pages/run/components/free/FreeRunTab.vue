@@ -1,27 +1,21 @@
 <template>
   <view>
     <!-- Map Area -->
-    <view class="map-container">
-      <map
-        id="runMap"
-        class="map-bg"
-        :latitude="schoolLat"
-        :longitude="schoolLng"
-        :scale="16"
-        :markers="markers"
-        :polyline="routePolyline"
-        :show-location="true"
-        :enable-satellite="false"
-      ></map>
+    <RunMap
+      :schoolLat="schoolLat"
+      :schoolLng="schoolLng"
+      :markers="markers"
+      :routePolyline="routePolyline"
+    >
       <view class="weather-widget">
         <text class="iconfont icon-weather"></text>
         <text class="weather-text">2026.04.10 · 晴 22°C</text>
       </view>
-    </view>
+    </RunMap>
 
     <!-- Floating Card -->
     <view class="floating-card" :class="{ 'is-expanded': isCardExpanded, 'is-running': isRunning }">
-      <view v-if="isCardExpanded" class="card-top-bar" @tap="emit('toggleCard')">
+      <view v-if="isCardExpanded" class="card-top-bar" @tap="emit('collapseCard')">
         <view class="top-bar-line"></view>
         <text class="top-bar-hint">点击收起</text>
         <text class="top-bar-icon iconfont icon-chevron-up"></text>
@@ -46,11 +40,21 @@
         <view class="card-close" @tap="emit('collapseCard')">
           <text class="close-icon iconfont icon-chevron-up"></text>
         </view>
-        <view class="expanded-grid">
-          <view class="exp-stat"><text class="exp-label">时长</text><text class="exp-value exp-large">{{ displayDuration || '00:00:00' }}</text></view>
-          <view class="exp-stat"><text class="exp-label">本次距离 (KM)</text><text class="exp-value exp-large">{{ currentDistance || '0.00' }}</text></view>
-          <view class="exp-stat"><text class="exp-label">配速</text><text class="exp-value">{{ currentPace || "--'--\"" }}</text></view>
-          <view class="exp-stat"><text class="exp-label">累计减排 (g)</text><text class="exp-value exp-emission">{{ displayEmission || '0' }}</text></view>
+        <view class="expanded-single-row">
+          <view class="row-stat">
+            <text class="row-label">时长</text>
+            <text class="row-value row-large">{{ displayDuration || '00:00:00' }}</text>
+          </view>
+          <view class="row-divider"></view>
+          <view class="row-stat">
+            <text class="row-label">配速</text>
+            <text class="row-value row-large">{{ currentPace || "--'--\"" }}</text>
+          </view>
+          <view class="row-divider"></view>
+          <view class="row-stat">
+            <text class="row-label">本次距离(KM)</text>
+            <text class="row-value row-large">{{ currentDistance || '0.00' }}</text>
+          </view>
         </view>
         <view class="action-area">
           <view class="action-btn side-btn" v-if="isRunning" @tap="emit('endRun')"><text class="iconfont icon-stop"></text></view>
@@ -84,7 +88,7 @@
       </view>
     </view>
 
-    <!-- Campus Task Card -->
+    <!-- Campus Task -->
     <view class="campus-task-section">
       <view class="campus-task-card">
         <view class="campus-task-header">
@@ -154,7 +158,6 @@
           <text class="campus-data-sub">本周跑量趋势</text>
         </view>
         <view class="campus-chart-area">
-          <canvas canvas-id="runChart" id="runChart" class="run-chart-canvas"></canvas>
           <view class="chart-bar-container">
             <view class="chart-bar-row">
               <view class="chart-bar-wrap">
@@ -218,6 +221,7 @@
               :key="'cur-' + day"
               class="day-cell"
               :class="getDayState(day).cls"
+              :style="getDayCellStyle(day)"
               @tap="emit('dayTap', day)"
             >
               <text class="day-num" :class="{ 'day-num-bold': isPastDay(day) }">{{ day }}</text>
@@ -261,6 +265,9 @@
 </template>
 
 <script setup>
+import { ref } from 'vue'
+import RunMap from '../RunMap.vue'
+
 const props = defineProps({
   isCardExpanded: Boolean,
   isRunning: Boolean,
@@ -272,8 +279,11 @@ const props = defineProps({
   calMonth: Number,
   daysInMonth: Number,
   prevMonthPadding: Number,
-  achievements: Array,
   runRecords: Object,
+  routePolyline: Array,
+  markers: Array,
+  schoolLat: Number,
+  schoolLng: Number,
 })
 
 const emit = defineEmits([
@@ -282,15 +292,13 @@ const emit = defineEmits([
   'prevMonth', 'nextMonth', 'openDatePicker', 'dayTap'
 ])
 
-const schoolLat = 26.4451
-const schoolLng = 106.6589
-
-const markers = [
-  { id: 1, latitude: 26.4398, longitude: 106.6632, title: '体育馆A', iconPath: '/static/marker.png', width: 30, height: 30, callout: { content: '体育馆A', color: '#ffffff', fontSize: 12, borderRadius: 4, padding: 6, display: 'ALWAYS', bgColor: '#10b981' } },
-  { id: 2, latitude: 26.4518, longitude: 106.6594, title: '体育馆B', iconPath: '/static/marker.png', width: 30, height: 30, callout: { content: '体育馆B', color: '#ffffff', fontSize: 12, borderRadius: 4, padding: 6, display: 'ALWAYS', bgColor: '#10b981' } }
-]
-
-const routePolyline = [{ points: [], color: '#047857', width: 6, dottedLine: false, arrowLine: false }]
+const achievements = ref([
+  { name: '早起鸟', icon: 'icon-medal', iconClass: 'ach-orange', locked: false },
+  { name: '低碳达人', icon: 'icon-tree', iconClass: 'ach-green', locked: false },
+  { name: '极速跑者', icon: 'icon-lightning', iconClass: 'ach-blue', locked: false },
+  { name: '100KM 达成', icon: 'icon-target', iconClass: 'ach-gray', locked: true },
+  { name: '马拉松之星', icon: 'icon-star', iconClass: 'ach-gray', locked: true },
+])
 
 const TODAY_YEAR = new Date().getFullYear()
 const TODAY_MONTH = new Date().getMonth() + 1
@@ -346,25 +354,17 @@ function getPrevMonthDay(n) {
   const prevDays = new Date(prevY, prevM, 0).getDate()
   return prevDays - props.prevMonthPadding + n
 }
+
+function getDayCellStyle(day) {
+  const badges = getDayBadges(day)
+  const future = isFutureDay(day)
+  if (future) return ''
+  if (badges.length > 0) return 'border: 4rpx solid #065f46; color: #065f46; box-shadow: 0 0 16rpx rgba(5, 150, 105, 0.7), 0 0 32rpx rgba(5, 150, 105, 0.4);'
+  return ''
+}
 </script>
 
 <style scoped>
-/* Map */
-.map-container {
-  position: relative;
-  width: 100%;
-  height: 320px;
-  background-color: #f1f5f9;
-  overflow: visible;
-}
-
-.map-bg {
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  border-radius: 0;
-}
-
 .weather-widget {
   position: absolute;
   top: 32rpx;
@@ -520,27 +520,28 @@ function getPrevMonthDay(n) {
   transition: transform 0.3s ease;
 }
 
-.expanded-grid {
+.expanded-single-row {
   display: flex;
-  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16rpx 16rpx 0;
 }
 
-.exp-stat {
-  width: 50%;
+.row-stat {
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 32rpx;
 }
 
-.exp-label {
+.row-label {
   font-size: 22rpx;
   color: rgba(255, 255, 255, 0.72);
   margin-bottom: 8rpx;
   font-weight: 500;
 }
 
-.exp-value {
+.row-value {
   font-size: 44rpx;
   font-weight: 900;
   color: #ffffff;
@@ -548,8 +549,17 @@ function getPrevMonthDay(n) {
   line-height: 1;
 }
 
-.exp-large { font-size: 60rpx; }
-.exp-emission { color: #a7f3d0; }
+.row-large {
+  font-size: 52rpx;
+}
+
+.row-divider {
+  width: 2rpx;
+  height: 60rpx;
+  background: rgba(255, 255, 255, 0.25);
+  flex-shrink: 0;
+  margin: 0 8rpx;
+}
 
 .action-area {
   display: flex;
@@ -849,7 +859,7 @@ function getPrevMonthDay(n) {
 
 /* Data Chart */
 .campus-data-section {
-  margin: 20rpx 30rpx 0;
+  padding: 20rpx 30rpx 0;
 }
 
 .campus-data-card {
@@ -864,7 +874,7 @@ function getPrevMonthDay(n) {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20rpx;
+  margin-bottom: 16rpx;
 }
 
 .campus-data-title {
@@ -874,57 +884,62 @@ function getPrevMonthDay(n) {
 }
 
 .campus-data-sub {
-  font-size: 20rpx;
+  font-size: 18rpx;
   color: #9ca3af;
 }
 
 .campus-chart-area {
-  height: 200rpx;
+  height: 160rpx;
   position: relative;
 }
 
-.run-chart-canvas {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 200rpx;
-}
-
 .chart-bar-container {
-  height: 200rpx;
+  width: 100%;
+  height: 100%;
   display: flex;
   align-items: flex-end;
+  justify-content: center;
 }
 
 .chart-bar-row {
   display: flex;
+  justify-content: space-around;
   align-items: flex-end;
-  gap: 8rpx;
   width: 100%;
-  height: 100%;
+  height: 120rpx;
+  padding: 0 20rpx;
+  box-sizing: border-box;
 }
 
 .chart-bar-wrap {
-  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-end;
-  height: 100%;
+  gap: 8rpx;
+  flex: 1;
 }
 
 .chart-bar {
-  width: 100%;
-  background: linear-gradient(180deg, #22C55E 0%, #86efac 100%);
-  border-radius: 4rpx 4rpx 0 0;
-  min-height: 8rpx;
+  width: 32rpx;
+  background: linear-gradient(180deg, #22c55e 0%, #86efac 100%);
+  border-radius: 6rpx 6rpx 0 0;
+  min-height: 20rpx;
+}
+
+.chart-val {
+  font-size: 18rpx;
+  font-weight: bold;
+  color: #059669;
+  position: absolute;
+  top: -28rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
 }
 
 .chart-label {
   font-size: 18rpx;
   color: #9ca3af;
-  margin-top: 8rpx;
 }
 
 /* Calendar */
@@ -1152,7 +1167,6 @@ function getPrevMonthDay(n) {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #fef3c7, #fde68a);
 }
 
 .achievement-icon .iconfont {
@@ -1160,13 +1174,14 @@ function getPrevMonthDay(n) {
   color: #f59e0b;
 }
 
-.achievement-icon.achieve-orange { background: linear-gradient(135deg, #fef3c7, #fde68a); }
-.achievement-icon.achieve-green { background: linear-gradient(135deg, #d1fae5, #a7f3d0); }
-.achievement-icon.achieve-green .iconfont { color: #10b981; }
-.achievement-icon.achieve-blue { background: linear-gradient(135deg, #dbeafe, #bfdbfe); }
-.achievement-icon.achieve-blue .iconfont { color: #3b82f6; }
-.achievement-icon.achieve-gray { background: #f3f4f6; }
-.achievement-icon.achieve-gray .iconfont { color: #9ca3af; }
+.ach-orange { background: #ffedd5; }
+.ach-orange .iconfont { color: #f97316; }
+.ach-green { background: #dcfce7; }
+.ach-green .iconfont { color: #22c55e; }
+.ach-blue { background: #dbeafe; }
+.ach-blue .iconfont { color: #3b82f6; }
+.ach-gray { background: #f3f4f6; opacity: 0.5; }
+.ach-gray .iconfont { color: #9ca3af; }
 
 .achievement-name {
   font-size: 18rpx;
