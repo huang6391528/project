@@ -1,6 +1,6 @@
 <template>
-  <scroll-view class="category-scroll" scroll-x="true">
-    <view class="category-tags">
+  <scroll-view class="category-scroll" scroll-x="true" show-scrollbar="false">
+    <view class="category-tags carbon-glass-card">
       <view
         v-for="tab in tabs"
         :key="tab.key"
@@ -32,28 +32,30 @@ const tabs = [
 
 <style scoped>
 .category-scroll {
-  padding: 0 30rpx;
+  padding: 0 30rpx 24rpx;
   white-space: nowrap;
 }
 
 .category-tags {
-  display: flex;
-  gap: 24rpx;
-  padding-bottom: 16rpx;
+  display: inline-flex;
+  gap: 10rpx;
+  padding: 10rpx;
+  border-radius: 999rpx;
 }
 
 .category-tag {
-  padding: 12rpx 32rpx;
-  background-color: #f3f4f6;
-  color: #6b7280;
-  border-radius: 50rpx;
-  font-size: 28rpx;
+  padding: 15rpx 36rpx;
+  color: #5f7068;
+  border-radius: 999rpx;
+  font-size: 27rpx;
+  font-weight: 800;
   white-space: nowrap;
+  transition: all 0.18s ease;
 }
 
 .tag-active {
-  background-color: #10b981;
+  background: linear-gradient(145deg, #10b981, #047857);
   color: #fff;
-  font-weight: 600;
+  box-shadow: 0 10rpx 22rpx rgba(16, 185, 129, 0.24);
 }
 </style>

@@ -1,12 +1,14 @@
 <template>
-  <view class="category-bar">
-    <view
-      v-for="tab in tabs"
-      :key="tab.key"
-      :class="['category-item', { 'cat-active': activeTab === tab.key }]"
-      @click="emit('change', tab.key)"
-    >{{ tab.label }}</view>
-  </view>
+  <scroll-view class="category-scroll" scroll-x="true" show-scrollbar="false">
+    <view class="category-bar carbon-glass-card">
+      <view
+        v-for="tab in tabs"
+        :key="tab.key"
+        :class="['category-item', { 'cat-active': activeTab === tab.key }]"
+        @click="emit('change', tab.key)"
+      >{{ tab.label }}</view>
+    </view>
+  </scroll-view>
 </template>
 
 <script setup>
@@ -23,24 +25,30 @@ const tabs = [
 </script>
 
 <style scoped>
-.category-bar {
-  display: flex;
-  gap: 48rpx;
+.category-scroll {
   padding: 0 30rpx 24rpx;
-  border-bottom: 2rpx solid #f3f4f6;
-  overflow-x: auto;
-}
-.category-item {
-  padding-bottom: 16rpx;
-  font-size: 28rpx;
-  color: #9ca3af;
-  font-weight: 500;
   white-space: nowrap;
-  border-bottom: 4rpx solid transparent;
 }
+
+.category-bar {
+  display: inline-flex;
+  gap: 10rpx;
+  padding: 10rpx;
+  border-radius: 999rpx;
+}
+
+.category-item {
+  padding: 15rpx 28rpx;
+  font-size: 26rpx;
+  color: #65746d;
+  font-weight: 800;
+  white-space: nowrap;
+  border-radius: 999rpx;
+}
+
 .cat-active {
-  color: #059669;
-  font-weight: bold;
-  border-bottom-color: #10b981;
+  color: #fff;
+  background: linear-gradient(145deg, #10b981, #047857);
+  box-shadow: 0 10rpx 22rpx rgba(16, 185, 129, 0.22);
 }
 </style>

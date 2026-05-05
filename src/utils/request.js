@@ -133,7 +133,7 @@ class Request {
               resolve(responseData)
             } else if (statusCode === RESPONSE_CODE.UNAUTHORIZED) {
               // Token 过期，触发重新登录
-              uni.$emit(' unauthorized')
+              uni.$emit('unauthorized')
               reject(new Error('登录已过期，请重新登录'))
             } else if (statusCode === RESPONSE_CODE.FORBIDDEN) {
               reject(new Error('无权限访问'))

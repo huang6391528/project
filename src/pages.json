@@ -11,7 +11,7 @@
       "path": "pages/login/login",
       "style": {
         "navigationBarTitleText": "登录",
-        "navigationBarBackgroundColor": "#f8fafc",
+        "navigationBarBackgroundColor": "#f4fbf7",
         "navigationBarTextStyle": "black"
       }
     },
@@ -25,7 +25,7 @@
     {
       "path": "pages/action/action",
       "style": {
-        "navigationBarTitleText": "低碳行为",
+        "navigationBarTitleText": "低碳行动",
         "navigationStyle": "custom"
       }
     },
@@ -53,14 +53,14 @@
     {
       "path": "pages/profile/security",
       "style": {
-        "navigationBarTitleText": "账号与安全",
+        "navigationBarTitleText": "账号安全",
         "navigationStyle": "custom"
       }
     },
     {
       "path": "pages/profile/about",
       "style": {
-        "navigationBarTitleText": "关于平台",
+        "navigationBarTitleText": "关于我们",
         "navigationStyle": "custom"
       }
     },
@@ -88,7 +88,7 @@
     {
       "path": "pages/profile/records",
       "style": {
-        "navigationBarTitleText": "反馈记录",
+        "navigationBarTitleText": "低碳记录",
         "navigationStyle": "custom"
       }
     },
@@ -109,7 +109,7 @@
     {
       "path": "pages/checkin-group/checkin-group",
       "style": {
-        "navigationBarTitleText": "我的打卡团",
+        "navigationBarTitleText": "打卡团",
         "navigationStyle": "custom"
       }
     },
@@ -138,12 +138,12 @@
   "globalStyle": {
     "navigationBarTextStyle": "black",
     "navigationBarTitleText": "绿动校园",
-    "navigationBarBackgroundColor": "#F8F8F8",
-    "backgroundColor": "#F8F8F8"
+    "navigationBarBackgroundColor": "#F4FBF7",
+    "backgroundColor": "#EEF8F2"
   },
   "tabBar": {
-    "color": "#999999",
-    "selectedColor": "#10b981",
+    "color": "#8a9690",
+    "selectedColor": "#059669",
     "borderStyle": "white",
     "backgroundColor": "#ffffff",
     "list": [
@@ -157,7 +157,7 @@
       },
       {
         "pagePath": "pages/action/action",
-        "text": "低碳"
+        "text": "行动"
       },
       {
         "pagePath": "pages/store/store",

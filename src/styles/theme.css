@@ -1,0 +1,100 @@
+/* Carbon Campus visual system */
+:root {
+  --carbon-bg: #eef8f2;
+  --carbon-bg-deep: #dff3ea;
+  --carbon-ink: #12211b;
+  --carbon-muted: #65746d;
+  --carbon-primary: #11a97d;
+  --carbon-primary-dark: #047857;
+  --carbon-accent: #f4b740;
+  --carbon-cyan: #38bdf8;
+  --carbon-blue: #2563eb;
+  --carbon-purple: #7c3aed;
+  --carbon-card: rgba(255, 255, 255, 0.86);
+  --carbon-border: rgba(17, 169, 125, 0.18);
+  --carbon-shadow: 0 18rpx 48rpx rgba(22, 101, 52, 0.12);
+}
+
+page {
+  min-height: 100%;
+  color: var(--carbon-ink);
+  background:
+    radial-gradient(circle at 12% 8%, rgba(74, 222, 128, 0.20), transparent 34%),
+    radial-gradient(circle at 88% 0%, rgba(56, 189, 248, 0.14), transparent 30%),
+    linear-gradient(180deg, #f4fbf7 0%, var(--carbon-bg) 48%, #f8fbff 100%);
+}
+
+.carbon-page-shell {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+.carbon-page-shell::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.5;
+  background-image:
+    linear-gradient(rgba(17, 169, 125, 0.08) 1rpx, transparent 1rpx),
+    linear-gradient(90deg, rgba(17, 169, 125, 0.08) 1rpx, transparent 1rpx);
+  background-size: 52rpx 52rpx;
+  mask-image: linear-gradient(180deg, #000 0%, transparent 70%);
+}
+
+.carbon-glass-card {
+  background: var(--carbon-card);
+  border: 1rpx solid rgba(255, 255, 255, 0.70);
+  box-shadow: var(--carbon-shadow);
+  backdrop-filter: blur(18rpx);
+}
+
+.carbon-lift {
+  transition: transform 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease;
+}
+
+.carbon-lift:active {
+  transform: scale(0.97);
+  opacity: 0.92;
+}
+
+.carbon-fade-up {
+  animation: carbonFadeUp 0.48s ease both;
+}
+
+@keyframes carbonFadeUp {
+  from { opacity: 0; transform: translateY(28rpx); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.carbon-pulse {
+  animation: carbonPulse 2.4s ease-in-out infinite;
+}
+
+@keyframes carbonPulse {
+  0%, 100% { box-shadow: 0 16rpx 42rpx rgba(17, 169, 125, 0.28); }
+  50% { box-shadow: 0 20rpx 56rpx rgba(56, 189, 248, 0.30); }
+}
+
+.carbon-flow {
+  position: relative;
+  overflow: hidden;
+}
+
+.carbon-flow::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -40%;
+  width: 38%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.42), transparent);
+  transform: skewX(-18deg);
+  animation: carbonFlow 3.6s ease-in-out infinite;
+}
+
+@keyframes carbonFlow {
+  0% { left: -45%; }
+  55%, 100% { left: 120%; }
+}

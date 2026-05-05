@@ -1,21 +1,25 @@
 <template>
-  <view class="page-store">
-    <!-- Points Header -->
-    <view class="points-header">
+  <view class="page-store carbon-page-shell">
+    <view class="wallet-card carbon-fade-up">
       <view class="points-info">
-        <text class="points-label">可用积分</text>
-        <text class="points-value">2,480</text>
+        <text class="points-label">碳积分钱包</text>
+        <view class="points-row">
+          <text class="points-value">2,480</text>
+          <text class="points-unit">pts</text>
+        </view>
+        <view class="wallet-meta">
+          <text>本周新增 +320</text>
+          <text>可兑换 18 项权益</text>
+        </view>
       </view>
-      <view class="rules-btn" @click="showRules">
+      <view class="rules-btn carbon-lift" @click="showRules">
         <text class="rules-text">积分规则</text>
       </view>
     </view>
 
-    <!-- Tab Bar -->
     <StoreTabNav :activeTab="activeTab" @change="activeTab = $event" />
 
-    <!-- Content -->
-    <view class="content">
+    <view class="content carbon-fade-up">
       <StoreAll v-if="activeTab === 'all'" />
       <StoreFlash
         v-else-if="activeTab === 'flash'"
@@ -36,7 +40,6 @@
       />
     </view>
 
-    <!-- Exchange Modal -->
     <ExchangeModal
       :show="showModal"
       :itemName="modalItem"
@@ -71,10 +74,10 @@ const recommendProducts = [
 ]
 
 const campusServices = [
-  { name: '黑白打印3折券', location: '校内各大文印室', credits: 50, bgColor: '#ecfdf5', iconColor: '#10b981', iconText: '🖨', badge: '' },
-  { name: '图书馆座次优先权', location: '考试周专用，限领1次', credits: 300, bgColor: '#eff6ff', iconColor: '#3b82f6', iconText: '🪑', badge: '需核销' },
-  { name: '校园歌手大赛决赛门票', location: '学校大礼堂', credits: 1500, bgColor: '#fff7ed', iconColor: '#f97316', iconText: '🎫', badge: '' },
-  { name: '健身房单次体验券', location: '体育活动中心2楼', credits: 450, bgColor: '#f5f3ff', iconColor: '#8b5cf6', iconText: '🏋', badge: '' },
+  { name: '黑白打印3折券', location: '校内各大文印室', credits: 50, bgColor: '#ecfdf5', iconColor: '#10b981', iconText: '印', badge: '' },
+  { name: '图书馆座次优先权', location: '考试周专用，限领1次', credits: 300, bgColor: '#eff6ff', iconColor: '#3b82f6', iconText: '座', badge: '需核销' },
+  { name: '校园歌手大赛决赛门票', location: '学校大礼堂', credits: 1500, bgColor: '#fff7ed', iconColor: '#f97316', iconText: '票', badge: '' },
+  { name: '健身房单次体验券', location: '体育活动中心2楼', credits: 450, bgColor: '#f5f3ff', iconColor: '#8b5cf6', iconText: '健', badge: '' },
 ]
 
 const ecoGoods = [
@@ -103,19 +106,112 @@ function confirmExchange() {
 }
 
 function showRules() {
-  uni.showToast({ title: '积分规则说明', icon: 'none' })
+  uni.showToast({ title: '完成低碳行为即可获得积分', icon: 'none' })
 }
 </script>
 
 <style scoped>
-.page-store { background-color: #fff; min-height: 100vh; padding-bottom: 120rpx; }
+.page-store {
+  min-height: 100vh;
+  padding: 26rpx 0 120rpx;
+  box-sizing: border-box;
+}
 
-.points-header { display: flex; justify-content: space-between; align-items: flex-start; padding: 32rpx 30rpx 24rpx; }
-.points-label { display: block; font-size: 24rpx; color: #9ca3af; }
-.points-value { display: block; font-size: 72rpx; font-weight: 800; color: #1f2937; line-height: 1.2; }
-.rules-btn { display: flex; align-items: center; background-color: #f3f4f6; padding: 12rpx 24rpx; border-radius: 50rpx; margin-top: 16rpx; }
-.rules-icon { font-size: 20rpx; color: #6b7280; }
-.rules-text { font-size: 22rpx; color: #6b7280; margin-left: 8rpx; }
+.wallet-card {
+  margin: 0 30rpx 24rpx;
+  padding: 36rpx;
+  border-radius: 42rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  color: #fff;
+  background:
+    radial-gradient(circle at 88% 8%, rgba(250, 204, 21, 0.32), transparent 30%),
+    linear-gradient(135deg, #10231b, #047857 70%);
+  box-shadow: 0 24rpx 58rpx rgba(5, 95, 70, 0.22);
+  overflow: hidden;
+  position: relative;
+}
 
-.content { padding: 0 30rpx; }
+.wallet-card::after {
+  content: "";
+  position: absolute;
+  right: -34rpx;
+  bottom: -80rpx;
+  width: 250rpx;
+  height: 250rpx;
+  border-radius: 50%;
+  border: 2rpx solid rgba(255,255,255,0.14);
+}
+
+.points-info {
+  position: relative;
+  z-index: 1;
+}
+
+.points-label {
+  display: block;
+  font-size: 24rpx;
+  color: rgba(255,255,255,0.72);
+  font-weight: 800;
+}
+
+.points-row {
+  display: flex;
+  align-items: baseline;
+  margin-top: 10rpx;
+}
+
+.points-value {
+  display: block;
+  font-size: 76rpx;
+  font-weight: 900;
+  line-height: 1;
+  color: #facc15;
+}
+
+.points-unit {
+  margin-left: 10rpx;
+  font-size: 24rpx;
+  color: rgba(255,255,255,0.72);
+  font-weight: 900;
+}
+
+.wallet-meta {
+  display: flex;
+  gap: 12rpx;
+  flex-wrap: wrap;
+  margin-top: 20rpx;
+}
+
+.wallet-meta text {
+  padding: 8rpx 14rpx;
+  border-radius: 999rpx;
+  background: rgba(255,255,255,0.14);
+  font-size: 20rpx;
+  color: rgba(255,255,255,0.82);
+}
+
+.rules-btn {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  background: rgba(255,255,255,0.16);
+  border: 1rpx solid rgba(255,255,255,0.26);
+  padding: 14rpx 22rpx;
+  border-radius: 999rpx;
+}
+
+.rules-text {
+  font-size: 22rpx;
+  color: #fff;
+  font-weight: 800;
+}
+
+.content {
+  padding: 0 30rpx;
+  position: relative;
+  z-index: 1;
+}
 </style>

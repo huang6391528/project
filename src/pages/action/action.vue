@@ -1,31 +1,44 @@
 <template>
-  <view class="page-action">
-    <!-- Header -->
-    <view class="page-header">
-      <view class="header-left">
-        <text class="page-title">行为打卡</text>
-        <text class="page-sub">记录你的低碳足迹，赚取积分</text>
+  <view class="page-action carbon-page-shell">
+    <view class="action-hero carbon-fade-up">
+      <view class="hero-left">
+        <text class="hero-kicker">AI LOW-CARBON ENGINE</text>
+        <text class="page-title">低碳行动中心</text>
+        <text class="page-sub">智能识别校园场景，把低碳行为沉淀为可信积分与碳资产</text>
       </view>
-      <view class="header-right">
-        <text class="header-sub-label">今日已减排</text>
-        <text class="header-value">1.85 kg</text>
+      <view class="hero-meter">
+        <text class="meter-label">今日减碳</text>
+        <text class="meter-value">1.85</text>
+        <text class="meter-unit">kg CO₂</text>
       </view>
     </view>
 
-    <!-- Tab 导航 -->
+    <view class="hero-insights carbon-glass-card">
+      <view class="insight-item">
+        <text class="insight-value">12</text>
+        <text class="insight-label">可完成任务</text>
+      </view>
+      <view class="insight-item">
+        <text class="insight-value">96%</text>
+        <text class="insight-label">核验可信度</text>
+      </view>
+      <view class="insight-item">
+        <text class="insight-value">A+</text>
+        <text class="insight-label">低碳等级</text>
+      </view>
+    </view>
+
     <ActionTabNav :activeTab="activeTab" @change="switchTab" />
 
-    <!-- Content -->
-    <view class="content">
+    <view class="content carbon-fade-up">
       <ActionRecommend v-if="activeTab === 'recommend'" />
       <ActionTravel v-else-if="activeTab === 'travel'" />
       <ActionDiet v-else-if="activeTab === 'diet'" />
       <ActionLife v-else-if="activeTab === 'life'" />
     </view>
 
-    <!-- Floating Action Button -->
-    <view class="fab">
-      <text class="iconfont icon-plus"></text>
+    <view class="fab carbon-pulse">
+      <text class="fab-plus">+</text>
     </view>
   </view>
 </template>
@@ -47,78 +60,149 @@ const switchTab = (tab) => {
 
 <style scoped>
 .page-action {
-  background-color: #fff;
   min-height: 100vh;
-  padding-bottom: 120rpx;
+  padding: 26rpx 0 120rpx;
+  box-sizing: border-box;
 }
 
-/* Page Header */
-.page-header {
+.action-hero {
+  margin: 0 30rpx;
+  padding: 36rpx;
+  border-radius: 42rpx;
+  color: #fff;
   display: flex;
-  justify-content: space-between;
   align-items: flex-end;
-  padding: 32rpx 30rpx 24rpx;
+  justify-content: space-between;
+  background:
+    radial-gradient(circle at 90% 12%, rgba(250, 204, 21, 0.34), transparent 28%),
+    linear-gradient(135deg, #10231b, #047857 66%, #38bdf8);
+  box-shadow: 0 24rpx 58rpx rgba(5, 95, 70, 0.24);
+  position: relative;
+  overflow: hidden;
 }
 
-.header-left {
+.action-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0.32;
+  background-image: linear-gradient(120deg, rgba(255,255,255,0.18) 1rpx, transparent 1rpx);
+  background-size: 34rpx 34rpx;
+}
+
+.hero-left {
+  position: relative;
+  z-index: 1;
+  width: 420rpx;
   display: flex;
   flex-direction: column;
 }
 
+.hero-kicker {
+  font-size: 18rpx;
+  font-weight: 900;
+  color: rgba(255, 255, 255, 0.66);
+}
+
 .page-title {
-  font-size: 44rpx;
-  font-weight: 800;
-  color: #1f2937;
+  margin-top: 10rpx;
+  font-size: 46rpx;
+  font-weight: 900;
 }
 
 .page-sub {
+  margin-top: 10rpx;
   font-size: 24rpx;
-  color: #9ca3af;
+  line-height: 1.5;
+  color: rgba(255,255,255,0.76);
+}
+
+.hero-meter {
+  position: relative;
+  z-index: 1;
+  width: 170rpx;
+  height: 170rpx;
+  border-radius: 50%;
+  border: 2rpx solid rgba(255,255,255,0.28);
+  background: rgba(255,255,255,0.14);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(12rpx);
+}
+
+.meter-label {
+  font-size: 20rpx;
+  color: rgba(255,255,255,0.70);
+}
+
+.meter-value {
+  font-size: 46rpx;
+  font-weight: 900;
+  color: #facc15;
+  line-height: 1;
   margin-top: 8rpx;
 }
 
-.header-right {
-  text-align: right;
+.meter-unit {
+  font-size: 18rpx;
+  color: rgba(255,255,255,0.76);
+  margin-top: 6rpx;
 }
 
-.header-sub-label {
-  display: block;
+.hero-insights {
+  margin: -18rpx 52rpx 24rpx;
+  border-radius: 28rpx;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  padding: 24rpx 10rpx;
+  position: relative;
+  z-index: 2;
+}
+
+.insight-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4rpx;
+}
+
+.insight-value {
+  font-size: 34rpx;
+  font-weight: 900;
+  color: #047857;
+}
+
+.insight-label {
   font-size: 20rpx;
-  color: #d1d5db;
+  color: #6b7a72;
 }
 
-.header-value {
-  display: block;
-  font-size: 36rpx;
-  font-weight: bold;
-  color: #059669;
-}
-
-/* Content */
 .content {
   padding: 0 30rpx;
+  position: relative;
+  z-index: 1;
 }
 
-/* Floating Action Button */
 .fab {
   position: fixed;
   bottom: 200rpx;
-  right: 64rpx;
-  width: 112rpx;
-  height: 112rpx;
-  background-color: #10b981;
-  border-radius: 50%;
+  right: 52rpx;
+  width: 104rpx;
+  height: 104rpx;
+  background: linear-gradient(145deg, #10231b, #10b981);
+  border-radius: 34rpx;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 56rpx;
   color: #fff;
-  box-shadow: 0 16rpx 32rpx rgba(16, 185, 129, 0.4);
   z-index: 100;
 }
 
-.fab:active {
-  transform: scale(0.9);
-  transition: transform 0.1s;
+.fab-plus {
+  font-size: 60rpx;
+  font-weight: 300;
+  line-height: 1;
 }
 </style>

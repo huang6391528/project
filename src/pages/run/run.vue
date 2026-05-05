@@ -1,7 +1,18 @@
 <template>
-  <view class="page-run">
-    <!-- Top Tabs -->
-    <view class="tab-bar">
+  <view class="page-run carbon-page-shell">
+    <view class="run-hero carbon-fade-up">
+      <view>
+        <text class="hero-kicker">SMART RUNNING TRACK</text>
+        <text class="hero-title">校园跑数据舱</text>
+        <text class="hero-sub">运动轨迹、晨跑打卡、马拉松训练统一记录</text>
+      </view>
+      <view class="run-status" :class="{ running: isRunning }">
+        <text class="status-dot"></text>
+        <text>{{ isRunning ? '记录中' : '待开始' }}</text>
+      </view>
+    </view>
+
+    <view class="tab-bar carbon-glass-card">
       <view
         class="tab-item"
         :class="{ 'tab-active': currentTab === 'free' }"
@@ -19,7 +30,6 @@
       >马拉松训练</view>
     </view>
 
-    <!-- Tab Content -->
     <FreeRunTab
       v-if="currentTab === 'free'"
       :isCardExpanded="isCardExpanded"
@@ -100,7 +110,6 @@
       @dayTapMarathon="onMarathonDayTap"
     />
 
-    <!-- Custom Date Picker -->
     <RunDatePicker
       v-if="showDatePicker"
       :activePickerTarget="activePickerTarget"
@@ -128,9 +137,6 @@ import MorningRunTab from './components/morning/MorningRunTab.vue'
 import MarathonTab from './components/marathon/MarathonTab.vue'
 import RunDatePicker from './components/RunDatePicker.vue'
 
-// ==========================================
-// Module 0: Tab Switching
-// ==========================================
 const currentTab = ref('free')
 
 function switchTab(tab) {
@@ -149,9 +155,6 @@ function switchTab(tab) {
   displayEmission.value = '0'
 }
 
-// ==========================================
-// Module 0: Map Config
-// ==========================================
 const schoolLat = 26.4451
 const schoolLng = 106.6589
 
@@ -194,9 +197,6 @@ const routePolyline = ref([
   }
 ])
 
-// ==========================================
-// Module 1: Card State
-// ==========================================
 const isCardExpanded = ref(false)
 const isMorningCardExpanded = ref(false)
 const isRunning = ref(false)
@@ -268,10 +268,6 @@ function endRun() {
   displayEmission.value = '0'
 }
 
-
-// ==========================================
-// Module 2: Calendar
-// ==========================================
 const TODAY_YEAR = new Date().getFullYear()
 const TODAY_MONTH = new Date().getMonth() + 1
 const TODAY_DAY = new Date().getDate()
@@ -279,7 +275,6 @@ const TODAY_DAY = new Date().getDate()
 const calYear = ref(TODAY_YEAR)
 const calMonth = ref(TODAY_MONTH)
 
-// Date Picker
 const showDatePicker = ref(false)
 const activePickerTarget = ref('main')
 const dpYearList = Array.from({ length: 10 }, (_, i) => TODAY_YEAR - 5 + i)
@@ -315,7 +310,6 @@ function confirmDatePicker() {
   showDatePicker.value = false
 }
 
-// Run Records
 const runRecords = ref({
   '2026-4': {
     1: ['free', 'morning'],
@@ -349,8 +343,8 @@ const daysInMonth = computed(() => {
 const prevMonthPadding = computed(() => firstDayWeekday.value - 1)
 
 const DAY_STYLES = {
-  empty:   { cls: 'empty',   bg: '' },
-  future:  { cls: 'future',  bg: '' },
+  empty: { cls: 'empty', bg: '' },
+  future: { cls: 'future', bg: '' },
   checked: { cls: 'checked', bg: '' },
 }
 
@@ -361,14 +355,6 @@ function getDayState(day) {
   if (future) return DAY_STYLES.future
   if (!status) return DAY_STYLES.empty
   return DAY_STYLES.checked
-}
-
-
-function getPrevMonthDay(n) {
-  const prevM = calMonth.value === 1 ? 12 : calMonth.value - 1
-  const prevY = calMonth.value === 1 ? calYear.value - 1 : calYear.value
-  const prevDays = new Date(prevY, prevM, 0).getDate()
-  return prevDays - prevMonthPadding.value + n
 }
 
 function getDayStatus(day) {
@@ -388,7 +374,7 @@ function isFutureDay(day) {
 
 function onDayTap(day) {
   if (isFutureDay(day)) {
-    uni.showToast({ title: '还未到这一天哦', icon: 'none' })
+    uni.showToast({ title: '还未到这一天', icon: 'none' })
     return
   }
   const state = getDayState(day)
@@ -399,7 +385,7 @@ function onDayTap(day) {
 
 function onDayTapMorning(day) {
   if (isFutureDay(day)) {
-    uni.showToast({ title: '还未到这一天哦', icon: 'none' })
+    uni.showToast({ title: '还未到这一天', icon: 'none' })
     return
   }
   const key = `${calYear.value}-${calMonth.value}`
@@ -411,14 +397,6 @@ function onDayTapMorning(day) {
   if (!runRecords.value[key]) runRecords.value[key] = {}
   runRecords.value[key][day] = 'morning'
   uni.showToast({ title: '晨跑打卡成功', icon: 'success' })
-}
-
-function isMorningPastDay(day) {
-  if (calYear.value > TODAY_YEAR) return false
-  if (calYear.value < TODAY_YEAR) return true
-  if (calMonth.value < TODAY_MONTH) return true
-  if (calMonth.value > TODAY_MONTH) return false
-  return day < TODAY_DAY
 }
 
 function prevMonth() {
@@ -444,7 +422,7 @@ function nextMonth() {
 }
 
 function onBindDevice() {
-  uni.showToast({ title: '绑定设备功能开发中', icon: 'none' })
+  uni.showToast({ title: '设备绑定功能开发中', icon: 'none' })
 }
 
 function onManualRecord() {
@@ -455,14 +433,6 @@ onUnmounted(() => {
   if (timer) clearInterval(timer)
 })
 
-
-// ==========================================
-// Marathon Tab Data
-// ==========================================
-
-// ==========================================
-// Marathon Calendar
-// ==========================================
 const marathonCalYear = ref(TODAY_YEAR)
 const marathonCalMonth = ref(TODAY_MONTH)
 
@@ -478,9 +448,9 @@ const marathonFirstDayWeekday = computed(() => {
 const marathonPrevMonthPadding = computed(() => marathonFirstDayWeekday.value - 1)
 
 const MARATHON_DAY_STYLES = {
-  empty:   { cls: 'empty',    bg: '', hasDot: false },
-  future:  { cls: 'future',   bg: '', hasDot: false },
-  marathon:{ cls: 'marathon', bg: '', hasDot: true },
+  empty: { cls: 'empty', bg: '', hasDot: false },
+  future: { cls: 'future', bg: '', hasDot: false },
+  marathon: { cls: 'marathon', bg: '', hasDot: true },
 }
 
 function getMarathonDayState(day) {
@@ -494,36 +464,6 @@ function getMarathonDayState(day) {
   if (types.includes('marathon')) return MARATHON_DAY_STYLES.marathon
 
   return MARATHON_DAY_STYLES.empty
-}
-
-function getMarathonDayBadges(day) {
-  const status = getMarathonDayStatus(day)
-  if (!status) return []
-  const types = Array.isArray(status) ? status : [status]
-  return types
-}
-
-function getMarathonDayCellStyle(day) {
-  const state = getMarathonDayState(day)
-  if (state.cls === 'empty') return ''
-  if (state.cls === 'future') return ''
-  if (state.cls === 'marathon') return 'background-color: #a855f7; color: #fff; border-radius: 50%;'
-  return state.bg
-}
-
-function isMarathonPastDay(day) {
-  if (marathonCalYear.value > TODAY_YEAR) return false
-  if (marathonCalYear.value < TODAY_YEAR) return true
-  if (marathonCalMonth.value < TODAY_MONTH) return true
-  if (marathonCalMonth.value > TODAY_MONTH) return false
-  return day < TODAY_DAY
-}
-
-function getMarathonPrevMonthDay(n) {
-  const prevM = marathonCalMonth.value === 1 ? 12 : marathonCalMonth.value - 1
-  const prevY = marathonCalMonth.value === 1 ? marathonCalYear.value - 1 : marathonCalYear.value
-  const prevDays = new Date(prevY, prevM, 0).getDate()
-  return prevDays - marathonPrevMonthPadding.value + n
 }
 
 function getMarathonDayStatus(day) {
@@ -543,7 +483,7 @@ function isMarathonFutureDay(day) {
 
 function onMarathonDayTap(day) {
   if (isMarathonFutureDay(day)) {
-    uni.showToast({ title: '还未到这一天哦', icon: 'none' })
+    uni.showToast({ title: '还未到这一天', icon: 'none' })
     return
   }
   const state = getMarathonDayState(day)
@@ -578,9 +518,6 @@ function viewAllAchievements() {
   uni.showToast({ title: '成就详情开发中', icon: 'none' })
 }
 
-// ==========================================
-// Marathon Tab Data
-// ==========================================
 const marathonMenu = ref([
   { name: '马拉松学院', icon: 'icon-graduation', bgClass: 'menu-blue' },
   { name: '赛事活动', icon: 'icon-calendar', bgClass: 'menu-orange' },
@@ -598,7 +535,6 @@ const marathonPlans = ref([
   { name: '间歇跑速度训练', cycle: '2周', level: '困难', icon: 'icon-gauge', bgClass: 'plan-red' },
 ])
 
-// Chart - kept on main page
 onMounted(() => {
   const instance = getCurrentInstance()
   if (!instance) return
@@ -622,8 +558,7 @@ onMounted(() => {
         const barW = (w - 30 - 10) / 7 - 8
         const top = 20, bottom = 20, left = 30, right = 10
         const chartH = h - top - bottom
-        const chartW = w - left - right
-        ctx.strokeStyle = '#f0f0f0'
+        ctx.strokeStyle = '#edf2ef'
         ctx.setLineDash([4, 4])
         for (let i = 0; i <= 4; i++) {
           const y = top + (chartH / 4) * i
@@ -638,14 +573,14 @@ onMounted(() => {
           const x = left + i * (barW + 8) + 4
           const y = top + chartH - barH
           const grad = ctx.createLinearGradient(0, y, 0, y + barH)
-          grad.addColorStop(0, '#22C55E')
-          grad.addColorStop(1, '#86efac')
+          grad.addColorStop(0, '#10b981')
+          grad.addColorStop(1, '#38bdf8')
           ctx.fillStyle = grad
           ctx.beginPath()
           ctx.roundRect(x, y, barW, barH, [4, 4, 0, 0])
           ctx.fill()
         })
-        ctx.fillStyle = '#999'
+        ctx.fillStyle = '#7b8b83'
         ctx.font = '10px sans-serif'
         ctx.textAlign = 'center'
         data.forEach((val, i) => {
@@ -659,33 +594,98 @@ onMounted(() => {
 
 <style scoped>
 .page-run {
-  background-color: #f8fafc;
   min-height: 100vh;
-  padding-bottom: 120rpx;
+  padding: 26rpx 30rpx 120rpx;
+  box-sizing: border-box;
 }
 
-/* Tab Bar */
-.tab-bar {
+.run-hero {
+  padding: 36rpx;
+  border-radius: 42rpx;
+  color: #fff;
   display: flex;
-  justify-content: space-around;
+  align-items: flex-end;
+  justify-content: space-between;
+  background:
+    radial-gradient(circle at 82% 18%, rgba(249, 115, 22, 0.36), transparent 30%),
+    linear-gradient(135deg, #172554, #047857 74%);
+  box-shadow: 0 24rpx 58rpx rgba(4, 47, 46, 0.20);
+}
+
+.hero-kicker {
+  font-size: 18rpx;
+  color: rgba(255,255,255,0.62);
+  font-weight: 900;
+}
+
+.hero-title {
+  display: block;
+  margin-top: 10rpx;
+  font-size: 46rpx;
+  font-weight: 900;
+}
+
+.hero-sub {
+  display: block;
+  margin-top: 8rpx;
+  font-size: 24rpx;
+  color: rgba(255,255,255,0.72);
+}
+
+.run-status {
+  display: flex;
   align-items: center;
-  padding: 32rpx 0;
-  background-color: #fff;
+  gap: 8rpx;
+  padding: 12rpx 18rpx;
+  border-radius: 999rpx;
+  background: rgba(255,255,255,0.16);
+  font-size: 22rpx;
+  font-weight: 800;
+}
+
+.status-dot {
+  width: 12rpx;
+  height: 12rpx;
+  border-radius: 50%;
+  background: #cbd5e1;
+}
+
+.run-status.running .status-dot {
+  background: #facc15;
+  animation: dotPulse 1s ease-in-out infinite;
+}
+
+@keyframes dotPulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.45); opacity: 0.72; }
+}
+
+.tab-bar {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8rpx;
+  padding: 10rpx;
+  border-radius: 999rpx;
+  margin: 24rpx 0;
   position: sticky;
   top: 0;
   z-index: 10;
 }
 
 .tab-item {
-  padding-bottom: 8rpx;
-  font-size: 28rpx;
-  color: #9ca3af;
-  font-weight: 500;
+  height: 70rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999rpx;
+  font-size: 25rpx;
+  color: #60746b;
+  font-weight: 800;
 }
 
 .tab-active {
-  color: #10b981;
-  font-weight: bold;
-  border-bottom: 4rpx solid #10b981;
+  color: #fff;
+  background: linear-gradient(145deg, #10b981, #047857);
+  box-shadow: 0 10rpx 22rpx rgba(16, 185, 129, 0.22);
 }
 </style>

@@ -1,12 +1,13 @@
 <template>
-  <view class="daily-task">
+  <view class="daily-task carbon-lift">
     <view class="task-left">
-      <view class="task-icon">
-        <text class="icon-emoji task-check">✅</text>
-      </view>
+      <view class="task-icon">OK</view>
       <view class="task-info">
         <text class="task-title">今日任务进度</text>
-        <text class="task-sub">已完成 3/5 个任务</text>
+        <text class="task-sub">已完成 3/5 个任务，预计可得 180 积分</text>
+        <view class="mini-progress">
+          <view class="mini-progress-fill"></view>
+        </view>
       </view>
     </view>
     <button class="task-btn">去完成</button>
@@ -18,66 +19,81 @@
 
 <style scoped>
 .daily-task {
-  margin-top: 40rpx;
+  margin-top: 36rpx;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #fff;
-  border: 3rpx solid #d1fae5;
-  border-radius: 32rpx;
-  padding: 32rpx;
-  box-shadow: 0 4rpx 12rpx rgba(0,0,0,0.05);
+  background: linear-gradient(135deg, rgba(255,255,255,0.94), rgba(236, 253, 245, 0.92));
+  border: 1rpx solid rgba(16, 185, 129, 0.18);
+  border-radius: 30rpx;
+  padding: 28rpx;
+  box-shadow: 0 14rpx 34rpx rgba(16, 185, 129, 0.10);
 }
 
 .task-left {
   display: flex;
   align-items: center;
+  flex: 1;
+  min-width: 0;
 }
 
 .task-icon {
-  width: 96rpx; height: 96rpx;
-  background-color: #d1fae5;
-  border-radius: 50%;
+  width: 86rpx;
+  height: 86rpx;
+  background: linear-gradient(145deg, #10b981, #38bdf8);
+  color: #fff;
+  border-radius: 28rpx;
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.icon-emoji {
-  font-size: 48rpx;
-  display: inline-block;
-  line-height: 1;
-}
-
-.task-icon .icon-emoji {
-  font-size: 56rpx;
+  font-size: 22rpx;
+  font-weight: 900;
+  box-shadow: 0 14rpx 30rpx rgba(16, 185, 129, 0.24);
 }
 
 .task-info {
-  margin-left: 24rpx;
+  margin-left: 22rpx;
+  flex: 1;
+  min-width: 0;
 }
 
 .task-title {
   display: block;
-  font-size: 28rpx;
-  font-weight: bold;
-  color: #374151;
+  font-size: 30rpx;
+  font-weight: 900;
+  color: #17382f;
 }
 
 .task-sub {
   display: block;
-  font-size: 24rpx;
-  color: #9ca3af;
+  font-size: 22rpx;
+  color: #6b7a72;
   margin-top: 4rpx;
 }
 
+.mini-progress {
+  margin-top: 14rpx;
+  height: 10rpx;
+  background: rgba(16, 185, 129, 0.12);
+  border-radius: 999rpx;
+  overflow: hidden;
+}
+
+.mini-progress-fill {
+  width: 60%;
+  height: 100%;
+  border-radius: 999rpx;
+  background: linear-gradient(90deg, #10b981, #facc15);
+}
+
 .task-btn {
-  background-color: #10b981;
+  margin-left: 20rpx;
+  background: #10231b;
   color: #fff;
   font-size: 24rpx;
-  font-weight: bold;
-  padding: 12rpx 28rpx;
-  border-radius: 50rpx;
-  box-shadow: 0 8rpx 16rpx rgba(16, 185, 129, 0.3);
+  font-weight: 900;
+  padding: 12rpx 26rpx;
+  border-radius: 999rpx;
+  box-shadow: 0 12rpx 26rpx rgba(16, 35, 27, 0.18);
 }
 </style>
