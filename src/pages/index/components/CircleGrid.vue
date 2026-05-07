@@ -19,12 +19,12 @@
 
 <script setup>
 const items = [
-  { label: '校园跑', emoji: 'RUN', iconClass: 'circle-running', dimmed: false, featured: false },
+  { label: '晨跑打卡', emoji: 'RUN', iconClass: 'circle-running', dimmed: false, featured: false },
   { label: '绿色出行', emoji: 'BIKE', iconClass: 'circle-transport', dimmed: false, featured: false },
   { label: '低碳饮食', emoji: 'MEAL', iconClass: 'circle-diet', dimmed: false, featured: false },
-  { label: '减外卖', emoji: 'BOX', iconClass: 'circle-takeout', dimmed: false, featured: false },
-  { label: '旧物利用', emoji: 'REUSE', iconClass: 'circle-reuse', dimmed: false, featured: true },
-  { label: '步行计步', emoji: 'STEP', iconClass: 'circle-walk', dimmed: false, featured: false },
+  { label: '外卖减塑', emoji: 'BOX', iconClass: 'circle-takeout', dimmed: false, featured: false },
+  { label: '循环回收', emoji: 'REUSE', iconClass: 'circle-reuse', dimmed: false, featured: true },
+  { label: '步数同步', emoji: 'STEP', iconClass: 'circle-walk', dimmed: false, featured: false },
 ]
 </script>
 
@@ -44,21 +44,32 @@ const items = [
 }
 
 .circle-icon {
-  width: 112rpx;
-  height: 112rpx;
+  width: 116rpx;
+  height: 116rpx;
   border-radius: 34rpx;
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
-  box-shadow: 0 12rpx 28rpx rgba(15, 87, 62, 0.10);
-  border: 1rpx solid rgba(255,255,255,0.7);
+  box-shadow: 0 14rpx 30rpx rgba(15, 87, 62, 0.12);
+  border: 1rpx solid rgba(255,255,255,0.78);
+  overflow: hidden;
+}
+
+.circle-icon::after {
+  content: "";
+  position: absolute;
+  inset: 10rpx;
+  border-radius: 26rpx;
+  border: 1rpx solid rgba(255,255,255,0.46);
 }
 
 .circle-emoji {
   font-size: 18rpx;
   font-weight: 900;
   line-height: 1;
+  position: relative;
+  z-index: 1;
 }
 
 .featured-dot {
@@ -68,14 +79,14 @@ const items = [
   width: 14rpx;
   height: 14rpx;
   border-radius: 50%;
-  background: #facc15;
-  box-shadow: 0 0 0 8rpx rgba(250, 204, 21, 0.18);
+  background: #ffd166;
+  box-shadow: 0 0 0 8rpx rgba(255, 209, 102, 0.22), 0 0 18rpx rgba(255, 209, 102, 0.9);
 }
 
 .circle-label {
   font-size: 24rpx;
   color: #40524a;
-  font-weight: 700;
+  font-weight: 800;
   text-align: center;
 }
 
@@ -86,14 +97,14 @@ const items = [
 
 .circle-dimmed { opacity: 0.62; }
 
-.circle-running { background: linear-gradient(145deg, #dbeafe, #f8fbff); color: #1d4ed8; }
-.circle-transport { background: linear-gradient(145deg, #d1fae5, #f0fdf4); color: #047857; }
-.circle-diet { background: linear-gradient(145deg, #fef3c7, #fff7ed); color: #b45309; }
-.circle-takeout { background: linear-gradient(145deg, #fee2e2, #fff7f7); color: #b91c1c; }
+.circle-running { background: linear-gradient(145deg, #d8f7fb, #f8fbff); color: #047080; }
+.circle-transport { background: linear-gradient(145deg, #d7f8df, #f0fdf4); color: #047857; }
+.circle-diet { background: linear-gradient(145deg, #fff0c7, #fff8ed); color: #a95c00; }
+.circle-takeout { background: linear-gradient(145deg, #ffe1e8, #fff7f9); color: #b91c45; }
 .circle-reuse {
-  background: linear-gradient(145deg, #bbf7d0, #ecfeff);
+  background: linear-gradient(145deg, #bdf76e, #e9feff);
   color: #047857;
-  box-shadow: 0 14rpx 34rpx rgba(16, 185, 129, 0.22);
+  box-shadow: 0 16rpx 38rpx rgba(14, 165, 111, 0.24);
 }
-.circle-walk { background: linear-gradient(145deg, #ede9fe, #f8f7ff); color: #6d28d9; }
+.circle-walk { background: linear-gradient(145deg, #e4e8ff, #f8f7ff); color: #273b9f; }
 </style>

@@ -19,19 +19,21 @@
 defineProps({
   label: { type: String, default: '连续光盘打卡' },
   value: { type: String, default: '12 天' },
-  badge: { type: String, default: '连续打卡奖励积分：+50' },
+  badge: { type: String, default: '坚持打卡，本周额外奖励 +50' },
 })
 </script>
 
 <style scoped>
 .diet-streak-card {
-  background: linear-gradient(135deg, #f97316 0%, #fb923c 100%);
+  background:
+    radial-gradient(circle at 88% 8%, rgba(255,255,255,0.24), transparent 24%),
+    linear-gradient(135deg, #f97316 0%, #ffb84d 100%);
   border-radius: 32rpx;
   padding: 40rpx;
   color: #fff;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 8rpx 24rpx rgba(249, 115, 22, 0.3);
+  box-shadow: 0 16rpx 38rpx rgba(249, 115, 22, 0.26);
   margin-bottom: 24rpx;
 }
 
@@ -50,7 +52,7 @@ defineProps({
 
 .streak-label {
   font-size: 20rpx;
-  opacity: 0.8;
+  opacity: 0.86;
 }
 
 .streak-value {
@@ -63,16 +65,16 @@ defineProps({
 .streak-badge {
   display: inline-block;
   margin-top: 16rpx;
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.20);
   padding: 8rpx 16rpx;
   border-radius: 16rpx;
   font-size: 18rpx;
 }
 
-.streak-badge-text { font-weight: 600; }
+.streak-badge-text { font-weight: 800; }
 
 .streak-icon-bg {
-  opacity: 0.2;
+  opacity: 0.24;
   display: flex;
   align-items: center;
   justify-content: center;

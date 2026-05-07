@@ -24,11 +24,11 @@ defineProps({
   items: {
     type: Array,
     default: () => [
-      { name: '光盘行动', desc: 'AI 拍照识别识别空盘情况', icon: 'icon-camera', iconClass: 'orange-icon', btnText: 'AI 拍摄', btnClass: '', done: false },
-      { name: '低碳素食', desc: '选择全素餐/本地时令餐', icon: 'icon-leaf', iconClass: 'green-icon', btnText: null, btnClass: '', done: true },
-      { name: '减外卖减塑', desc: '今日未点外卖、拒绝一次性餐盒', icon: 'icon-no-plastic', iconClass: 'rose-icon', btnText: null, btnClass: '', done: true },
-      { name: '自带餐具', desc: '自带碗筷及杯子用餐打卡', icon: 'icon-cup', iconClass: 'blue-icon', btnText: '已领', btnClass: 'diet-btn-gray', done: false },
-      { name: '节水惜食', desc: '节约用水、无浪费零食打卡', icon: 'icon-water', iconClass: 'cyan-icon', btnText: '记录', btnClass: 'diet-btn-blue', done: false },
+      { name: '光盘行动', desc: 'AI 拍照识别剩餐情况', icon: 'icon-camera', iconClass: 'orange-icon', btnText: 'AI 拍照', btnClass: '', done: false },
+      { name: '低碳套餐', desc: '选择本周推荐的低碳餐品', icon: 'icon-leaf', iconClass: 'green-icon', btnText: null, btnClass: '', done: true },
+      { name: '外卖减塑', desc: '减少一次性餐具与塑料袋', icon: 'icon-no-plastic', iconClass: 'rose-icon', btnText: null, btnClass: '', done: true },
+      { name: '自带水杯', desc: '咖啡、饮品窗口可认证', icon: 'icon-cup', iconClass: 'blue-icon', btnText: '去认证', btnClass: 'diet-btn-gray', done: false },
+      { name: '饮水补给', desc: '记录校园直饮水使用', icon: 'icon-water', iconClass: 'cyan-icon', btnText: '记录', btnClass: 'diet-btn-blue', done: false },
     ]
   }
 })
@@ -38,21 +38,22 @@ defineProps({
 .diet-list { display: flex; flex-direction: column; gap: 16rpx; }
 
 .diet-item {
-  background: #fff;
+  background: rgba(255,255,255,0.88);
   border-radius: 24rpx;
   padding: 24rpx;
-  border: 1rpx solid #f0f0f0;
+  border: 1rpx solid rgba(255,255,255,0.82);
   display: flex;
   align-items: center;
   justify-content: space-between;
+  box-shadow: 0 12rpx 30rpx rgba(4,47,36,0.08);
 }
 
-.diet-left { display: flex; align-items: center; gap: 24rpx; flex: 1; }
+.diet-left { display: flex; align-items: center; gap: 24rpx; flex: 1; min-width: 0; }
 
 .diet-icon {
   width: 80rpx;
   height: 80rpx;
-  border-radius: 20rpx;
+  border-radius: 22rpx;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -72,12 +73,12 @@ defineProps({
 .cyan-icon { background: #ecfeff; }
 .cyan-icon .iconfont { color: #0891b2; }
 
-.diet-info { flex: 1; }
+.diet-info { flex: 1; min-width: 0; }
 
 .diet-name {
   display: block;
   font-size: 28rpx;
-  font-weight: bold;
+  font-weight: 900;
   color: #1f2937;
   margin-bottom: 4rpx;
 }
@@ -85,14 +86,17 @@ defineProps({
 .diet-desc {
   display: block;
   font-size: 20rpx;
-  color: #9ca3af;
+  color: #7c8791;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .diet-btn {
   background: #f97316;
   color: #fff;
   font-size: 20rpx;
-  font-weight: bold;
+  font-weight: 900;
   padding: 12rpx 24rpx;
   border-radius: 16rpx;
   border: none;
@@ -101,7 +105,7 @@ defineProps({
 
 .diet-btn-gray {
   background: #f3f4f6;
-  color: #9ca3af;
+  color: #7c8791;
 }
 
 .diet-btn-blue {
@@ -131,6 +135,6 @@ defineProps({
 .check-mark {
   font-size: 28rpx;
   color: #fff;
-  font-weight: bold;
+  font-weight: 900;
 }
 </style>

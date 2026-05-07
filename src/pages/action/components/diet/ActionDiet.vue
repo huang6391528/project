@@ -1,10 +1,10 @@
 <template>
   <view class="tab-content">
-    <DietStreakCard label="连续光盘打卡" value="12 天" badge="连续打卡奖励积分：+50" />
-    <view style="padding: 0 30rpx;">
+    <DietStreakCard label="连续光盘打卡" value="12 天" badge="坚持打卡，本周额外奖励 +50" />
+    <view class="diet-block">
       <DietMap @checkin="onMapCheckin" />
     </view>
-    <view style="padding: 0 30rpx;">
+    <view class="diet-block">
       <view class="lc-section">
         <view class="lc-section-header">
           <text class="section-title">饮食场景打卡</text>
@@ -21,12 +21,16 @@ import DietMap from './DietMap.vue'
 import DietList from './DietList.vue'
 
 const onMapCheckin = () => {
-  uni.showToast({ title: '签到成功', icon: 'success' })
+  uni.showToast({ title: '打卡成功', icon: 'success' })
 }
 </script>
 
 <style scoped>
 .tab-content { animation: fadeIn 0.3s ease; }
+
+.diet-block {
+  padding: 0 30rpx;
+}
 
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10rpx); }
@@ -44,7 +48,7 @@ const onMapCheckin = () => {
 
 .section-title {
   font-size: 32rpx;
-  font-weight: bold;
+  font-weight: 900;
   color: #1f2937;
 }
 </style>

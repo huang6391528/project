@@ -1,10 +1,11 @@
 <template>
   <view class="personal-card carbon-flow carbon-fade-up">
+    <view class="card-grid"></view>
     <view class="user-info">
       <image class="avatar" src="@/static/tabbar/profile_photo.jpg" mode="aspectFill"></image>
       <view class="user-detail">
-        <text class="user-name">陈同学</text>
-        <text class="user-school">贵州大学 · 经济学院</text>
+        <text class="user-name">低碳领航者</text>
+        <text class="user-school">创新创业团队 · 绿色校园实验室</text>
         <view class="carbon-points">
           <text class="carbon-points-num">2,480</text>
           <text class="carbon-points-unit">碳积分</text>
@@ -15,8 +16,8 @@
     <view class="tree-progress">
       <view class="progress-header">
         <view class="progress-title-area">
-          <text class="progress-title">碳汇树守护进度</text>
-          <text class="progress-sub">已抵消 45.2kg CO₂</text>
+          <text class="progress-title">本周校园减排目标</text>
+          <text class="progress-sub">已减少 45.2kg CO2e，接近一棵树半年的吸收量</text>
         </view>
         <text class="progress-percent">65%</text>
       </view>
@@ -25,14 +26,14 @@
       </view>
       <view class="progress-footer">
         <view class="mini-metric">
-          <text class="metric-icon">树</text>
+          <text class="metric-icon">CO2</text>
           <text class="metric-value">3.2</text>
-          <text class="metric-label">棵等效树木</text>
+          <text class="metric-label">今日减排 kg</text>
         </view>
         <view class="mini-metric">
-          <text class="metric-icon fire">燃</text>
+          <text class="metric-icon fire">TOP</text>
           <text class="metric-value">12</text>
-          <text class="metric-label">连续打卡</text>
+          <text class="metric-label">学院排名</text>
         </view>
       </view>
     </view>
@@ -46,12 +47,13 @@
 .personal-card {
   margin-top: 28rpx;
   background:
-    radial-gradient(circle at 86% 10%, rgba(251, 191, 36, 0.32), transparent 28%),
-    linear-gradient(135deg, #062f25, #059669 58%, #22c55e);
-  border-radius: 42rpx;
+    radial-gradient(circle at 88% 10%, rgba(255, 184, 77, 0.36), transparent 28%),
+    radial-gradient(circle at 8% 100%, rgba(47, 211, 230, 0.22), transparent 30%),
+    linear-gradient(135deg, #06251f, #047857 58%, #10b981);
+  border-radius: 44rpx;
   padding: 36rpx;
   color: #fff;
-  box-shadow: 0 24rpx 58rpx rgba(5, 95, 70, 0.24);
+  box-shadow: var(--carbon-shadow-strong);
   position: relative;
   overflow: hidden;
 }
@@ -59,12 +61,22 @@
 .personal-card::before {
   content: "";
   position: absolute;
-  right: -40rpx;
-  top: -60rpx;
-  width: 220rpx;
-  height: 220rpx;
+  right: -42rpx;
+  top: -68rpx;
+  width: 230rpx;
+  height: 230rpx;
   border-radius: 50%;
   border: 2rpx solid rgba(255,255,255,0.18);
+}
+
+.card-grid {
+  position: absolute;
+  inset: 0;
+  opacity: 0.28;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.16) 1rpx, transparent 1rpx),
+    linear-gradient(90deg, rgba(255,255,255,0.14) 1rpx, transparent 1rpx);
+  background-size: 42rpx 42rpx;
 }
 
 .user-info {
@@ -77,14 +89,15 @@
 .avatar {
   width: 112rpx;
   height: 112rpx;
-  border-radius: 32rpx;
-  border: 4rpx solid rgba(255,255,255,0.48);
-  box-shadow: 0 12rpx 28rpx rgba(0, 0, 0, 0.18);
+  border-radius: 34rpx;
+  border: 4rpx solid rgba(255,255,255,0.54);
+  box-shadow: 0 14rpx 32rpx rgba(0, 0, 0, 0.20);
 }
 
 .user-detail {
   margin-left: 28rpx;
   flex: 1;
+  min-width: 0;
 }
 
 .user-name {
@@ -98,6 +111,9 @@
   color: rgba(255,255,255,0.78);
   display: block;
   margin-top: 6rpx;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .carbon-points {
@@ -109,15 +125,16 @@
 .carbon-points-num {
   font-size: 62rpx;
   font-weight: 900;
-  color: #facc15;
+  color: #ffd166;
   line-height: 1;
+  text-shadow: 0 8rpx 22rpx rgba(0,0,0,0.16);
 }
 
 .carbon-points-unit {
   font-size: 24rpx;
   color: rgba(255,255,255,0.86);
   margin-left: 10rpx;
-  font-weight: 700;
+  font-weight: 800;
 }
 
 .level-pill {
@@ -132,11 +149,12 @@
 .tree-progress {
   margin-top: 34rpx;
   background: rgba(255,255,255,0.16);
-  border: 1rpx solid rgba(255,255,255,0.18);
-  border-radius: 30rpx;
+  border: 1rpx solid rgba(255,255,255,0.20);
+  border-radius: 32rpx;
   padding: 28rpx;
   position: relative;
   z-index: 1;
+  backdrop-filter: blur(14rpx);
 }
 
 .progress-header {
@@ -149,23 +167,27 @@
 .progress-title-area {
   display: flex;
   flex-direction: column;
+  flex: 1;
+  min-width: 0;
 }
 
 .progress-title {
   font-size: 28rpx;
-  font-weight: 800;
+  font-weight: 900;
 }
 
 .progress-sub {
   font-size: 22rpx;
   color: rgba(255,255,255,0.72);
   margin-top: 4rpx;
+  line-height: 1.42;
 }
 
 .progress-percent {
+  margin-left: 18rpx;
   font-size: 34rpx;
   font-weight: 900;
-  color: #facc15;
+  color: #ffd166;
 }
 
 .progress-bar {
@@ -180,13 +202,13 @@
   width: 65%;
   height: 100%;
   border-radius: 999rpx;
-  background: linear-gradient(90deg, #fef3c7, #facc15, #ffffff);
+  background: linear-gradient(90deg, #a7f04b, #ffd166, #ffffff);
   animation: progressGlow 2.2s ease-in-out infinite;
 }
 
 @keyframes progressGlow {
-  0%, 100% { filter: brightness(1); }
-  50% { filter: brightness(1.18); }
+  0%, 100% { filter: brightness(1); transform: translateX(0); }
+  50% { filter: brightness(1.18); transform: translateX(6rpx); }
 }
 
 .progress-footer {
@@ -201,24 +223,24 @@
   align-items: center;
   gap: 8rpx;
   background: rgba(255,255,255,0.12);
-  border-radius: 20rpx;
+  border-radius: 22rpx;
   padding: 18rpx;
 }
 
 .metric-icon {
-  width: 44rpx;
-  height: 44rpx;
+  width: 48rpx;
+  height: 48rpx;
   border-radius: 50%;
   background: rgba(255,255,255,0.18);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 18rpx;
+  font-size: 16rpx;
   font-weight: 900;
 }
 
 .metric-icon.fire {
-  background: rgba(251, 191, 36, 0.25);
+  background: rgba(255, 184, 77, 0.28);
 }
 
 .metric-value {

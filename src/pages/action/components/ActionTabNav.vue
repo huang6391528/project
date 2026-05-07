@@ -7,7 +7,10 @@
         class="category-tag"
         :class="{ 'tag-active': activeTab === tab.key }"
         @tap="emit('change', tab.key)"
-      >{{ tab.label }}</view>
+      >
+        <text class="tag-dot"></text>
+        <text>{{ tab.label }}</text>
+      </view>
     </view>
   </scroll-view>
 </template>
@@ -23,10 +26,10 @@ defineProps({
 const emit = defineEmits(['change'])
 
 const tabs = [
-  { key: 'recommend', label: '推荐' },
-  { key: 'travel', label: '出行' },
-  { key: 'diet', label: '饮食' },
-  { key: 'life', label: '生活' },
+  { key: 'recommend', label: 'AI 推荐' },
+  { key: 'travel', label: '绿色出行' },
+  { key: 'diet', label: '低碳饮食' },
+  { key: 'life', label: '校园生活' },
 ]
 </script>
 
@@ -38,24 +41,40 @@ const tabs = [
 
 .category-tags {
   display: inline-flex;
-  gap: 10rpx;
+  gap: 8rpx;
   padding: 10rpx;
   border-radius: 999rpx;
 }
 
 .category-tag {
-  padding: 15rpx 36rpx;
-  color: #5f7068;
+  padding: 14rpx 24rpx;
+  color: #60746b;
   border-radius: 999rpx;
-  font-size: 27rpx;
-  font-weight: 800;
+  font-size: 24rpx;
+  font-weight: 900;
   white-space: nowrap;
   transition: all 0.18s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8rpx;
+  flex-wrap: nowrap;
+}
+
+.tag-dot {
+  width: 10rpx;
+  height: 10rpx;
+  border-radius: 50%;
+  background: rgba(96, 116, 107, 0.36);
 }
 
 .tag-active {
-  background: linear-gradient(145deg, #10b981, #047857);
+  background: linear-gradient(145deg, #101a17, #0ea56f);
   color: #fff;
-  box-shadow: 0 10rpx 22rpx rgba(16, 185, 129, 0.24);
+  box-shadow: 0 12rpx 26rpx rgba(14, 165, 111, 0.26);
+}
+
+.tag-active .tag-dot {
+  background: #a7f04b;
+  box-shadow: 0 0 14rpx rgba(167, 240, 75, 0.86);
 }
 </style>
